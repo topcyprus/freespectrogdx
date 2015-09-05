@@ -22,6 +22,11 @@ class Board(
       slotPanels(playerId).panel))
   panel addActor row(descriptionPanel.panel, cardPanels(playerId).panel)
   panel.pack()
+
+  def refresh(silent : Boolean) = {
+    slotPanels foreach (_.refresh())
+    cardPanels foreach (_.refresh(silent))
+  }
 }
 
 import priv.util.TVar

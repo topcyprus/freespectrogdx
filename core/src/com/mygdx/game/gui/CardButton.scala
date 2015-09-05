@@ -1,5 +1,6 @@
 package com.mygdx.game.gui
 
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.scenes.scene2d.Group
 import com.mygdx.game.ScreenResources
 import priv.sp._

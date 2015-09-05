@@ -1,5 +1,6 @@
 package com.mygdx.game.gui
 
+import com.badlogic.gdx.scenes.scene2d.actions.{AlphaAction, TemporalAction}
 import com.badlogic.gdx.scenes.scene2d.{Actor, Group}
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.mygdx.game.ScreenResources
@@ -12,12 +13,12 @@ case class SlotCardActors(slotState : SlotState, cardActors : CardActors) {
   def actors = cardActors.actors
 }
 
-// total crap
 class SlotButton(val num: Int,
                  playerId: PlayerId,
                  getInfo: ⇒ (Option[SlotState], Boolean),
                  spWorld : SpWorld,
                  resources : ScreenResources)  {
+
   val group = new Group()
   group.setSize(112, 140)
 
@@ -33,20 +34,45 @@ class SlotButton(val num: Int,
     val old = info
     info = getInfo
     val (slotStateOption, isExisting) = info
-    slotImage.setVisible(isExisting)
+    slotImage setVisible isExisting
     if (group.getChildren.size > 1) {
       group.getChildren.removeRange(1, group.getChildren.size -1) // skip slotImage
     }
-    slotStateOption.foreach { s =>
+    slotStateOption foreach { s =>
       val cardActors = new SlotCardActors(s, new CardActors(s.card, spWorld.houses.getHouseById(s.card.houseId), resources))
-      cardActors.actors.foreach(group.addActor)
+      cardActors.actors foreach group.addActor
     }
   }
 
-  def focus(): Unit ={
-
+  def focus(): Actor = {
+    group setTransform true
+    group addAction new Focus
+    group addAction UpdateAction[Group](_.setTransform(false))
+    group
   }
 
+  def fade() : Actor = {
+    val action = new AlphaAction
+    action setDuration 100
+    action setAlpha 0
+    group addAction action
+    group
+  }
+
+  class Focus extends TemporalAction {
+    private var start: Float = 0f
+    private val amplitude = 0.05
+    setDuration(500)
+
+    protected override def begin() {
+      start = target.getScaleX
+    }
+
+    protected def update(percent: Float) = {
+      val delta = amplitude * math.sin(percent * math.Pi)
+      target.setScale(1 + delta.toFloat)
+    }
+  }
 }
 
 /**

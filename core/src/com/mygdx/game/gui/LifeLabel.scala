@@ -83,11 +83,3 @@ class DamagableInt(getValue: ⇒ Int, skin : Skin, group : Group, direction : In
 
 }
 
-case class UpdateAction[A <: Actor](f : A => Unit) extends Action {
-
-  def act (delta : Float) = {
-    f(target.asInstanceOf[A])
-    true
-  }
-
-}

@@ -71,9 +71,8 @@ class UserGameController(board : Board, commandRecorder : CommandRecorder) exten
     board.slotPanels(player).lifeLabel setPhase phase
   }
 
-  def refresh(silent : Boolean) : Unit = {
+  def refresh(silent : Boolean) : Unit = board refresh silent
 
-  }
   def addVisibleCard(player : PlayerId, card : Card) : Unit = {
     board.cardPanels(player)
   }
@@ -92,7 +91,7 @@ private class GameUpdateListener(board : Board, spGame : SpGame) extends UpdateL
 
   def focus(num: Int, playerId: PlayerId, blocking: Boolean) {
     val slotButton = slotPanels(playerId).slots(num)
-    //spawn(new slotButton.Focus(), blocking)
+    waitAction(slotButton.focus())
   }
   def move(num: Int, dest: Int, playerId: PlayerId) {
     val slotButton = slotPanels(playerId).slots(num)
@@ -112,10 +111,8 @@ private class GameUpdateListener(board : Board, spGame : SpGame) extends UpdateL
     controller.refresh(silent = true)
   }
   def die(num: Int, playerId: PlayerId) {
-    /**
-     *     val slotButton = slotPanels(playerId).slots(num)
-     * spawn(new slotButton.Fade, blocking = true)
-     */
+    val slotButton = slotPanels(playerId).slots(num)
+    waitAction(slotButton.fade())
   }
   def refresh(silent: Boolean) = {
     persistUpdater()

@@ -25,7 +25,7 @@ class CardPanel(playerId: PlayerId, game: SpGame, resources : ScreenResources) {
   def init(commandRecorder : CommandRecorder) {
     if (playerId == game.myPlayerId) {
       cardButtons foreach { cardButton ⇒
-        //cardButton.visible = true
+        cardButton.visible = true
         cardButton.group.addListener(onClick {
           if (cardButton.isActive) {
             cardButton.cardActorsOption.foreach { h ⇒
@@ -58,6 +58,15 @@ class CardPanel(playerId: PlayerId, game: SpGame, resources : ScreenResources) {
 
   panel.pack()
 
+  def refresh(silent : Boolean): Unit ={
+    //houseLabels foreach (_.mana.refresh(silent))
+    cardButtons foreach (_.refresh())
+    cardButtons foreach { cb ⇒
+      cb.visible = (playerId == game.myPlayerId
+      || (cb.cardActorsOption.isDefined && visibleCards.contains(cb.cardActorsOption.get.desc.card)))
+    }
+  }
+
 
   def setEnabled(flag: Boolean) {
     cardButtons foreach { btn ⇒
@@ -87,13 +96,6 @@ class CardPanel(playerId: PlayerId, game: SpGame, resources : ScreenResources) {
     }
   }
   val specialCardButtons = houseCardButtons(4)._2
-  def refresh(silent: Boolean) {
-    houseLabels foreach (_.mana.refresh(silent))
-    cardButtons foreach (_.refresh())
-    cardButtons foreach { cb ⇒
-      cb.visible = playerId == game.myPlayerId || (cb.card.isDefined && visibleCards.contains(cb.card.get))
-    }
-  }
   def setEnabled(flag: Boolean) {
     cardButtons foreach { btn ⇒
       btn.enabled = flag

@@ -27,6 +27,16 @@ package object gui {
     }
   }
 
+  object BasicAction {
+    def apply(f : => Unit) = new BasicAction(f)
+  }
+  class BasicAction(f : => Unit) extends Action {
+    def act(delta : Float) = {
+      f
+      true
+    }
+  }
+
   def waitAction(actor : Actor) = {
     Await.result(promAction(actor).future, Duration.Inf)
   }

@@ -30,11 +30,11 @@ class CardPanel(playerId: PlayerId, game: SpGame, resources : ScreenResources) {
           if (cardButton.isActive) {
             cardButton.cardActorsOption.foreach { h ⇒
               commandRecorder.setCommand(Command(game.myPlayerId, h.desc.card, None, h.desc.cost))
-              /**if (h.desc.card.inputSpec.isDefined) {
+              if (h.desc.card.inputSpec.isDefined) {
                 lastSelected.foreach(_.selected = false)
                 cardButton.selected = true
                 lastSelected = Some(cardButton)
-              }*/
+              }
             }
           }
         })

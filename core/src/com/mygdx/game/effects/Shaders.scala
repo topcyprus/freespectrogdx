@@ -31,18 +31,16 @@ object Shader {
 }
 
 trait Shader {
+  var pedantic = true
 
   def program: ShaderProgram
 
-  /**def used[A](f: ⇒ A) = {
+  def used[A](f: ⇒ A) = {
+    ShaderProgram.pedantic = pedantic
     program.begin()
     try f finally program.end()
   }
 
-  def useWhen[A](x : Boolean)(f : => A) = {
-    if (x) used(f)
-    else f
-  }*/
 
   def getUniformLocations(names: String*): List[Int] = names.map(getUniformLocation(_))(breakOut)
   def getUniformLocation(name: String) = {
@@ -89,6 +87,7 @@ class HoverShader(name: String, resources: ScreenResources) extends Shader {
 }
 
 class SelectedShader(name: String, s: Int) extends Shader {
+  pedantic = false
   val program = Shader create name
   val size :: cursor :: offset :: _ = getUniformLocations("size", "cursor", "offset")
 

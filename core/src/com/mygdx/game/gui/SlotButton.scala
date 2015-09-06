@@ -31,17 +31,19 @@ class SlotButton(val num: Int,
   refresh()
 
   def refresh(): Unit = {
-    val old = info
-    info = getInfo
-    val (slotStateOption, isExisting) = info
-    slotImage setVisible isExisting
-    if (group.getChildren.size > 1) {
-      group.getChildren.removeRange(1, group.getChildren.size -1) // skip slotImage
-    }
-    slotStateOption foreach { s =>
-      val cardActors = new SlotCardActors(s, new CardActors(s.card, spWorld.houses.getHouseById(s.card.houseId), resources))
-      cardActors.actors foreach group.addActor
-    }
+    group.addAction(
+      BasicAction{
+        val old = info
+        info = getInfo
+        val (slotStateOption, isExisting) = info
+        slotImage setVisible isExisting
+        if (group.getChildren.size > 1) {
+          group.getChildren.removeRange(1, group.getChildren.size -1) // skip slotImage
+        }
+        slotStateOption foreach { s =>
+          val cardActors = new SlotCardActors(s, new CardActors(s.card, spWorld.houses.getHouseById(s.card.houseId), resources))
+          cardActors.actors foreach group.addActor
+        }})
   }
 
   def focus(): Actor = {

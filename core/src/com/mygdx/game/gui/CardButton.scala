@@ -3,6 +3,8 @@ package com.mygdx.game.gui
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.g2d.Batch
+import com.badlogic.gdx.graphics.glutils.{ShaderProgram, ShapeRenderer}
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType
 import com.badlogic.gdx.scenes.scene2d.Group
 import com.mygdx.game.ScreenResources
 import priv.sp._
@@ -19,32 +21,76 @@ class CardButton(getDesc: ⇒ Option[CardDesc],
 
 
   val group = new Group {
+    var deltaTime = 0f
+
     override def draw(batch: Batch, parentAlpha: Float) = {
       if (visible) {
-        val isGray = !isActive && visible
-        if (isGray) batch.setShader(resources.shaders.grey.program)
-        try super.draw(batch,parentAlpha) finally batch.setShader(null)
+        if (!isActive && visible) {
+          batch.setShader(resources.shaders.grey.program)
+        } else {
+          if (selected) {
+            ShaderProgram.pedantic = false
+            val selectedShader = resources.shaders.selected
+            Gdx.gl.glDisable(GL20.GL_TEXTURE)
+            try {
+              batch.setShader(selectedShader.program)
+
+              resources.renderer.setTransformMatrix(batch.getTransformMatrix)
+              resources.renderer.setProjectionMatrix(batch.getProjectionMatrix)
+              resources.renderer.translate(getX, getY, 0)
+              val xo = -50
+              val yo = -50
+              val deltax = deltaTime / 100f
+              val animLength = 62
+              val animationCursor = deltax % animLength
+              selectedShader.program.setUniformf(selectedShader.cursor, animationCursor)
+              selectedShader.program.setUniformf(selectedShader.offset, xo, yo)
+              resources.renderer.begin(ShapeType.Filled)
+              resources.renderer.setColor(1, 1, 1, 1)
+              resources.renderer.rect(xo, yo, 200, 200)
+              resources.renderer.end()
+            } finally {
+              Gdx.gl.glEnable(GL20.GL_TEXTURE)
+              batch.setShader(null)
+            }
+          }
+        }
+        try {
+          super.draw(batch,parentAlpha)
+        } finally {
+          if (batch.getShader != null) batch.setShader(null)
+        }
       }
+    }
+
+    override def act(delta : Float): Unit = {
+      super.act(delta)
+      deltaTime = delta
     }
   }
   group.setSize(90, 102)
+  group.setBounds(0, 0, 90, 102)
 
 
   var cardActorsOption = getDesc.map(d ⇒ CardButtonActors(d, getHouseState, new CardActors(d.card, houseDesc.house, resources)))
 
   var visible = false
   var enabled = false
+  var selected = false
   def isActive = cardActorsOption.exists(_.isActive && enabled)
 
   refresh()
 
   def refresh() = {
-    group.clear()
-    if (visible) {
-      cardActorsOption foreach { cardActors =>
-        cardActors.cardActors.actors foreach group.addActor
-      }
-    }
+    group.addAction(
+      BasicAction {
+        group.clearChildren()
+        if (visible) {
+          cardActorsOption foreach { cardActors =>
+            cardActors.cardActors.actors foreach group.addActor
+          }
+        }
+      })
   }
 
 

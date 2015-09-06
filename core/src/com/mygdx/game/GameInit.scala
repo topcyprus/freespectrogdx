@@ -1,6 +1,6 @@
 package com.mygdx.game
 
-import com.badlogic.gdx.{Input, InputAdapter, Gdx}
+import com.badlogic.gdx.{InputMultiplexer, Input, InputAdapter, Gdx}
 import com.mygdx.game.gui._
 import priv.sp._
 import priv.sp.update.UpdateListener
@@ -28,12 +28,14 @@ class GameInit(screenResources : ScreenResources) {
   cardPanels foreach (_.init(commandRecorder))
 
   userMenu.skipButton.addListener(onClick {
+    println("skip")
     if (spGame.state.checkEnded.isEmpty && commandRecorder.cont.isDefined) {
       commandRecorder.skip()
     }
   })
 
   userMenu.restartButton.addListener(onClick {
+    println("restart")
     //world.forEntity[EndMessage](world.unspawn(_))
     board.cardPanels foreach (_.setEnabled(false))
     spGame.gameLock.release()
@@ -45,15 +47,18 @@ class GameInit(screenResources : ScreenResources) {
     }
   })
 
-  Gdx.input.setInputProcessor(new InputAdapter(){
-    override def keyDown(k : Int) = {
-      if (k == Input.Keys.F5) {
-        Gdx.app.log("input", "reload resources")
-        screenResources.reload()
-        true
-      } else false
-    }
-  })
+  Gdx.input.setInputProcessor(
+    new InputMultiplexer(Gdx.input.getInputProcessor,
+      screenResources.stage,
+      new InputAdapter(){
+        override def keyDown(k : Int) = {
+          if (k == Input.Keys.F5) {
+            Gdx.app.log("input", "reload resources")
+            screenResources.reload()
+            true
+          } else false
+        }
+      }))
 
   gameResources.gameExecutor submit runnable(spGame.start())
 

@@ -1,8 +1,9 @@
 package priv.util
 
-import java.io.{ObjectInputStream, ByteArrayInputStream, ObjectOutputStream, ByteArrayOutputStream}
+import java.io._
 
 object Utils {
+
 
   def toBytes(o: AnyRef) = {
     val bos = new ByteArrayOutputStream()
@@ -25,6 +26,11 @@ object Utils {
       bis.close()
       in.close()
     }
+  }
+
+  def floatRand[N](n: N)(implicit num: Numeric[N]) = {
+    val fl = scala.util.Random.nextFloat
+    if (fl == 0) fl else num.toFloat(n) * math.abs(1 / fl)
   }
 
   def thread(name: String)(f: ⇒ Unit) = new Thread(runnable(f), name).start()

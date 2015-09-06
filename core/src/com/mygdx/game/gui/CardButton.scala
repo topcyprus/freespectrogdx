@@ -1,6 +1,8 @@
 package com.mygdx.game.gui
 
-import com.badlogic.gdx.graphics.Color
+import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.graphics.GL20
+import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.scenes.scene2d.Group
 import com.mygdx.game.ScreenResources
 import priv.sp._
@@ -16,7 +18,15 @@ class CardButton(getDesc: ⇒ Option[CardDesc],
                  resources : ScreenResources)  {
 
 
-  val group = new Group
+  val group = new Group {
+    override def draw(batch: Batch, parentAlpha: Float) = {
+      if (visible) {
+        val isGray = !isActive && visible
+        if (isGray) batch.setShader(resources.shaders.grey.program)
+        try super.draw(batch,parentAlpha) finally batch.setShader(null)
+      }
+    }
+  }
   group.setSize(90, 102)
 
 
@@ -36,6 +46,8 @@ class CardButton(getDesc: ⇒ Option[CardDesc],
       }
     }
   }
+
+
 
   /**import game.sp
 

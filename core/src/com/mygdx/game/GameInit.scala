@@ -1,5 +1,6 @@
 package com.mygdx.game
 
+import com.badlogic.gdx.{Input, InputAdapter, Gdx}
 import com.mygdx.game.gui._
 import priv.sp._
 import priv.sp.update.UpdateListener
@@ -44,6 +45,15 @@ class GameInit(screenResources : ScreenResources) {
     }
   })
 
+  Gdx.input.setInputProcessor(new InputAdapter(){
+    override def keyDown(k : Int) = {
+      if (k == Input.Keys.F5) {
+        Gdx.app.log("input", "reload resources")
+        screenResources.reload()
+        true
+      } else false
+    }
+  })
 
   gameResources.gameExecutor submit runnable(spGame.start())
 

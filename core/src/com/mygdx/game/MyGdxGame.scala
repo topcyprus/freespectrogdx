@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.{TextureAtlas, SpriteBatch}
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.{Gdx, ScreenAdapter, Game}
+import com.mygdx.game.effects._
 
 class MyGdxGame extends Game {
 
@@ -43,4 +44,21 @@ class ScreenResources {
 
   Gdx.input setInputProcessor stage
 
+  var shaders = new BaseShaders(new Shaders, this)
+
+  def reload() = {
+    val old = shaders
+    shaders = new BaseShaders(new Shaders, this)
+    old.shaders.clean()
+  }
+}
+
+class BaseShaders(val shaders: Shaders, resources: ScreenResources) {
+
+  /**val hoverGlow = shaders.getOrElseUpdate("hoverglow", _ ⇒ new HoverShader("nz", resources))
+  val fade = shaders.getOrElseUpdate("fade", _ ⇒ new FadeShader("fade"))
+  val ripple = shaders.getOrElseUpdate("ripple", _ ⇒ new RippleShader)*/
+  val grey = shaders get "grey"
+
+  def selectedGlow(name: String, s: Int) = shaders.getOrElseUpdate("sel" + name, _ ⇒ new SelectedShader("sel", s))
 }

@@ -1,15 +1,11 @@
 
 attribute vec4 a_position;
-attribute vec4 a_color;
-attribute vec2 a_texCoord;
 
-uniform mat4 u_projModelView;
-varying vec4 col;
-varying vec2 texCoords;
+uniform mat4 u_projTrans;
 
 varying vec4 pos;
 void main()
 {
-  pos = gl_Vertex;
-  gl_Position = u_projModelView * a_position;
+  pos = a_position;
+  gl_Position = u_projTrans * a_position;
 }

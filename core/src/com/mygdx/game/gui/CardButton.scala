@@ -1,10 +1,10 @@
 package com.mygdx.game.gui
 
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.GL20
+import com.badlogic.gdx.graphics.VertexAttributes.Usage
+import com.badlogic.gdx.graphics.{VertexAttribute, Mesh, GL20}
 import com.badlogic.gdx.graphics.g2d.Batch
-import com.badlogic.gdx.graphics.glutils.{ShaderProgram, ShapeRenderer}
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType
+import com.badlogic.gdx.graphics.glutils.ShaderProgram
 import com.badlogic.gdx.scenes.scene2d.Group
 import com.mygdx.game.ScreenResources
 import priv.sp._
@@ -19,9 +19,8 @@ class CardButton(getDesc: ⇒ Option[CardDesc],
                  houseDesc : PlayerHouseDesc,
                  resources : ScreenResources)  {
 
-
   val group = new Group {
-    var deltaTime = 0f
+    var time = 0f
 
     override def draw(batch: Batch, parentAlpha: Float) = {
       if (visible) {
@@ -31,27 +30,22 @@ class CardButton(getDesc: ⇒ Option[CardDesc],
           if (selected) {
             ShaderProgram.pedantic = false
             val selectedShader = resources.shaders.selected
-            Gdx.gl.glDisable(GL20.GL_TEXTURE)
+            selectedShader.program.begin()
+            selectedShader.program.setUniformMatrix("u_projTrans", batch.getProjectionMatrix.mul(batch.getTransformMatrix))
+            //batch.setShader(resources.shaders.selected.program)
             try {
-              batch.setShader(selectedShader.program)
-
-              resources.renderer.setTransformMatrix(batch.getTransformMatrix)
-              resources.renderer.setProjectionMatrix(batch.getProjectionMatrix)
-              resources.renderer.translate(getX, getY, 0)
               val xo = -50
               val yo = -50
-              val deltax = deltaTime / 100f
-              val animLength = 62
+              val deltax = time * 10
+              val animLength = 60
               val animationCursor = deltax % animLength
               selectedShader.program.setUniformf(selectedShader.cursor, animationCursor)
               selectedShader.program.setUniformf(selectedShader.offset, xo, yo)
-              resources.renderer.begin(ShapeType.Filled)
-              resources.renderer.setColor(1, 1, 1, 1)
-              resources.renderer.rect(xo, yo, 200, 200)
-              resources.renderer.end()
+              val mesh = createPoliQuad(xo, yo, 200, 200)
+              mesh.render(selectedShader.program, GL20.GL_TRIANGLES)
+              //batch.setShader(null)
             } finally {
-              Gdx.gl.glEnable(GL20.GL_TEXTURE)
-              batch.setShader(null)
+              selectedShader.program.end()
             }
           }
         }
@@ -65,7 +59,7 @@ class CardButton(getDesc: ⇒ Option[CardDesc],
 
     override def act(delta : Float): Unit = {
       super.act(delta)
-      deltaTime = delta
+      time += delta
     }
   }
   group.setSize(90, 102)
@@ -94,6 +88,21 @@ class CardButton(getDesc: ⇒ Option[CardDesc],
   }
 
 
+  def createPoliQuad(x : Float, y : Float, w : Float, h : Float) = {
+    val verts = Array[Float](
+      x    , y,
+      x + w, y,
+      x + w, y + h,
+      x    , y,
+      x    , y + h,
+      x + w, y + h)
+
+    val mesh = new Mesh( true, 6, 0,  // static mesh with 6 vertices and no indices
+      new VertexAttribute( Usage.Position, 2, ShaderProgram.POSITION_ATTRIBUTE ))
+
+    mesh.setVertices( verts )
+    mesh
+  }
 
   /**import game.sp
 

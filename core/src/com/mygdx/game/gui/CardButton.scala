@@ -1,10 +1,10 @@
 package com.mygdx.game.gui
 
-import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.VertexAttributes.Usage
-import com.badlogic.gdx.graphics.{VertexAttribute, Mesh, GL20}
+import com.badlogic.gdx.graphics.{Color, VertexAttribute, Mesh, GL20}
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.glutils.ShaderProgram
+import com.badlogic.gdx.math.{Matrix4, Vector2}
 import com.badlogic.gdx.scenes.scene2d.Group
 import com.mygdx.game.ScreenResources
 import priv.sp._
@@ -21,32 +21,29 @@ class CardButton(getDesc: ⇒ Option[CardDesc],
 
   val group = new Group {
     var time = 0f
+    val seletectedShader = resources.shaders.selected
+    val mesh = createPoliQuad(seletectedShader.offsetx, seletectedShader.offsety, seletectedShader.sizeConfig, seletectedShader.sizeConfig)
 
     override def draw(batch: Batch, parentAlpha: Float) = {
       if (visible) {
+
         if (!isActive && visible) {
           batch.setShader(resources.shaders.grey.program)
         } else {
           if (selected) {
-            ShaderProgram.pedantic = false
-            val selectedShader = resources.shaders.selected
-            selectedShader.program.begin()
-            selectedShader.program.setUniformMatrix("u_projTrans", batch.getProjectionMatrix.mul(batch.getTransformMatrix))
-            //batch.setShader(resources.shaders.selected.program)
-            try {
-              val xo = -50
-              val yo = -50
-              val deltax = time * 10
-              val animLength = 60
-              val animationCursor = deltax % animLength
-              selectedShader.program.setUniformf(selectedShader.cursor, animationCursor)
-              selectedShader.program.setUniformf(selectedShader.offset, xo, yo)
-              val mesh = createPoliQuad(xo, yo, 200, 200)
-              mesh.render(selectedShader.program, GL20.GL_TRIANGLES)
-              //batch.setShader(null)
-            } finally {
-              selectedShader.program.end()
-            }
+
+            import seletectedShader._
+
+            val deltax = time * 10
+            val animationCursor = deltax % animLength
+
+            program.begin()
+            program.setUniformf(cursor, animationCursor)
+            program.setUniformf(size, seletectedShader.sizeConfig)
+            val pos = localToStageCoordinates(new Vector2)
+            program.setUniformMatrix("u_projTrans", new Matrix4(batch.getProjectionMatrix).translate(pos.x + offsetx, pos.y + offsety, 0))
+            mesh.render(program, GL20.GL_TRIANGLE_STRIP)
+            program.end()
           }
         }
         try {
@@ -87,20 +84,20 @@ class CardButton(getDesc: ⇒ Option[CardDesc],
       })
   }
 
-
   def createPoliQuad(x : Float, y : Float, w : Float, h : Float) = {
     val verts = Array[Float](
-      x    , y,
-      x + w, y,
-      x + w, y + h,
-      x    , y,
-      x    , y + h,
-      x + w, y + h)
+      x    , y + h, Color.toFloatBits(255, 255, 255, 255),
+      x    , y    , Color.toFloatBits(255, 255, 255, 255),
+      x + w, y + h, Color.toFloatBits(255, 255, 255, 255),
+      x + w, y    , Color.toFloatBits(255, 255, 255, 255))
 
-    val mesh = new Mesh( true, 6, 0,  // static mesh with 6 vertices and no indices
-      new VertexAttribute( Usage.Position, 2, ShaderProgram.POSITION_ATTRIBUTE ))
+
+    val mesh = new Mesh( true, 4, 4,  // static mesh with 6 vertices and no indices
+      new VertexAttribute( Usage.Position, 2, ShaderProgram.POSITION_ATTRIBUTE ),
+      new VertexAttribute( Usage.ColorPacked, 4, ShaderProgram.COLOR_ATTRIBUTE ))
 
     mesh.setVertices( verts )
+    mesh.setIndices(Array[Short]( 0, 1, 2, 3 ))
     mesh
   }
 
@@ -209,34 +206,3 @@ class CardButton(getDesc: ⇒ Option[CardDesc],
   }*/
 
 }
-
-/**
- * case class TestButton(sp: SpWorld) extends GuiElem {
- * val size = Coord2i(200, 200)//sp.baseTextures.blank.coord
- * val selectedGlow = sp.baseShaders.selectedGlow("test", size.x)
- * def render() {
- * glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
- * glDisable(GL_TEXTURE_2D)
- * glColor4f(1, 1, 1, 1)
- * selectedGlow.used {
- * val deltax = getDelta() / 50f
- * val animLength = 50
- * val animationCursor = deltax % animLength
- * val o = Coord2i(0, 0)
- * glUniform1f(selectedGlow.cursor, animationCursor)
- * glUniform2f(selectedGlow.offset, 0, 0)
- * glBegin(GL_POLYGON)
- * glVertex2f(o.x, o.y)
- * glVertex2f(o.x + size.x,o.y)
- * glVertex2f(o.x + size.x,o.y + size.y)
- * glVertex2f(o.x, o.y + size.y)
- * glEnd()
- * glEnable(GL_TEXTURE_2D)
- * }
- * }
- * override def updateCoord(c : Coord2i){
- * super.updateCoord(c)
- * println("testcoord" + c)
- * }
- * }
- */

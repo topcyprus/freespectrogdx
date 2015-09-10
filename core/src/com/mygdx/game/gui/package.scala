@@ -18,7 +18,6 @@ package object gui {
     group(new VerticalGroup(), actors : _*)
   }
 
-
   case class UpdateAction[A <: Actor](f : A => Unit) extends Action {
 
     def act(delta : Float) = {

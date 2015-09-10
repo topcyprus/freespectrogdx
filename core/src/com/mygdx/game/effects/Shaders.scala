@@ -1,6 +1,7 @@
 package com.mygdx.game.effects
 
 import com.badlogic.gdx.Gdx
+import com.typesafe.config.Config
 
 import collection._
 import com.badlogic.gdx.graphics.glutils.ShaderProgram
@@ -86,14 +87,15 @@ class HoverShader(name: String, resources: ScreenResources) extends Shader {
   }
 }
 
-class SelectedShader(name: String, s: Int) extends Shader {
+class SelectedShader(name: String, config : Config) extends Shader {
   pedantic = false
   val program = Shader create name
-  val size :: cursor :: offset :: _ = getUniformLocations("size", "cursor", "offset")
+  val size :: cursor :: _ = getUniformLocations("size", "cursor")
 
-  used {
-    program.setUniformi(size, s)
-  }
+  val animLength = config getInt "animlength"
+  val sizeConfig = config getInt "size"
+  val offsetx = config getInt "offset.x"
+  val offsety = config getInt "offset.y"
 }
 
 class FadeShader(name: String) extends Shader {

@@ -71,9 +71,9 @@ class CardPanel(playerId: PlayerId, game: SpGame, resources : ScreenResources) {
   def setEnabled(flag: Boolean) {
     cardButtons foreach { btn ⇒
       btn.enabled = flag
-      //lastSelected foreach (_.selected = false)
-      //lastSelected = None
     }
+    lastSelected foreach (_.selected = false)
+    lastSelected = None
   }
 
   var visibleCards = Set.empty[Card]

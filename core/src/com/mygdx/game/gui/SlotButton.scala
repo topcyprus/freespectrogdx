@@ -21,9 +21,12 @@ class SlotButton(val num: Int,
                  resources : ScreenResources)  {
 
   val group = new Group()
-  group.setSize(112, 140)
 
-  val slotImage = new Image(resources.atlas findRegion "combat/slot")
+  val slotRegion = resources.atlas findRegion "combat/slot"
+  group.setSize(slotRegion.getRegionWidth, slotRegion.getRegionHeight)
+  group.setBounds(0, 0, slotRegion.getRegionWidth, slotRegion.getRegionHeight)
+
+  val slotImage = new Image(slotRegion)
   val cardGroup = new Group
 
   group.addActor(slotImage)

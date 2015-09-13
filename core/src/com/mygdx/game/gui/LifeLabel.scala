@@ -9,13 +9,15 @@ import priv.sp.{HouseState, House}
 
 class LifeLabel(name: String, skin : Skin) {
   val panel              = new VerticalGroup()
+  panel.setSize(100, 100)
+  panel.setBounds(0, 0, 100, 100)
+  panel.setDebug(true)
   private val label      = new Label(name, skin)
   private val phaseLabel = new Label("", skin)
 
   label      setColor Color.WHITE
   phaseLabel setColor Color.GRAY
   panel      addActor label
-  panel.setSize(100, 100)
 
   val setPhase : Option[String] => Unit = {
     case None => panel removeActor phaseLabel

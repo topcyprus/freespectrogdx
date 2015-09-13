@@ -74,8 +74,8 @@ class UserGameController(board : Board, commandRecorder : CommandRecorder) exten
   def disableSlots() : Unit = {
     board.slotPanels.foreach(_.disable())
   }
-  def setCardEnabled(enabled : Boolean) : Unit = {
-    board.cardPanels.foreach(_.setEnabled(enabled))
+  def setCardEnabled(player : PlayerId, enabled : Boolean) : Unit = {
+    board.cardPanels(player).setEnabled(enabled)
   }
 
   def notifyPlayed(card : Option[Card]) : Unit = {

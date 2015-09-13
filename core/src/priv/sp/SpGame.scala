@@ -7,7 +7,7 @@ import priv.util.Utils._
 trait SpGameController {
   def endGame(msg : String) : Unit
   def disableSlots() : Unit
-  def setCardEnabled(enabled : Boolean = true) : Unit
+  def setCardEnabled(player : PlayerId, enabled : Boolean = true) : Unit
   def notifyPlayed(card : Option[Card]) : Unit
   def setPhase(player : PlayerId, phase : Option[String]): Unit
   def refresh(silent : Boolean) : Unit
@@ -65,7 +65,7 @@ class SpGame(val server: GameServer, resources: GameResources) {
     if (player == server.playerId) {
       (autoSkip[Option[Option[Command]]](Some(None))
         orElse {
-          controller.setCardEnabled()
+          controller.setCardEnabled(player)
           updater.resetRand()
           gameLock.waitFor[Option[Option[Command]]] { c ⇒
             server.waitNextCommand(c, state)
@@ -115,7 +115,7 @@ class SpGame(val server: GameServer, resources: GameResources) {
      controller.notifyPlayed(commandOption.map(_.card))
 
      if (state.players(player).transitions.isEmpty) {
-       controller.setCardEnabled(false)
+       playerIds.foreach(p => controller.setCardEnabled(p, false))
        controller.setPhase(player, None)
        run(player)
      } else {
@@ -125,7 +125,7 @@ class SpGame(val server: GameServer, resources: GameResources) {
        endOr {
          t match {
            case WaitPlayer(p, name) ⇒
-             if (p != player) controller.setCardEnabled(false)
+             if (p != player) playerIds.foreach(p => controller.setCardEnabled(p, false))
              controller.setPhase(p, Some(name))
              waitPlayer(p)
          }

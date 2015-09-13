@@ -15,12 +15,10 @@ class Board(
 
   panel align Align.right
   panel addActor cardPanels(other(playerId)).panel
-  panel addActor row(
-    userMenu.panel,
-    column(
+  panel addActor column(
       slotPanels(other(playerId)).panel,
-      slotPanels(playerId).panel))
-  panel addActor row(descriptionPanel.panel, cardPanels(playerId).panel)
+      slotPanels(playerId).panel)
+  panel addActor row(column(userMenu.panel,descriptionPanel.panel), cardPanels(playerId).panel)
   panel.pack()
 
   def refresh(silent : Boolean) = {

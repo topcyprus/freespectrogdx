@@ -30,7 +30,6 @@ class CardButton(getDesc: ⇒ Option[CardDesc],
 
   val group = new Group {
 
-    setDebug(true)
     override def draw(batch: Batch, parentAlpha: Float) = {
       if (visible) {
         if (!isActive && visible) {
@@ -46,8 +45,10 @@ class CardButton(getDesc: ⇒ Option[CardDesc],
 
   }
 
-  group.setSize(90, 102)
-  group.setBounds(0, 0, 90, 102)
+  val raka = resources.atlas findRegion "combat/raka"
+
+  group.setSize(raka.getRegionWidth, raka.getRegionHeight)
+  group.setBounds(0, 0, raka.getRegionWidth, raka.getRegionHeight)
 
   refresh()
 

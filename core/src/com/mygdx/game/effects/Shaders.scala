@@ -1,6 +1,8 @@
 package com.mygdx.game.effects
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.graphics.VertexAttributes.Usage
+import com.badlogic.gdx.graphics.{VertexAttribute, Mesh, Color}
 import com.typesafe.config.Config
 
 import collection._
@@ -96,6 +98,26 @@ class SelectedShader(name: String, config : Config) extends Shader {
   val sizeConfig = config getInt "size"
   val offsetx = config getInt "offset.x"
   val offsety = config getInt "offset.y"
+
+  val mesh = createPoliQuad(offsetx, offsety, sizeConfig, sizeConfig)
+
+  def createPoliQuad(x : Float, y : Float, w : Float, h : Float) = {
+    val verts = Array[Float](
+      x    , y + h, Color.toFloatBits(255, 255, 255, 128),
+      x    , y    , Color.toFloatBits(255, 255, 255, 128),
+      x + w, y + h, Color.toFloatBits(255, 255, 255, 128),
+      x + w, y    , Color.toFloatBits(255, 255, 255, 128))
+
+
+    val mesh = new Mesh( true, 4, 4,  // static mesh with 6 vertices and no indices
+      new VertexAttribute( Usage.Position, 2, ShaderProgram.POSITION_ATTRIBUTE ),
+      new VertexAttribute( Usage.ColorPacked, 4, ShaderProgram.COLOR_ATTRIBUTE ))
+
+    mesh.setVertices( verts )
+    mesh.setIndices(Array[Short]( 0, 1, 2, 3 ))
+    mesh
+  }
+
 }
 
 class FadeShader(name: String) extends Shader {

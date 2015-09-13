@@ -12,5 +12,5 @@ void main()
   float color1 = 1/(1 + 5* length(p) + cos(alpha*20 + cursor/5));
   float color2 = 1/(1 + 10* length(p) + cos(alpha*10 + cursor/5));
   float color = (clamp(pow(color1 + color2, 3), 0.1, 1) - 0.1) * 1.1;
-  gl_FragColor = vec4(color, color, color, 1);
+  gl_FragColor = vec4(color, color, color, 0.5);
 }

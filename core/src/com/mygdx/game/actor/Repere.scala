@@ -13,7 +13,7 @@ class Repere(resources : ScreenResources) extends Actor {
   val repere = createRepere()
 
   override def draw(batch : Batch, parentAlpha : Float): Unit = {
-    val repereShader =  resources.shaders.repere
+    val repereShader =  resources.effectResources.repere
     import repereShader.program
 
     batch.disableBlending()

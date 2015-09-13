@@ -4,6 +4,13 @@ import java.io._
 
 object Utils {
 
+  def memo[A, B](f : A => B) = {
+    val m = collection.mutable.Map.empty[A, B]
+
+    { k : A =>
+      m.getOrElseUpdate(k, f(k))
+    }
+  }
 
   def toBytes(o: AnyRef) = {
     val bos = new ByteArrayOutputStream()

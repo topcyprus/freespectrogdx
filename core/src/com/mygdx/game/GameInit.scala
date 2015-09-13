@@ -116,6 +116,7 @@ private class GameUpdateListener(board : Board, spGame : SpGame) extends UpdateL
   }
   def runSlot(num: Int, playerId: PlayerId) {
     val slotButton = slotPanels(playerId).slots(num)
+    waitAction(slotButton.run())
     //spawn(Running(slotButton.location, slotButton.direction), blocking = true)
   }
   def summon(num: Int, slot: SlotState, playerId: PlayerId) {

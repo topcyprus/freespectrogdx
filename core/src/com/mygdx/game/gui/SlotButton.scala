@@ -16,14 +16,19 @@ case class SlotCardActors(slotState : SlotState, cardActors : CardActors) {
 class SlotButton(val num: Int,
                  playerId: PlayerId,
                  getInfo: ⇒ (Option[SlotState], Boolean),
-                 spWorld : SpWorld,
+                 game : SpGame,
                  resources : ScreenResources)  {
 
   val group = new Group()
   group.setSize(112, 140)
 
   val slotImage = new Image(resources.atlas findRegion "combat/slot")
+  val cardGroup = new Group
+
   group.addActor(slotImage)
+  group.addActor(cardGroup)
+  cardGroup.setX(15)
+  cardGroup.setY(15)
 
   var info = getInfo
   var enabled = false
@@ -37,43 +42,71 @@ class SlotButton(val num: Int,
         info = getInfo
         val (slotStateOption, isExisting) = info
         slotImage setVisible isExisting
-        if (group.getChildren.size > 1) {
-          group.getChildren.removeRange(1, group.getChildren.size -1) // skip slotImage
-        }
+        if (isExisting) {
+        cardGroup.clearChildren()
         slotStateOption foreach { s =>
-          val cardActors = new SlotCardActors(s, new CardActors(s.card, spWorld.houses.getHouseById(s.card.houseId), resources))
-          cardActors.actors foreach group.addActor
-        }})
+          val cardActors = new SlotCardActors(s, new CardActors(s.card, game.sp.houses.getHouseById(s.card.houseId), resources))
+          cardActors.actors foreach cardGroup.addActor
+        }}
+      })
   }
 
   def focus(): Actor = {
-    group setTransform true
-    group addAction new Focus
-    group addAction UpdateAction[Group](_.setTransform(false))
-    group
+    cardGroup addAction new Focus
+    cardGroup
+  }
+
+  val direction = if (playerId == game.myPlayerId) 1 else -1
+  def run(): Actor = {
+    cardGroup addAction new Run(direction, resources.config.getDouble("card.run.duration").toFloat)
+    cardGroup
   }
 
   def fade() : Actor = {
     val action = new AlphaAction
-    action setDuration 100
+    action setDuration 0.1f
     action setAlpha 0
-    group addAction action
-    group
+    cardGroup addAction action
+    cardGroup
   }
 
-  class Focus extends TemporalAction {
-    private var start: Float = 0f
-    private val amplitude = 0.05
-    setDuration(500)
+}
 
-    protected override def begin() {
-      start = target.getScaleX
-    }
+class Focus extends TemporalAction {
+  private var start: Float = 0f
+  private val amplitude = 0.05
+  setDuration(0.5f)
 
-    protected def update(percent: Float) = {
-      val delta = amplitude * math.sin(percent * math.Pi)
-      target.setScale(1 + delta.toFloat)
-    }
+  protected override def begin() {
+    start = target.getScaleX
+  }
+
+  protected def update(percent: Float) = {
+    val delta = amplitude * math.sin(percent * math.Pi)
+    target.setScale(1 + delta.toFloat)
+  }
+
+  protected override def end(): Unit = {
+    target.setScale(start)
+  }
+}
+
+
+class Run(direction: Int, duration : Float) extends TemporalAction {
+  private var start: Float = 0f
+  private val amplitude = 10
+  setDuration(duration)
+
+  protected override def begin() {
+    start = target.getY()
+  }
+
+  protected def update(percent: Float) = {
+    target.setY(start + (amplitude * direction * (0.5f - math.abs(0.5f - percent))))
+  }
+
+  protected override def end(): Unit = {
+    target.setY(start)
   }
 }
 

@@ -16,7 +16,7 @@ class SlotPanel(playerId: PlayerId, val game: SpGame,  resources : ScreenResourc
       {
         val p = game.state.players(playerId)
         (p.slots get num, p.slotList contains num)
-      }, game.sp, resources)).toList
+      }, game, resources)).toList
   val elts : List[Actor] = lifeLabel.panel :: /**testButton ::: */ slots.map(_.group)
 
   //def testButton = (if (playerId == game.myPlayerId) List(TestButton(game.sp)) else Nil)

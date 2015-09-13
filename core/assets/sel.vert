@@ -1,4 +1,5 @@
 
+uniform sampler2D u_texture;
 attribute vec4 a_position;
 
 uniform mat4 u_projTrans;

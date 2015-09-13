@@ -28,18 +28,6 @@ class GameScreen(game :Game) extends ScreenAdapter {
 
   screenResources.stage addActor repere
 
-
-  init()
-
-  def init(){
-    import GL20._
-    Gdx.gl.glDisable(GL_DEPTH_TEST)
-    Gdx.gl.glDisable(GL20.GL_CULL_FACE)
-    Gdx.gl.glEnable(GL_BLEND)
-    Gdx.gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
-    Gdx.gl.glClearColor(0f, 0f, 0f, 0f)
-  }
-
   override def render (delta : Float): Unit = {
     import screenResources._
     Gdx.gl glClear GL20.GL_COLOR_BUFFER_BIT
@@ -71,14 +59,15 @@ class ScreenResources {
   val stage    = new Stage()
   val batch    = stage.getBatch
   //stage.getViewport.setCamera(new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()))
-  stage.getViewport.getCamera.asInstanceOf[OrthographicCamera].setToOrtho(false,Gdx.graphics.getWidth(), Gdx.graphics.getHeight())
+  //stage.getViewport.getCamera.asInstanceOf[OrthographicCamera].setToOrtho(false,Gdx.graphics.getWidth(), Gdx.graphics.getHeight())
 
   val renderer = new ShapeRenderer()
   val atlas    = new TextureAtlas(Gdx.files.internal("pack/images.pack.atlas"))
   val skin     = new Skin(Gdx.files.internal("data/uiskin.json"))
+  lazy val shapes = new ShapeRenderer()
 
   var config   = loadConfig()
-  var shaders = new BaseShaders(new Shaders, this)
+  var effectResources = new EffectResources(new Shaders, this)
 
   Gdx.input setInputProcessor stage
 
@@ -86,14 +75,14 @@ class ScreenResources {
     try {
       ConfigFactory.invalidateCaches()
       config = loadConfig()
-      val old = shaders
-      shaders = new BaseShaders(new Shaders, this)
+      val old = effectResources
+      effectResources = new EffectResources(new Shaders, this)
       old.shaders.clean()
     } catch { case NonFatal(t) => t.printStackTrace() }
   }
 
   def dispose(): Unit ={
-    shaders.shaders.clean()
+    effectResources.shaders.clean()
     stage.dispose()
     batch.dispose()
     renderer.dispose()
@@ -104,7 +93,7 @@ class ScreenResources {
   def loadConfig() = ConfigFactory.parseFile(Gdx.files.internal("application.conf").file())
 }
 
-class BaseShaders(val shaders: Shaders, resources: ScreenResources) {
+class EffectResources(val shaders: Shaders, resources: ScreenResources) {
 
   /**val hoverGlow = shaders.getOrElseUpdate("hoverglow", _ ⇒ new HoverShader("nz", resources))
   val fade = shaders.getOrElseUpdate("fade", _ ⇒ new FadeShader("fade"))
@@ -112,5 +101,5 @@ class BaseShaders(val shaders: Shaders, resources: ScreenResources) {
   val grey     = shaders get "grey"
   val test     = shaders get "test"
   val repere   = shaders get "repere"
-  val selected = shaders.getOrElseUpdate("sel", _ ⇒ new SelectedShader("sel", resources.config.getConfig("shaders.sel")))
+  val selected = shaders.getOrElseUpdate("sel", _ ⇒ new SelectedShader("sel", resources.config.getConfig("card.selection")))
 }

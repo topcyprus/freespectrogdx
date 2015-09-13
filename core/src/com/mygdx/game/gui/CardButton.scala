@@ -1,11 +1,12 @@
 package com.mygdx.game.gui
 
-import com.badlogic.gdx.graphics.VertexAttributes.Usage
-import com.badlogic.gdx.graphics.{Color, VertexAttribute, Mesh, GL20}
+import java.util.concurrent.atomic.AtomicBoolean
+
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType
+import com.badlogic.gdx.graphics.{Color, GL20}
 import com.badlogic.gdx.graphics.g2d.Batch
-import com.badlogic.gdx.graphics.glutils.ShaderProgram
 import com.badlogic.gdx.math.{Matrix4, Vector2}
-import com.badlogic.gdx.scenes.scene2d.Group
+import com.badlogic.gdx.scenes.scene2d.{Actor, Group}
 import com.mygdx.game.ScreenResources
 import priv.sp._
 
@@ -19,56 +20,34 @@ class CardButton(getDesc: ⇒ Option[CardDesc],
                  houseDesc : PlayerHouseDesc,
                  resources : ScreenResources)  {
 
-  val group = new Group {
-    var time = 0f
-    val seletectedShader = resources.shaders.selected
-    val mesh = createPoliQuad(seletectedShader.offsetx, seletectedShader.offsety, seletectedShader.sizeConfig, seletectedShader.sizeConfig)
+  var cardActorsOption = getDesc.map(d ⇒ CardButtonActors(d, getHouseState, new CardActors(d.card, houseDesc.house, resources)))
 
+  var visible  = false
+  var enabled  = false
+  var selected = false
+  var hovered  = false
+  def isActive = cardActorsOption.exists(_.isActive && enabled)
+
+  val group = new Group {
+
+    setDebug(true)
     override def draw(batch: Batch, parentAlpha: Float) = {
       if (visible) {
-
         if (!isActive && visible) {
-          batch.setShader(resources.shaders.grey.program)
-        } else {
-          if (selected) {
-
-            import seletectedShader._
-
-            val deltax = time * 10
-            val animationCursor = deltax % animLength
-
-            program.begin()
-            program.setUniformf(cursor, animationCursor)
-            program.setUniformf(size, seletectedShader.sizeConfig)
-            val pos = localToStageCoordinates(new Vector2)
-            program.setUniformMatrix("u_projTrans", new Matrix4(batch.getProjectionMatrix).translate(pos.x + offsetx, pos.y + offsety, 0))
-            mesh.render(program, GL20.GL_TRIANGLE_STRIP)
-            program.end()
-          }
+          batch.setShader(resources.effectResources.grey.program)
         }
         try {
-          super.draw(batch,parentAlpha)
+          super.draw(batch, parentAlpha)
         } finally {
           if (batch.getShader != null) batch.setShader(null)
         }
       }
     }
 
-    override def act(delta : Float): Unit = {
-      super.act(delta)
-      time += delta
-    }
   }
+
   group.setSize(90, 102)
   group.setBounds(0, 0, 90, 102)
-
-
-  var cardActorsOption = getDesc.map(d ⇒ CardButtonActors(d, getHouseState, new CardActors(d.card, houseDesc.house, resources)))
-
-  var visible = false
-  var enabled = false
-  var selected = false
-  def isActive = cardActorsOption.exists(_.isActive && enabled)
 
   refresh()
 
@@ -78,31 +57,68 @@ class CardButton(getDesc: ⇒ Option[CardDesc],
         group.clearChildren()
         if (visible) {
           cardActorsOption foreach { cardActors =>
+            group addActor selectEffectActor
             cardActors.cardActors.actors foreach group.addActor
           }
         }
       })
   }
 
-  def createPoliQuad(x : Float, y : Float, w : Float, h : Float) = {
-    val verts = Array[Float](
-      x    , y + h, Color.toFloatBits(255, 255, 255, 255),
-      x    , y    , Color.toFloatBits(255, 255, 255, 255),
-      x + w, y + h, Color.toFloatBits(255, 255, 255, 255),
-      x + w, y    , Color.toFloatBits(255, 255, 255, 255))
+  private val selectEffectActor = new Actor {
+    var time = 0f
+    val seletectedShader = resources.effectResources.selected
 
+    var absoluteProjMatric : Matrix4 = _
+    // matrix for selection shader
+    var absoluteSelProjMatric : Matrix4 = _
 
-    val mesh = new Mesh( true, 4, 4,  // static mesh with 6 vertices and no indices
-      new VertexAttribute( Usage.Position, 2, ShaderProgram.POSITION_ATTRIBUTE ),
-      new VertexAttribute( Usage.ColorPacked, 4, ShaderProgram.COLOR_ATTRIBUTE ))
+    override def draw(batch: Batch, parentAlpha: Float) = {
+      if (visible) {
+        initStatics(batch)
+        if (selected) {
+          import seletectedShader._
+          val deltax = time * 10
+          val animationCursor = deltax % animLength
 
-    mesh.setVertices( verts )
-    mesh.setIndices(Array[Short]( 0, 1, 2, 3 ))
-    mesh
+          program.begin()
+          program.setUniformf(cursor, animationCursor)
+          program.setUniformf(size, seletectedShader.sizeConfig)
+          program.setUniformMatrix("u_projTrans", absoluteSelProjMatric)
+          mesh.render(program, GL20.GL_TRIANGLE_STRIP)
+          program.end()
+          batch.setShader(null) // why the fuck
+        } else if (isActive && hovered) {
+// todo
+        }
+      } else if (cardActorsOption.isDefined) {
+        import resources.shapes
+        shapes.begin(ShapeType.Filled)
+        shapes.setProjectionMatrix(absoluteProjMatric)
+        shapes.setColor(Color.DARK_GRAY)
+        shapes.rect(0, 0, 85 ,97)
+        shapes.end()
+        batch.setShader(null)
+      }
+    }
+
+    val initialized = new AtomicBoolean()
+    def initStatics(batch : Batch): Unit = {
+      if (initialized.compareAndSet(false, true)) {
+        val pos = localToStageCoordinates(new Vector2)
+        absoluteSelProjMatric = new Matrix4(batch.getProjectionMatrix)
+          .translate(pos.x + seletectedShader.offsetx, pos.y +seletectedShader.offsety, 0f)
+        absoluteProjMatric = new Matrix4(batch.getProjectionMatrix)
+          .translate(pos.x, pos.y, 0f)
+      }
+    }
+
+    override def act(delta : Float): Unit = {
+      super.act(delta)
+      time += delta
+    }
   }
 
-  /**import game.sp
-
+  /**
   var holder = getDesc.map(d ⇒ new CardHolder(d, getHouseState))
   val size = holder.map(_.borderTex).getOrElse(sp.baseTextures.borderTex).size
   private var hovered = false
@@ -146,53 +162,7 @@ class CardButton(getDesc: ⇒ Option[CardDesc],
             tex.draw(sp.baseTextures.cardGlow)
           }
           glPopMatrix()
-        } else if (selected) {
-          val o = Coord2i(size.x / 2 - 100, size.y / 2 - 100)
-          glDisable(GL_TEXTURE_2D)
-          selectedGlow.used {
-            val deltax = getDelta() / 100f
-            val animLength = 62
-            val animationCursor = deltax % animLength
-            glUniform1f(selectedGlow.cursor, animationCursor)
-            glUniform2f(selectedGlow.offset, o.x, o.y)
-            glBegin(GL_POLYGON)
-            glVertex2f(o.x, o.y)
-            glVertex2f(o.x + 200, o.y)
-            glVertex2f(o.x + 200, o.y + 200)
-            glVertex2f(o.x, o.y + 200)
-            glEnd()
-            glEnable(GL_TEXTURE_2D)
-          }
         }
-
-        glPushMatrix()
-        if (h.desc.card.isSpell) glTranslatef(-1, -1, 0) else glTranslatef(3, 8, 0)
-        tex.draw(h.cardTex)
-        glPopMatrix()
-
-        tex.draw(h.borderTex)
-
-        h.desc.card match {
-          case spell: Spell ⇒
-            Fonts.font.draw(72, 9, h.desc.cost, 'blue)
-          case creature: Creature ⇒
-            Fonts.font.draw(72, 1, h.desc.cost, 'blue)
-            Fonts.font.draw(4, 80, creature.attack.base.map(_.toString) getOrElse "?", 'red)
-            Fonts.font.draw(70, 80, creature.life, 'green)
-        }
-        if (!isActive) grey.end()
-      }
-    } else {
-      if (holder.isDefined) {
-        glDisable(GL_TEXTURE_2D)
-        glColor4f(0.1f, 0.1f, 0.1f, 1)
-        glBegin(GL_POLYGON)
-        glVertex2f(0, 0)
-        glVertex2f(85, 0)
-        glVertex2f(85, 97)
-        glVertex2f(0, 97)
-        glEnd()
-        glEnable(GL_TEXTURE_2D)
       }
     }
   }

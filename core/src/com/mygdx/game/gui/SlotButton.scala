@@ -4,6 +4,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.{AlphaAction, TemporalAction}
 import com.badlogic.gdx.scenes.scene2d.{Actor, Group}
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.mygdx.game.ScreenResources
+import com.typesafe.config.Config
 import priv.sp._
 
 case class SlotCardActors(slotState : SlotState, cardActors : CardActors) {
@@ -58,7 +59,7 @@ class SlotButton(val num: Int,
 
   val direction = if (playerId == game.myPlayerId) 1 else -1
   def run(): Actor = {
-    cardGroup addAction new Run(direction, resources.config.getDouble("card.run.duration").toFloat)
+    cardGroup addAction new Run(direction, resources.config.getConfig("card.run"))
     cardGroup
   }
 
@@ -73,8 +74,8 @@ class SlotButton(val num: Int,
 }
 
 class Focus extends TemporalAction {
-  private var start: Float = 0f
-  private val amplitude = 0.05
+  var start: Float = 0f
+  val amplitude = 0.05
   setDuration(0.5f)
 
   protected override def begin() {
@@ -91,10 +92,10 @@ class Focus extends TemporalAction {
   }
 }
 
-
-class Run(direction: Int, duration : Float) extends TemporalAction {
-  private var start: Float = 0f
-  private val amplitude = 10
+class Run(direction: Int, config : Config) extends TemporalAction {
+  var start: Float = 0f
+  val amplitude = config.getDouble("amplitude").toFloat
+  val duration = config.getDouble("duration").toFloat
   setDuration(duration)
 
   protected override def begin() {

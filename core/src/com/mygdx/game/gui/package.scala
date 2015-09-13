@@ -1,5 +1,6 @@
 package com.mygdx.game
 
+import com.badlogic.gdx.scenes.scene2d.actions.AfterAction
 import com.badlogic.gdx.scenes.scene2d.{Action, Actor}
 import com.badlogic.gdx.scenes.scene2d.ui.{WidgetGroup, VerticalGroup, HorizontalGroup}
 
@@ -42,7 +43,9 @@ package object gui {
 
   def promAction(actor : Actor) : Promise[Unit] = {
     val prom = new PromiseAction
-    actor addAction prom
+    val afterAction = new AfterAction()
+    actor addAction afterAction
+    afterAction.setAction(prom)
     prom.prom
   }
 

@@ -1,13 +1,13 @@
 package com.mygdx.game.gui
 
 import com.badlogic.gdx.scenes.scene2d.Actor
-import com.badlogic.gdx.scenes.scene2d.ui.{ HorizontalGroup}
+import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup
+import com.badlogic.gdx.utils.Align
 import com.mygdx.game._
 import priv.sp._
 
 class SlotPanel(playerId: PlayerId, val game: SpGame,  resources : ScreenResources) {
-  val lifeLabel = new LifeLabel(game.names(playerId), resources.skin)
-  //, new DamagableInt(game.state.players(playerId).life, game), game)
+  val lifeLabel = new LifeLabel(game.names(playerId), game.state.players(playerId).life, resources.skin)
   val slots =
     baseSlotRange.map(num ⇒
       new SlotButton(
@@ -17,14 +17,7 @@ class SlotPanel(playerId: PlayerId, val game: SpGame,  resources : ScreenResourc
         val p = game.state.players(playerId)
         (p.slots get num, p.slotList contains num)
       }, game, resources)).toList
-  val elts : List[Actor] = lifeLabel.panel :: /**testButton ::: */ slots.map(_.group)
-
-  //def testButton = (if (playerId == game.myPlayerId) List(TestButton(game.sp)) else Nil)
-/**
-  val slotOffset = Coord2i(lifeLabel.size.x, 0)
-  val slotSize = slots(0).size
-  val slotCenter = slotSize * 0.5
-  */
+  val elts : List[Actor] = lifeLabel.panel :: slots.map(_.group)
 
   val panel = new HorizontalGroup()
   elts foreach panel.addActor
@@ -38,7 +31,7 @@ class SlotPanel(playerId: PlayerId, val game: SpGame,  resources : ScreenResourc
         }
       })
     }
-    slots.foreach(listenEvent _)
+    slots foreach listenEvent
   }
 
   //def otherPanel = board.slotPanels(other(playerId))
@@ -49,7 +42,7 @@ class SlotPanel(playerId: PlayerId, val game: SpGame,  resources : ScreenResourc
   }
   def disable() { slots foreach (_.enabled = false) }
   def refresh() {
-    //lifeLabel.life.refresh()
+    lifeLabel.lifeLabel.refresh()
     slots foreach (_.refresh())
   }
 }

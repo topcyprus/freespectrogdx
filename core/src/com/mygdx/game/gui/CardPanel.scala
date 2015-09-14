@@ -44,7 +44,7 @@ class CardPanel(playerId: PlayerId, game: SpGame, resources : ScreenResources) {
 
 
   val panel = new Table
-  val houseActors : Seq[Actor] = houseCardButtons map { case (houseLabel, _) => houseLabel.label}
+  val houseActors : Seq[Actor] = houseCardButtons map { case (houseLabel, _) => houseLabel.panel }
   val cardActors : List[Seq[Actor]] = (0 to 3).map { i =>
     val cards :Seq[CardButton] = houseCardButtons.map{_._2(i)}
     cards.map(_.group : Actor)
@@ -59,7 +59,7 @@ class CardPanel(playerId: PlayerId, game: SpGame, resources : ScreenResources) {
   panel.pack()
 
   def refresh(silent : Boolean): Unit ={
-    //houseLabels foreach (_.mana.refresh(silent))
+    houseLabels foreach (_.manaLabel.refresh(silent))
     cardButtons foreach (_.refresh())
     cardButtons foreach { cb ⇒
       cb.visible = (playerId == game.myPlayerId

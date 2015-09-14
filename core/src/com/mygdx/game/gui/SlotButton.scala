@@ -1,17 +1,60 @@
 package com.mygdx.game.gui
 
+import com.badlogic.gdx.graphics.Color
+import com.badlogic.gdx.graphics.g2d.Batch
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType
 import com.badlogic.gdx.scenes.scene2d.actions.{AlphaAction, TemporalAction}
 import com.badlogic.gdx.scenes.scene2d.{Actor, Group}
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.mygdx.game.ScreenResources
 import com.typesafe.config.Config
 import priv.sp._
+import priv.sp.house.{Hird, MereMortal}
 
-case class SlotCardActors(slotState : SlotState, cardActors : CardActors) {
+case class SlotCardActors(slotState : SlotState, cardActors : CardActors, game : SpGame) {
   val lifeLabel = cardActors.labels(2)
   lifeLabel.setText(slotState.life.toString)
 
-  def actors = cardActors.actors
+  def actors = cardActors.actors ++ (lifeBar :: decorateStatus(slotState).toList)
+
+  def decorateStatus(s: SlotState) = {
+    def imageOf(name : String) = new Image(cardActors.resources.atlas findRegion ("combat/" + name))
+    def cornerImageOf(name : String) = {
+      val image = imageOf(name)
+      image.setPosition(40, 40)
+      image
+    }
+
+    if      ( s has CardSpec.blockedFlag )     Some(imageOf("crystalize"))
+    else if ( s has CardSpec.stunFlag )        Some(imageOf("sand"))
+    else if ( s.card.isInstanceOf[MereMortal]) Some(imageOf("mortal"))
+    else if ( s has CardSpec.invincibleFlag )  Some(cornerImageOf("shield"))
+    else if ( s has CardSpec.cursedFlag )      Some(cornerImageOf("death"))
+    else if ( s.card.houseId == game.sp.houses.moutainKing.MoutainKing.houseId && slotState.data == Hird) Some(cornerImageOf("hird"))
+    else None
+  }
+
+
+  def lifeBar = new Actor {
+
+    // HORROR
+    override def draw(batch: Batch, parentAlpha: Float) = {
+      import cardActors.resources.shapes
+      batch.end()
+      batch.begin()
+      shapes.setProjectionMatrix(getAbsoluteProjMatrix(this, batch))
+      shapes.begin(ShapeType.Filled)
+      shapes.scale(getScaleX, getScaleY, 1)
+      shapes.setColor(0.2f, 0.6f, 0.2f, 0.6f)
+      val w = 66f * slotState.life / math.max(slotState.life, slotState.card.life)
+      val h = 7f
+      shapes.rect(0f, cardActors.borderTex.getRegionHeight - h , w, h)
+      shapes.flush()
+      shapes.end()
+      batch.end()
+      batch.begin()
+    }
+  }
 }
 
 class SlotButton(val num: Int,
@@ -31,6 +74,7 @@ class SlotButton(val num: Int,
 
   group.addActor(slotImage)
   group.addActor(cardGroup)
+  group.addActor(new EnabledActor)
   cardGroup.setX(15)
   cardGroup.setY(15)
 
@@ -47,11 +91,18 @@ class SlotButton(val num: Int,
         val (slotStateOption, isExisting) = info
         slotImage setVisible isExisting
         if (isExisting) {
-        cardGroup.clearChildren()
-        slotStateOption foreach { s =>
-          val cardActors = new SlotCardActors(s, new CardActors(s.card, game.sp.houses.getHouseById(s.card.houseId), resources))
-          cardActors.actors foreach cardGroup.addActor
-        }}
+          cardGroup.clearChildren()
+          slotStateOption foreach { slotState =>
+            val cardActors = new SlotCardActors(
+              slotState,
+              new CardActors(slotState.card, game.sp.houses.getHouseById(slotState.card.houseId), resources),
+              game)
+            cardActors.actors foreach cardGroup.addActor
+
+            if (slotState has CardSpec.pausedFlag) {
+              group.getColor.a = 0.5f
+            }
+          }}
       })
   }
 
@@ -72,6 +123,23 @@ class SlotButton(val num: Int,
     action setAlpha 0
     cardGroup addAction action
     cardGroup
+  }
+
+  class EnabledActor extends Actor with StaticAbsoluteProjMatrix {
+
+    override def draw(batch: Batch, parentAlpha: Float) = {
+      if (enabled) {
+        init(batch)
+        import resources.shapes
+        shapes.begin(ShapeType.Line)
+        shapes.setProjectionMatrix(absoluteProjMatrix)
+        shapes.setColor(Color.GREEN)
+        val centerx = slotRegion.getRegionWidth / 2
+        shapes.circle(centerx, slotRegion.getRegionHeight / 2, 40, 40)
+        shapes.end()
+        batch.setShader(null)
+      }
+    }
   }
 
 }
@@ -238,17 +306,6 @@ extends GuiElem with Damagable {
     glEnable(GL_TEXTURE_2D)
   }
 
-  def decorateStatus(s: SlotState) {
-    if (s has CardSpec.blockedFlag) {
-      tex.drawAt(stunPos, crystalTex.id, crystalTex.size)
-    } else if (s has CardSpec.stunFlag) {
-      tex.drawAt(stunPos, stunTex.id, stunTex.size)
-    } else if (s has CardSpec.invincibleFlag) {
-      tex draw shieldTex
-    } else if (s has CardSpec.cursedFlag) {
-      tex draw deathTex
-    }
-  }
 
   def summon(start: Coord2i, s: SlotState) = {
     location.c = start - coord

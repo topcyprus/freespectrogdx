@@ -2,22 +2,23 @@ package com.mygdx.game.gui
 
 
 import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.scenes.scene2d.{Action, Group, Actor}
-import com.badlogic.gdx.scenes.scene2d.actions.{VisibleAction, MoveToAction}
+import com.badlogic.gdx.scenes.scene2d.Group
+import com.badlogic.gdx.scenes.scene2d.actions.{TemporalAction, MoveToAction}
 import com.badlogic.gdx.scenes.scene2d.ui.{VerticalGroup, Skin, Label}
-import priv.sp.{HouseState, House}
+import priv.sp.House
 
-class LifeLabel(name: String, skin : Skin) {
-  val panel              = new VerticalGroup()
-  panel.setSize(100, 100)
-  panel.setBounds(0, 0, 100, 100)
-  panel.setDebug(true)
-  private val label      = new Label(name, skin)
-  private val phaseLabel = new Label("", skin)
+class LifeLabel(name: String, getLife : => Int, skin : Skin) {
+  val panel = new VerticalGroup()
+
+  val label      = new Label(name + " ", skin)
+  val lifeLabel  = new DamagableInt(getLife, skin)
+  val phaseLabel = new Label("", skin)
 
   label      setColor Color.WHITE
   phaseLabel setColor Color.GRAY
-  panel      addActor label
+  panel      addActor row(label, lifeLabel.panel)
+
+  panel.setDebug(true)
 
   val setPhase : Option[String] => Unit = {
     case None => panel removeActor phaseLabel
@@ -25,26 +26,15 @@ class LifeLabel(name: String, skin : Skin) {
       phaseLabel setText s
       panel addActor phaseLabel
   }
-
 }
 
 
 class HouseLabel(getMana : => Int, house: House, skin : Skin, flip: Boolean = false) {
-  val label = new Label("", skin)
-  //val size = Coord2i(102, 54)
+  val label = new Label(house.name + " ", skin)
   val direction = if (flip) -1 else 1
-  val legend = house.name + " : " + getMana
-  label setText legend
-
-  def refresh() {
-    label setText (house.name + " : " + getMana)
-    //glColor4f(1, 1, 1, 1)
-    //Fonts.font.draw(offset, 22, legend + mana.current, 'white)
-    //label setText legend + mana.current
-    /**mana.getDamageAnimOpt foreach { anim ⇒
-      Fonts.font.draw(20, 22 - direction * (10 + anim.delta(world.time)), anim.text, anim.color)
-    }*/
-  }
+  val manaLabel = new DamagableInt(getMana, skin, if (flip) -1 else 1)
+  val panel = row(label, manaLabel.panel)
+  panel.setSize(100, 100)
 
   /**on {
     case MouseMoved(_) ⇒
@@ -55,33 +45,42 @@ class HouseLabel(getMana : => Int, house: House, skin : Skin, flip: Boolean = fa
 }
 
 
-class DamagableInt(getValue: ⇒ Int, skin : Skin, group : Group, direction : Int = 1)  {
+class DamagableInt(getValue: ⇒ Int, skin : Skin, direction : Int = 1)  {
   var current = getValue
-
-  val label = new Label("", skin)
-  label.setVisible(false)
-  group.addActor(label)
-
-  val visibleFalse = new VisibleAction()
-  visibleFalse.setVisible(false)
-
-  val visibleTrue = new VisibleAction()
-  visibleFalse.setVisible(true)
+  val label = new Label(current.toString, skin)
+  val panel = new Group
+  panel.addActor(label)
 
   def refresh(silent: Boolean = false) {
     val old = current
     current = getValue
+    label.setText(current.toString)
     val d = current - old
     if (d != 0 && !silent) {
-      label addAction UpdateAction[Label](_.setText(d.toString))
-      label addAction visibleTrue
-      val action = new MoveToAction()
-      action.setPosition(0, 20 * direction)
-      action setDuration 1000
-      label addAction action
-      label addAction visibleFalse
+      panel.addAction(new DamageAction(d, panel, skin, direction))
     }
   }
+}
 
+
+class DamageAction(d : Int, group : Group, skin : Skin, direction : Int = 1) extends TemporalAction {
+  setDuration(1f)
+  val damageLabel = new Label(if (d>0) "+"+d else d.toString, skin)
+  damageLabel.setColor(if (d > 0) Color.GREEN else Color.RED)
+
+  protected override def begin() {
+    group.addActor(damageLabel)
+    val moveAction = new MoveToAction()
+    moveAction.setPosition(0, 20 * direction)
+    moveAction setDuration 1f
+    damageLabel addAction moveAction
+  }
+
+  protected def update(percent: Float) = {
+  }
+
+  protected override def end(): Unit = {
+    group.removeActor(damageLabel)
+  }
 }
 

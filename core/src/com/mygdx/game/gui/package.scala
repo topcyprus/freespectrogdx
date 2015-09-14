@@ -1,5 +1,7 @@
 package com.mygdx.game
 
+import com.badlogic.gdx.graphics.g2d.Batch
+import com.badlogic.gdx.math.{Matrix4, Vector2}
 import com.badlogic.gdx.scenes.scene2d.actions.AfterAction
 import com.badlogic.gdx.scenes.scene2d.{Action, Actor}
 import com.badlogic.gdx.scenes.scene2d.ui.{WidgetGroup, VerticalGroup, HorizontalGroup}
@@ -58,6 +60,10 @@ package object gui {
     }
   }
 
+  def getAbsoluteProjMatrix(actor : Actor, batch : Batch) = {
+    val pos = actor.localToStageCoordinates(new Vector2)
+    new Matrix4(batch.getProjectionMatrix).translate(pos.x, pos.y, 0f)
+  }
 
   private def group[G <: WidgetGroup](g : G, actors : Actor*) = {
     actors foreach g.addActor

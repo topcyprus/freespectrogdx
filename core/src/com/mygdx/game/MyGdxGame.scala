@@ -1,7 +1,10 @@
 package com.mygdx.game
 
-import com.badlogic.gdx.graphics.{Color, OrthographicCamera, GL20}
-import com.badlogic.gdx.graphics.g2d.{TextureAtlas, SpriteBatch}
+import com.badlogic.gdx.graphics.Texture.TextureFilter
+
+import collection.JavaConverters._
+import com.badlogic.gdx.graphics.{Color, GL20}
+import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
@@ -58,9 +61,6 @@ class GameScreen(game :Game) extends ScreenAdapter {
 class ScreenResources {
   val stage    = new Stage()
   val batch    = stage.getBatch
-  //stage.getViewport.setCamera(new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()))
-  //stage.getViewport.getCamera.asInstanceOf[OrthographicCamera].setToOrtho(false,Gdx.graphics.getWidth(), Gdx.graphics.getHeight())
-
   val renderer = new ShapeRenderer()
   val atlas    = new TextureAtlas(Gdx.files.internal("pack/images.pack.atlas"))
   val skin     = new Skin(Gdx.files.internal("data/uiskin.json"))
@@ -69,6 +69,7 @@ class ScreenResources {
   var config   = loadConfig()
   var effectResources = new EffectResources(new Shaders, this)
 
+  atlas.getTextures.asScala.foreach(_.setFilter(TextureFilter.Linear, TextureFilter.Linear)) // smooth textures, to fix glitches when card moves and viewport resizing
   Gdx.input setInputProcessor stage
 
   def reload() = {

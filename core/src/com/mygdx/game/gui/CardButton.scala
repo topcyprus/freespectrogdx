@@ -1,11 +1,9 @@
 package com.mygdx.game.gui
 
-import java.util.concurrent.atomic.AtomicBoolean
-
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType
 import com.badlogic.gdx.graphics.{Color, GL20}
 import com.badlogic.gdx.graphics.g2d.Batch
-import com.badlogic.gdx.math.{Matrix4, Vector2}
+import com.badlogic.gdx.math.Matrix4
 import com.badlogic.gdx.scenes.scene2d.{Actor, Group}
 import com.mygdx.game.ScreenResources
 import priv.sp._
@@ -20,7 +18,7 @@ class CardButton(getDesc: ⇒ Option[CardDesc],
                  houseDesc : PlayerHouseDesc,
                  resources : ScreenResources)  {
 
-  var cardActorsOption = getDesc.map(d ⇒ CardButtonActors(d, getHouseState, new CardActors(d.card, houseDesc.house, resources)))
+  var cardActorsOption = getCardActors
 
   var visible  = false
   var enabled  = false
@@ -57,6 +55,7 @@ class CardButton(getDesc: ⇒ Option[CardDesc],
       BasicAction {
         group.clearChildren()
         if (visible) {
+          cardActorsOption = getCardActors
           cardActorsOption foreach { cardActors =>
             group addActor selectEffectActor
             cardActors.cardActors.actors foreach group.addActor
@@ -65,17 +64,18 @@ class CardButton(getDesc: ⇒ Option[CardDesc],
       })
   }
 
-  private val selectEffectActor = new Actor {
+  private def getCardActors = getDesc.map(d ⇒ CardButtonActors(d, getHouseState, new CardActors(d.card, houseDesc.house, resources)))
+
+  private val selectEffectActor = new Actor with StaticAbsoluteProjMatrix {
     var time = 0f
     val seletectedShader = resources.effectResources.selected
 
-    var absoluteProjMatric : Matrix4 = _
     // matrix for selection shader
-    var absoluteSelProjMatric : Matrix4 = _
+    var absoluteSelProjMatrix : Matrix4 = _
 
     override def draw(batch: Batch, parentAlpha: Float) = {
       if (visible) {
-        initStatics(batch)
+        init(batch)
         if (selected) {
           import seletectedShader._
           val deltax = time * 10
@@ -84,7 +84,7 @@ class CardButton(getDesc: ⇒ Option[CardDesc],
           program.begin()
           program.setUniformf(cursor, animationCursor)
           program.setUniformf(size, seletectedShader.sizeConfig)
-          program.setUniformMatrix("u_projTrans", absoluteSelProjMatric)
+          program.setUniformMatrix("u_projTrans", absoluteSelProjMatrix)
           mesh.render(program, GL20.GL_TRIANGLE_STRIP)
           program.end()
           batch.setShader(null) // why the fuck
@@ -94,23 +94,18 @@ class CardButton(getDesc: ⇒ Option[CardDesc],
       } else if (cardActorsOption.isDefined) {
         import resources.shapes
         shapes.begin(ShapeType.Filled)
-        shapes.setProjectionMatrix(absoluteProjMatric)
+        shapes.setProjectionMatrix(absoluteProjMatrix)
         shapes.setColor(Color.DARK_GRAY)
         shapes.rect(0, 0, 85 ,97)
         shapes.end()
+        shapes.flush()
         batch.setShader(null)
       }
     }
 
-    val initialized = new AtomicBoolean()
-    def initStatics(batch : Batch): Unit = {
-      if (initialized.compareAndSet(false, true)) {
-        val pos = localToStageCoordinates(new Vector2)
-        absoluteSelProjMatric = new Matrix4(batch.getProjectionMatrix)
-          .translate(pos.x + seletectedShader.offsetx, pos.y +seletectedShader.offsety, 0f)
-        absoluteProjMatric = new Matrix4(batch.getProjectionMatrix)
-          .translate(pos.x, pos.y, 0f)
-      }
+    override def initialize(batch : Batch): Unit = {
+      super.initialize(batch)
+      absoluteSelProjMatrix = absoluteProjMatrix.translate(seletectedShader.offsetx, seletectedShader.offsety, 0f)
     }
 
     override def act(delta : Float): Unit = {

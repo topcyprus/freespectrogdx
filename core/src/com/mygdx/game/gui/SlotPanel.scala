@@ -1,8 +1,7 @@
 package com.mygdx.game.gui
 
-import com.badlogic.gdx.scenes.scene2d.Actor
+import com.badlogic.gdx.scenes.scene2d.{Group, Actor}
 import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup
-import com.badlogic.gdx.utils.Align
 import com.mygdx.game._
 import priv.sp._
 
@@ -17,11 +16,18 @@ class SlotPanel(playerId: PlayerId, val game: SpGame,  resources : ScreenResourc
         val p = game.state.players(playerId)
         (p.slots get num, p.slotList contains num)
       }, game, resources)).toList
-  val elts : List[Actor] = lifeLabel.panel :: slots.map(_.group)
 
-  val panel = new HorizontalGroup()
-  elts foreach panel.addActor
-  panel.pack()
+  val panel = new Group
+  panel.addActor(lifeLabel.panel)
+
+  val slotPanel = new HorizontalGroup()
+  slots.map(_.group) foreach slotPanel.addActor
+  slotPanel.pack()
+
+  slotPanel.setX(100)
+  panel.addActor(slotPanel)
+  panel.setHeight(slotPanel.getHeight)
+  panel.setWidth(slotPanel.getWidth + 100)
 
   def init(commandRecorder: CommandRecorder) = {
     def listenEvent(slotButton: SlotButton) {

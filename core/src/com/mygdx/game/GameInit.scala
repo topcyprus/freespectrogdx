@@ -1,5 +1,8 @@
 package com.mygdx.game
 
+import com.badlogic.gdx.scenes.scene2d.{Group, Actor}
+
+import collection.JavaConverters._
 import com.badlogic.gdx.{InputMultiplexer, Input, InputAdapter, Gdx}
 import com.mygdx.game.gui._
 import priv.sp._
@@ -47,6 +50,7 @@ class GameInit(screenResources : ScreenResources) {
     }
   })
 
+  var isDebug = false
   Gdx.input.setInputProcessor(
     new InputMultiplexer(Gdx.input.getInputProcessor,
       screenResources.stage,
@@ -56,12 +60,24 @@ class GameInit(screenResources : ScreenResources) {
             Gdx.app.log("input", "reload resources")
             screenResources.reload()
             true
+          } else if (k == Input.Keys.F6) {
+            isDebug = ! isDebug
+            Gdx.app.log("input", "set debug " + isDebug)
+            setDebug(board.panel)
+            true
           } else false
         }
       }))
 
   gameResources.gameExecutor submit runnable(spGame.start())
 
+  def setDebug(group : Group) : Unit = {
+    group setDebug isDebug
+    group.getChildren.asScala foreach {
+      case g : Group => setDebug(g)
+      case a : Actor => a.setDebug(isDebug)
+    }
+  }
 }
 
 

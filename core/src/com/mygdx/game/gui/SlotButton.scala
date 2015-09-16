@@ -130,6 +130,8 @@ class SlotButton(val num: Int,
     override def draw(batch: Batch, parentAlpha: Float) = {
       if (enabled) {
         init(batch)
+        batch.end()
+        batch.begin()
         import resources.shapes
         shapes.begin(ShapeType.Line)
         shapes.setProjectionMatrix(absoluteProjMatrix)
@@ -138,6 +140,8 @@ class SlotButton(val num: Int,
         shapes.circle(centerx, slotRegion.getRegionHeight / 2, 40, 40)
         shapes.end()
         batch.setShader(null)
+        batch.end()
+        batch.begin()
       }
     }
   }

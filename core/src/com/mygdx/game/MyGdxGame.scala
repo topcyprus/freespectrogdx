@@ -25,11 +25,9 @@ class MyGdxGame extends Game {
 
 class GameScreen(game :Game) extends ScreenAdapter {
   val screenResources = new ScreenResources
-  val gameAdapter = new GameInit(screenResources)
   val repere = new Repere(screenResources)
   var lastE  = Option.empty[Throwable]
-
-  screenResources.stage addActor repere
+  createGame()
 
   override def render (delta : Float): Unit = {
     import screenResources._
@@ -56,6 +54,15 @@ class GameScreen(game :Game) extends ScreenAdapter {
     screenResources.dispose()
   }
 
+  def createGame(): Unit ={
+    screenResources.stage.clear()
+    screenResources.stage addActor repere
+    val gameInit = new GameInit(screenResources)
+    gameInit.userMenu.surrenderButton.addListener(onClick {
+      createGame()
+    })
+  }
+
 }
 
 class ScreenResources {
@@ -64,6 +71,7 @@ class ScreenResources {
   val renderer = new ShapeRenderer()
   val atlas    = new TextureAtlas(Gdx.files.internal("pack/images.pack.atlas"))
   val skin     = new Skin(Gdx.files.internal("data/uiskin.json"))
+
   lazy val shapes = new ShapeRenderer()
 
   var config   = loadConfig()

@@ -20,7 +20,6 @@ class Board(
       slotPanels(playerId).panel)
   panel addActor row(column(userMenu.panel,descriptionPanel.panel), cardPanels(playerId).panel)
   panel.pack()
-  panel.setDebug(true)
 
   def refresh(silent : Boolean) = {
     slotPanels foreach (_.refresh())

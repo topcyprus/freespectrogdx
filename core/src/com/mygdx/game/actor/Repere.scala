@@ -1,6 +1,5 @@
 package com.mygdx.game.actor
 
-import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.VertexAttributes.Usage
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.{GL20, VertexAttribute, Mesh, Color}
@@ -13,6 +12,8 @@ class Repere(resources : ScreenResources) extends Actor {
   val repere = createRepere()
 
   override def draw(batch : Batch, parentAlpha : Float): Unit = {
+    batch.end()
+    batch.begin()
     val repereShader =  resources.effectResources.repere
     import repereShader.program
 
@@ -22,6 +23,8 @@ class Repere(resources : ScreenResources) extends Actor {
     repere.render(program, GL20.GL_LINES, 0, 4)
     program.end()
     batch.enableBlending()
+    batch.end()
+    batch.begin()
   }
 
   private def createRepere() = {

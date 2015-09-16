@@ -25,7 +25,7 @@ class GameInit(screenResources : ScreenResources) {
   val board            = new Board(spGame.myPlayerId, slotPanels, cardPanels, descriptionPanel, userMenu)
   screenResources.stage addActor board.panel
   val commandRecorder = new CommandRecorder(spGame, board)
-  spGame.controller   = new UserGameController(board, commandRecorder)
+  spGame.controller   = new UserGameController(board, commandRecorder, screenResources)
   spGame.updater.updateListener = new GameUpdateListener(board, spGame)
   slotPanels foreach (_.init(commandRecorder))
   cardPanels foreach (_.init(commandRecorder))
@@ -81,10 +81,12 @@ class GameInit(screenResources : ScreenResources) {
 }
 
 
-class UserGameController(board : Board, commandRecorder : CommandRecorder) extends SpGameController {
+class UserGameController(board : Board, commandRecorder : CommandRecorder, screenResources : ScreenResources)
+  extends SpGameController {
+  import screenResources._
 
   def endGame(msg : String) = {
-    //world spawn new EndMessage(msg)
+    screenResources.stage.addActor(new EndMessage(msg, skin))
     commandRecorder.cont foreach (_.set(None))
   }
   def disableSlots() : Unit = {

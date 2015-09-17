@@ -14,6 +14,9 @@ import priv.sp.house.{Hird, MereMortal}
 case class SlotCardActors(slotState : SlotState, cardActors : CardActors, game : SpGame) {
   val lifeLabel = cardActors.labels(2)
   lifeLabel.setText(slotState.life.toString)
+  val costLabel = cardActors.labels(1)
+  costLabel.setText(slotState.attack.toString)
+  val lifeBarTex = cardActors.resources.atlas findRegion "combat/lifebar"
 
   def actors = cardActors.actors ++ (lifeBar :: decorateStatus(slotState).toList)
 
@@ -21,7 +24,7 @@ case class SlotCardActors(slotState : SlotState, cardActors : CardActors, game :
     def imageOf(name : String) = new Image(cardActors.resources.atlas findRegion ("combat/" + name))
     def cornerImageOf(name : String) = {
       val image = imageOf(name)
-      image.setPosition(40, 40)
+      image.setPosition(50, 60)
       image
     }
 
@@ -34,25 +37,10 @@ case class SlotCardActors(slotState : SlotState, cardActors : CardActors, game :
     else None
   }
 
-
-  def lifeBar = new Actor {
-
-    // HORROR
-    override def draw(batch: Batch, parentAlpha: Float) = {
-      import cardActors.resources.shapes
-      batch.end()
-      batch.begin()
-      shapes.setProjectionMatrix(getAbsoluteProjMatrix(this, batch))
-      shapes.begin(ShapeType.Filled)
-      shapes.scale(getScaleX, getScaleY, 1)
-      shapes.setColor(0.2f, 0.6f, 0.2f, 0.6f)
-      val w = 66f * slotState.life / math.max(slotState.life, slotState.card.life)
-      val h = 7f
-      shapes.rect(0f, cardActors.borderTex.getRegionHeight - h , w, h)
-      shapes.flush()
-      shapes.end()
-      batch.end()
-      batch.begin()
+  def lifeBar = new Image(lifeBarTex) {
+    setY(cardActors.borderTex.getRegionHeight - lifeBarTex.getRegionHeight)
+    override def act(delta : Float): Unit = {
+      setWidth(66f * slotState.life / math.max(slotState.life, slotState.card.life))
     }
   }
 }

@@ -1,5 +1,7 @@
 package com.mygdx.game.gui
 
+import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup
 import com.badlogic.gdx.utils.Align
 import priv.sp._
@@ -11,15 +13,23 @@ class Board(
              descriptionPanel : DescriptionPanel,
              userMenu : UserMenu) {
 
-  val panel = new VerticalGroup()
+  val rightPane = new VerticalGroup()
 
-  panel align Align.right
-  panel addActor cardPanels(other(playerId)).panel
-  panel addActor column(
+  rightPane align Align.right
+  rightPane addActor cardPanels(other(playerId)).panel
+  rightPane addActor column(
       slotPanels(other(playerId)).panel,
       slotPanels(playerId).panel)
-  panel addActor row(column(userMenu.panel,descriptionPanel.panel), cardPanels(playerId).panel)
-  panel.pack()
+  rightPane addActor cardPanels(playerId).panel
+  rightPane.pack()
+
+  val panel = new Group
+  panel addActor rightPane
+  panel addActor userMenu.panel
+  panel addActor descriptionPanel.panel
+
+  userMenu.panel.setPosition(10, 350)
+  rightPane.setX(Gdx.graphics.getWidth - rightPane.getWidth - 10)
 
   def refresh(silent : Boolean) = {
     slotPanels foreach (_.refresh())

@@ -1,11 +1,12 @@
 package com.mygdx.game.gui
 
-import com.badlogic.gdx.scenes.scene2d.Actor
+import com.badlogic.gdx.scenes.scene2d.{InputEvent, Actor}
 import com.badlogic.gdx.scenes.scene2d.ui.Table
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.mygdx.game._
 import priv.sp._
 
-class CardPanel(playerId: PlayerId, game: SpGame, resources : ScreenResources) {
+class CardPanel(playerId: PlayerId, game: SpGame, descriptionPanel : DescriptionPanel, resources : ScreenResources) {
 
   private val houseCardButtons = game.desc.players(playerId).houses.zipWithIndex map {
     case (houseDesc, idx) ⇒
@@ -26,16 +27,29 @@ class CardPanel(playerId: PlayerId, game: SpGame, resources : ScreenResources) {
     if (playerId == game.myPlayerId) {
       cardButtons foreach { cardButton ⇒
         cardButton.visible = true
-        cardButton.group.addListener(onClick {
-          if (cardButton.isActive) {
-            cardButton.cardActorsOption.foreach { h ⇒
-              commandRecorder.setCommand(Command(game.myPlayerId, h.desc.card, None, h.desc.cost))
-              if (h.desc.card.inputSpec.isDefined) {
-                lastSelected.foreach(_.selected = false)
-                cardButton.selected = true
-                lastSelected = Some(cardButton)
+        cardButton.group.addListener(new ClickListener() {
+
+          override def clicked(event: InputEvent, x: Float, y: Float): Unit = {
+            if (cardButton.isActive) {
+              cardButton.cardActorsOption.foreach { h ⇒
+                commandRecorder.setCommand(Command(game.myPlayerId, h.desc.card, None, h.desc.cost))
+                if (h.desc.card.inputSpec.isDefined) {
+                  lastSelected.foreach(_.selected = false)
+                  cardButton.selected = true
+                  lastSelected = Some(cardButton)
+                }
               }
             }
+          }
+          override def enter(event: InputEvent, x: Float, y: Float, pointer : Int, fromActor : Actor) : Unit = {
+            if (cardButton.visible) {
+              cardButton.cardActorsOption.foreach { h ⇒
+                descriptionPanel.update(Some(h.desc.card))
+              }
+            }
+          }
+          override def exit(event: InputEvent, x: Float, y: Float, pointer : Int, fromActor : Actor) : Unit = {
+            descriptionPanel.update(None)
           }
         })
       }

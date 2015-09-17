@@ -1,16 +1,18 @@
 package com.mygdx.game.gui
 
 import com.badlogic.gdx.scenes.scene2d.ui.{VerticalGroup, Label}
+import com.badlogic.gdx.utils.Align
 import com.mygdx.game.ScreenResources
 import priv.sp._
-
 
 class DescriptionPanel(game: SpGame, resources : ScreenResources) {
   val panel = new VerticalGroup()
   val title = new Label("", resources.skin)
   val subtitle = new Label("", resources.skin)
   val description = new Label("", resources.skin)
+  description.setFontScale(0.8f)
   panel.setSize(200, 200)
+  panel.align(Align.bottomLeft)
 
   val update : Option[Described] => Unit = {
     case None =>

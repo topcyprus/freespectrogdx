@@ -7,10 +7,19 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.mygdx.game.ScreenResources
 import priv.sp.{Creature, Spell, House, Card}
 
+object CardActors {
+
+  def getPath(card : Card, house : House) = {
+    val houseFolder = if (card.houseIndex < 4) "base" else house.name.toLowerCase.replaceAll(" ", "")
+    "cards/" + houseFolder + "/" + card.name
+  }
+}
+
 class CardActors(val card: Card, house : House, val resources : ScreenResources) {
-  val houseFolder = if (card.houseIndex < 4) "base" else house.name.toLowerCase.replaceAll(" ", "")
-  val path = "cards/" + houseFolder + "/" + card.name
+  val path = CardActors.getPath(card, house)
   val sprite = resources.atlas createSprite path
+
+  if (sprite == null) throw new Exception("sprite not found " + path)
 
   if (card.isSpell) sprite.setPosition(-1, -1)
   else              sprite.setPosition(3, 14)

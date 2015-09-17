@@ -1472,6 +1472,75 @@ size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
+cards/snowblood/Amaterasu
+  rotate: false
+  xy: 99, 25
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+cards/snowblood/Bounty hunter
+  rotate: false
+  xy: 181, 25
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+cards/snowblood/Death letter
+  rotate: false
+  xy: 263, 25
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+cards/snowblood/Echo
+  rotate: false
+  xy: 2, 2
+  size: 95, 103
+  orig: 95, 103
+  offset: 0, 0
+  index: -1
+cards/snowblood/Janus
+  rotate: false
+  xy: 345, 25
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+cards/snowblood/Kojiro
+  rotate: false
+  xy: 427, 25
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+cards/snowblood/Maiko
+  rotate: false
+  xy: 509, 25
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+cards/snowblood/Tracker
+  rotate: false
+  xy: 591, 25
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+cards/snowblood/War guide
+  rotate: false
+  xy: 673, 25
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+
+images.pack18.png
+size: 1024,128
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
 cards/warp/Cloak
   rotate: false
   xy: 99, 25
@@ -1529,75 +1598,6 @@ cards/warp/Stranger
   offset: 0, 0
   index: -1
 cards/warp/Warp Queen
-  rotate: false
-  xy: 673, 25
-  size: 80, 80
-  orig: 80, 80
-  offset: 0, 0
-  index: -1
-
-images.pack18.png
-size: 1024,128
-format: RGBA8888
-filter: Nearest,Nearest
-repeat: none
-cards/sb/Amaterasu
-  rotate: false
-  xy: 99, 25
-  size: 80, 80
-  orig: 80, 80
-  offset: 0, 0
-  index: -1
-cards/sb/Bounty hunter
-  rotate: false
-  xy: 181, 25
-  size: 80, 80
-  orig: 80, 80
-  offset: 0, 0
-  index: -1
-cards/sb/Death letter
-  rotate: false
-  xy: 263, 25
-  size: 80, 80
-  orig: 80, 80
-  offset: 0, 0
-  index: -1
-cards/sb/Echo
-  rotate: false
-  xy: 2, 2
-  size: 95, 103
-  orig: 95, 103
-  offset: 0, 0
-  index: -1
-cards/sb/Janus
-  rotate: false
-  xy: 345, 25
-  size: 80, 80
-  orig: 80, 80
-  offset: 0, 0
-  index: -1
-cards/sb/Kojiro
-  rotate: false
-  xy: 427, 25
-  size: 80, 80
-  orig: 80, 80
-  offset: 0, 0
-  index: -1
-cards/sb/Maiko
-  rotate: false
-  xy: 509, 25
-  size: 80, 80
-  orig: 80, 80
-  offset: 0, 0
-  index: -1
-cards/sb/Tracker
-  rotate: false
-  xy: 591, 25
-  size: 80, 80
-  orig: 80, 80
-  offset: 0, 0
-  index: -1
-cards/sb/War guide
   rotate: false
   xy: 673, 25
   size: 80, 80
@@ -1757,84 +1757,91 @@ filter: Nearest,Nearest
 repeat: none
 combat/blank
   rotate: false
-  xy: 2, 172
+  xy: 2, 175
   size: 534, 300
   orig: 534, 300
   offset: 0, 0
   index: -1
 combat/crystalize
   rotate: false
-  xy: 894, 392
+  xy: 894, 395
   size: 80, 80
   orig: 80, 80
   offset: 0, 0
   index: -1
 combat/death
   rotate: false
-  xy: 538, 185
+  xy: 2, 2
   size: 30, 29
   orig: 30, 29
   offset: 0, 0
   index: -1
 combat/glow
   rotate: false
-  xy: 796, 366
+  xy: 796, 369
   size: 96, 106
   orig: 96, 106
   offset: 0, 0
   index: -1
 combat/hird
   rotate: false
-  xy: 116, 37
+  xy: 796, 236
   size: 20, 27
   orig: 20, 27
   offset: 0, 0
   index: -1
+combat/lifebar
+  rotate: false
+  xy: 538, 210
+  size: 66, 7
+  orig: 66, 7
+  offset: 0, 0
+  index: -1
 combat/mortal
   rotate: false
-  xy: 212, 90
+  xy: 212, 93
   size: 80, 80
   orig: 80, 80
   offset: 0, 0
   index: -1
 combat/parts
   rotate: false
-  xy: 538, 216
+  xy: 538, 219
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 combat/raka
   rotate: false
-  xy: 796, 262
+  xy: 796, 265
   size: 90, 102
   orig: 90, 102
   offset: 0, 0
   index: -1
 combat/rakaSpell
   rotate: false
-  xy: 116, 66
+  xy: 116, 69
   size: 94, 104
   orig: 94, 104
   offset: 0, 0
   index: -1
 combat/sand
   rotate: false
-  xy: 294, 90
+  xy: 294, 93
   size: 80, 80
   orig: 80, 80
   offset: 0, 0
   index: -1
 combat/shield
   rotate: false
-  xy: 2, 2
+  xy: 116, 41
   size: 23, 26
   orig: 23, 26
   offset: 0, 0
   index: -1
 combat/slot
   rotate: false
-  xy: 2, 30
+  xy: 2, 33
   size: 112, 140
   orig: 112, 140
   offset: 0, 0

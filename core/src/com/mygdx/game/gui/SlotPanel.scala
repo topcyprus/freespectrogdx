@@ -19,6 +19,7 @@ class SlotPanel(playerId: PlayerId, val game: SpGame,  resources : ScreenResourc
 
   val panel = new Group
   panel.addActor(lifeLabel.panel)
+  lifeLabel.panel.setY(50)
 
   val slotPanel = new HorizontalGroup()
   slots.map(_.group) foreach slotPanel.addActor

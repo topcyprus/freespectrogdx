@@ -1,5 +1,7 @@
 package com.mygdx.game
 
+import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction
+import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.{Group, Actor}
 
 import collection.JavaConverters._
@@ -11,22 +13,21 @@ import priv.util.TVar
 import priv.util.Utils._
 
 
-class GameInit(screenResources : ScreenResources) {
-  val gameResources = new GameResources
+class GameInit(screenResources : ScreenResources, gameResources : GameResources) {
   val spGame = new SpGame(new Local(gameResources), gameResources)
+  val descriptionPanel = new DescriptionPanel(spGame, screenResources)
   val slotPanels = playerIds.map{ playerId =>
     new SlotPanel(playerId, spGame, screenResources)
   }
   val cardPanels = playerIds.map{ playerId =>
-    new CardPanel(playerId, spGame, screenResources)
+    new CardPanel(playerId, spGame, descriptionPanel, screenResources)
   }
-  val descriptionPanel = new DescriptionPanel(spGame, screenResources)
   val userMenu         = new UserMenu(screenResources)
   val board            = new Board(spGame.myPlayerId, slotPanels, cardPanels, descriptionPanel, userMenu)
   screenResources.stage addActor board.panel
   val commandRecorder = new CommandRecorder(spGame, board)
   spGame.controller   = new UserGameController(board, commandRecorder, screenResources)
-  spGame.updater.updateListener = new GameUpdateListener(board, spGame)
+  spGame.updater.updateListener = new GameUpdateListener(board, spGame, screenResources)
   slotPanels foreach (_.init(commandRecorder))
   cardPanels foreach (_.init(commandRecorder))
 
@@ -39,7 +40,6 @@ class GameInit(screenResources : ScreenResources) {
 
   userMenu.restartButton.addListener(onClick {
     println("restart")
-    //world.forEntity[EndMessage](world.unspawn(_))
     board.cardPanels foreach (_.setEnabled(false))
     spGame.gameLock.release()
     spGame.gameLock = new priv.util.RichLock
@@ -48,6 +48,10 @@ class GameInit(screenResources : ScreenResources) {
       spGame.persistState(spGame.server.initState)
       spGame.start()
     }
+  })
+
+  userMenu.settingsButton.addListener(onClick {
+    screenResources.stage.addActor(new GameSettings(gameResources, screenResources.skin))
   })
 
   var isDebug = false
@@ -118,7 +122,7 @@ class UserGameController(board : Board, commandRecorder : CommandRecorder, scree
 }
 
 
-private class GameUpdateListener(board : Board, spGame : SpGame) extends UpdateListener {
+private class GameUpdateListener(board : Board, spGame : SpGame, screenResources : ScreenResources) extends UpdateListener {
   import board._
   import spGame._
 
@@ -153,7 +157,8 @@ private class GameUpdateListener(board : Board, spGame : SpGame) extends UpdateL
     //state.checkEnded foreach(endGame _)
   }
   def spellPlayed(c: Command) {
-    /**spawn(new SpellNotif(sp, c.card))
+    notifySpell(c, sp.houses.getHouseById(c.card.houseId))
+    /**
        val sourceCoord = cardPanels(c.player) getPositionOf(c.card) getOrElse Coord2i(0, 0)
        val targetPlayer = if (c.card.inputSpec == Some(SelectOwnerCreature)) {
          c.player
@@ -166,5 +171,29 @@ private class GameUpdateListener(board : Board, spGame : SpGame) extends UpdateL
   }
   def triggerAbility(o: AnyRef) {
 
+  }
+
+  private def notifySpell(c : Command, house: House) : Unit = {
+    val path = CardActors.getPath(c.card, house)
+    val sprite = screenResources.atlas createSprite path
+    val image = new Image(sprite)
+    image.setPosition(50, 500)
+    board.panel.addAction(new SpellPlayed(board.panel, image))
+  }
+}
+
+
+class SpellPlayed(group : Group, image : Image) extends TemporalAction {
+  setDuration(1f)
+
+  protected override def begin() {
+    group.addActor(image)
+  }
+
+  protected def update(percent: Float) = {
+  }
+
+  protected override def end(): Unit = {
+    group.removeActor(image)
   }
 }

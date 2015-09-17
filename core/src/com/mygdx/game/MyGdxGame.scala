@@ -1,6 +1,7 @@
 package com.mygdx.game
 
 import com.badlogic.gdx.graphics.Texture.TextureFilter
+import priv.sp.GameResources
 
 import collection.JavaConverters._
 import com.badlogic.gdx.graphics.{Color, GL20}
@@ -25,9 +26,10 @@ class MyGdxGame extends Game {
 
 class GameScreen(game :Game) extends ScreenAdapter {
   val screenResources = new ScreenResources
+  val gameResources = new GameResources
   val repere = new Repere(screenResources)
   var lastE  = Option.empty[Throwable]
-  createGame()
+  var currentGame = createGame()
 
   override def render (delta : Float): Unit = {
     import screenResources._
@@ -52,15 +54,20 @@ class GameScreen(game :Game) extends ScreenAdapter {
   }
   override def dispose(): Unit ={
     screenResources.dispose()
+    gameResources.dispose()
   }
 
-  def createGame(): Unit ={
+  def createGame(): GameInit ={
     screenResources.stage.clear()
     screenResources.stage addActor repere
-    val gameInit = new GameInit(screenResources)
+    if (currentGame != null) {
+      currentGame.spGame.gameLock.release()
+    }
+    val gameInit = new GameInit(screenResources, gameResources)
     gameInit.userMenu.surrenderButton.addListener(onClick {
-      createGame()
+      currentGame = createGame()
     })
+    gameInit
   }
 
 }

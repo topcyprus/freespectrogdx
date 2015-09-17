@@ -32,14 +32,13 @@ class GameResources {
     }
   }.get
 
-  var heurisChoice = 3
   var playerChoices: List[List[House]] = List(sp.houses.sinist, sp.houses.sinist)
   def resolveChoices = playerChoices map { o ⇒
     val l = (if (o.isEmpty) sp.houses.special else o)
     l(scala.util.Random.nextInt(l.size))
   }
 
-  def release() {
+  def dispose() {
     ended = true
     println("releasing resources")
     multi.release()

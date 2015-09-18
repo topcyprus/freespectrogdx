@@ -21,7 +21,11 @@ case class SlotCardActors(slotState : SlotState, cardActors : CardActors, game :
   def actors = cardActors.actors ++ (lifeBar :: decorateStatus(slotState).toList)
 
   def decorateStatus(s: SlotState) = {
-    def imageOf(name : String) = new Image(cardActors.resources.atlas findRegion ("combat/" + name))
+    def imageOf(name : String) = {
+      val image = new Image(cardActors.resources.atlas findRegion ("combat/" + name))
+      image.setPosition(2, 15)
+      image
+    }
     def cornerImageOf(name : String) = {
       val image = imageOf(name)
       image.setPosition(50, 60)
@@ -81,15 +85,13 @@ class SlotButton(val num: Int,
         if (isExisting) {
           cardGroup.clearChildren()
           slotStateOption foreach { slotState =>
+            cardGroup.getColor.a = 1f
             val cardActors = new SlotCardActors(
               slotState,
               new CardActors(slotState.card, game.sp.houses.getHouseById(slotState.card.houseId), resources),
               game)
             cardActors.actors foreach cardGroup.addActor
-
-            if (slotState has CardSpec.pausedFlag) {
-              group.getColor.a = 0.5f
-            }
+            group.getColor.a = if (slotState has CardSpec.pausedFlag) 0.5f else 1f
           }}
       })
   }

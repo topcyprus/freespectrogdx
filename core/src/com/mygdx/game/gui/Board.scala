@@ -29,7 +29,7 @@ class Board(
   panel addActor descriptionPanel.panel
 
   userMenu.panel.setPosition(10, 350)
-  rightPane.setX(Gdx.graphics.getWidth - rightPane.getWidth - 10)
+  rightPane.setX(50)
 
   def refresh(silent : Boolean) = {
     slotPanels foreach (_.refresh())

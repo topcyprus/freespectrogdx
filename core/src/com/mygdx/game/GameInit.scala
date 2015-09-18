@@ -132,9 +132,9 @@ private class GameUpdateListener(board : Board, spGame : SpGame, screenResources
   }
   def move(num: Int, dest: Int, playerId: PlayerId) {
     val slotButton = slotPanels(playerId).slots(num)
-    gameLock waitLock { lock ⇒
+    //gameLock waitLock { lock ⇒
       //world addTask new slotButton.MoveAnimTask(dest, lock)
-    }
+    //}
   }
   def runSlot(num: Int, playerId: PlayerId) {
     val slotButton = slotPanels(playerId).slots(num)

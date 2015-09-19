@@ -1,9 +1,10 @@
 package priv.sp.house
 
+import priv.sp.CardSpec._
+import priv.sp.GameCardEffect._
 import priv.sp._
 import priv.sp.update._
-import CardSpec._
-import GameCardEffect._
+
 import scala.util._
 
 class FairyKnight {

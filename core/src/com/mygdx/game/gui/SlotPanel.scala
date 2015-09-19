@@ -1,11 +1,12 @@
 package com.mygdx.game.gui
 
-import com.badlogic.gdx.scenes.scene2d.{Group, Actor}
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
+import com.badlogic.gdx.scenes.scene2d.{InputEvent, Group, Actor}
 import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup
 import com.mygdx.game._
 import priv.sp._
 
-class SlotPanel(playerId: PlayerId, val game: SpGame,  resources : ScreenResources) {
+class SlotPanel(playerId: PlayerId, val game: SpGame, descriptionPanel : DescriptionPanel, resources : ScreenResources) {
   val lifeLabel = new LifeLabel(game.names(playerId), game.state.players(playerId).life, resources.skin)
   val slots =
     baseSlotRange.map(num ⇒
@@ -32,9 +33,13 @@ class SlotPanel(playerId: PlayerId, val game: SpGame,  resources : ScreenResourc
 
   def init(commandRecorder: CommandRecorder) = {
     def listenEvent(slotButton: SlotButton) {
-      slotButton.group.addListener(onClick{
-        if (slotButton.enabled){
-          commandRecorder addInput new SlotInput(slotButton.num)
+      slotButton.group.addListener(new ClickListener with HoverToDesc {
+        def descPanel = descriptionPanel
+        def described = slotButton.info._1.map(_.card)
+        override def clicked(event: InputEvent, x: Float, y: Float): Unit = {
+          if (slotButton.enabled) {
+            commandRecorder addInput new SlotInput(slotButton.num)
+          }
         }
       })
     }

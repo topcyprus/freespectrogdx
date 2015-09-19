@@ -1,17 +1,17 @@
 package com.mygdx.game.gui
 
-import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup
 import com.badlogic.gdx.utils.Align
 import priv.sp._
 
 class Board(
-             val playerId: PlayerId,
-             val slotPanels: List[SlotPanel],
-             val cardPanels : List[CardPanel],
-             descriptionPanel : DescriptionPanel,
-             userMenu : UserMenu) {
+ val playerId: PlayerId,
+ val slotPanels: Seq[SlotPanel],
+ val cardPanels : Seq[CardPanel],
+ val descriptionPanel : DescriptionPanel,
+ val historyPanel : DescriptionPanel,
+ userMenu : UserMenu) {
 
   val rightPane = new VerticalGroup()
 
@@ -27,8 +27,11 @@ class Board(
   panel addActor rightPane
   panel addActor userMenu.panel
   panel addActor descriptionPanel.panel
+  panel addActor historyPanel.panel
 
-  userMenu.panel.setPosition(10, 350)
+  descriptionPanel.panel.setPosition(10, 200)
+  historyPanel.panel.setPosition(10, 0)
+  userMenu.panel.setPosition(10, 750)
   rightPane.setX(50)
 
   def refresh(silent : Boolean) = {

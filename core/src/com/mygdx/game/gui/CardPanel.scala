@@ -27,35 +27,38 @@ class CardPanel(playerId: PlayerId, game: SpGame, descriptionPanel : Description
     if (playerId == game.myPlayerId) {
       cardButtons foreach { cardButton ⇒
         cardButton.visible = true
-        cardButton.group.addListener(new ClickListener() {
+        cardButton.group.addListener(new ClickListener() with HoverToDesc {
+          def descPanel = descriptionPanel
+          def described = cardButton.cardActorsOption.collect { case h if cardButton.visible =>
+            h.desc.card
+          }
 
           override def clicked(event: InputEvent, x: Float, y: Float): Unit = {
             if (cardButton.isActive) {
               cardButton.cardActorsOption.foreach { h ⇒
                 commandRecorder.setCommand(Command(game.myPlayerId, h.desc.card, None, h.desc.cost))
                 if (h.desc.card.inputSpec.isDefined) {
-                  lastSelected.foreach(_.selected = false)
+                  lastSelected.foreach{ b =>
+                    b.selected = false
+                    b.group.setZIndex(0)
+                  }
                   cardButton.selected = true
+                  cardButton.group.setZIndex(1)
                   lastSelected = Some(cardButton)
                 }
               }
             }
-          }
-          override def enter(event: InputEvent, x: Float, y: Float, pointer : Int, fromActor : Actor) : Unit = {
-            if (cardButton.visible) {
-              cardButton.cardActorsOption.foreach { h ⇒
-                descriptionPanel.update(Some(h.desc.card))
-              }
-            }
-          }
-          override def exit(event: InputEvent, x: Float, y: Float, pointer : Int, fromActor : Actor) : Unit = {
-            descriptionPanel.update(None)
           }
         })
       }
     }
   }
 
+  houseLabels(4).panel.addListener(new ClickListener() with HoverToDesc {
+    def descPanel = descriptionPanel
+
+    def described = Some(houseLabels(4).house)
+  })
 
   val panel = new Table
   val houseActors : Seq[Actor] = houseCardButtons map { case (houseLabel, _) => houseLabel.panel }

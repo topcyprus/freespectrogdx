@@ -17,8 +17,16 @@ case class SlotCardActors(slotState : SlotState, cardActors : CardActors, game :
   val costLabel = cardActors.labels(1)
   costLabel.setText(slotState.attack.toString)
   val lifeBarTex = cardActors.resources.atlas findRegion "combat/lifebar"
+  val lifeBar = new Image(lifeBarTex) {
+    setZIndex(4)
+    setY(cardActors.borderTex.getRegionHeight - lifeBarTex.getRegionHeight)
+    override def act(delta : Float): Unit = {
+      setWidth(66f * slotState.life / math.max(slotState.life, slotState.card.life))
+    }
+  }
+  val decorators = decorateStatus(slotState).toList
 
-  def actors = cardActors.actors ++ (lifeBar :: decorateStatus(slotState).toList)
+  def actors = cardActors.actors ++ (lifeBar :: decorators)
 
   def decorateStatus(s: SlotState) = {
     def imageOf(name : String) = {
@@ -41,11 +49,10 @@ case class SlotCardActors(slotState : SlotState, cardActors : CardActors, game :
     else None
   }
 
-  def lifeBar = new Image(lifeBarTex) {
-    setY(cardActors.borderTex.getRegionHeight - lifeBarTex.getRegionHeight)
-    override def act(delta : Float): Unit = {
-      setWidth(66f * slotState.life / math.max(slotState.life, slotState.card.life))
-    }
+  def updateZIndex(): Unit ={
+    cardActors.updateZIndex()
+    decorators.foreach(_.setZIndex(1))
+    lifeBar.setZIndex(4)
   }
 }
 
@@ -91,6 +98,7 @@ class SlotButton(val num: Int,
               new CardActors(slotState.card, game.sp.houses.getHouseById(slotState.card.houseId), resources),
               game)
             cardActors.actors foreach cardGroup.addActor
+            cardActors.updateZIndex()
             group.getColor.a = if (slotState has CardSpec.pausedFlag) 0.5f else 1f
           }}
       })

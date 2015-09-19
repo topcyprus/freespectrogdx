@@ -10,6 +10,7 @@ object Card {
 
 sealed abstract class Card extends Externalizable with Described {
   def name: String
+  def image: String
   def inputSpec: Option[CardInputSpec]
   def effects: Array[Option[CardSpec.Effect]]
   def description: String
@@ -61,6 +62,7 @@ class Creature(
 
   final def inflict(damage: Damage, life: Int) = life - damage.amount
 
+  def image = name + ".jpg"
 }
 
 case class Spell(
@@ -69,6 +71,7 @@ case class Spell(
     inputSpec: Option[CardInputSpec] = None,
     effects: Array[Option[CardSpec.Effect]] = CardSpec.noEffects) extends Card {
   def this() = this(null)
+  def image = name + ".tga"
 }
 trait CommandFlag
 case class Command(player: PlayerId, card: Card, input: Option[SlotInput], cost: Int, flag: Option[CommandFlag] = None) {
@@ -184,7 +187,7 @@ class Reaction extends Actions {
   // used by stone golem and archphoenix where overriding inflict doesn't suffice, because needs to know the context => TODO remove overrided inflict
   def selfProtect(d: Damage) = d
   // used by black monk to heal by the amount even when dying, and by errant to wakeup
-  def onMyDamage(amount: Int) {}
+  def onMyDamage(damage : Damage) {}
   // /!\ the slot is not yet empty but is about to (used for f5, f7, schizo, crossbow)
   def onMyRemove(dead: Option[Dead]) {}
   def onMyDeath(dead: Dead) {}

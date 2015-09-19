@@ -1,7 +1,6 @@
 package com.mygdx.game.gui
 
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction
 import com.badlogic.gdx.scenes.scene2d.ui.{Table, Skin, Dialog}
 import com.badlogic.gdx.scenes.scene2d.ui.{List => UIList}
 import priv.sp._

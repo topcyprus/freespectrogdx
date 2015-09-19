@@ -1,10 +1,9 @@
 
 package priv.sp.house
 
+import priv.sp.GameCardEffect._
 import priv.sp._
 import priv.sp.update._
-import CardSpec._
-import GameCardEffect._
 
 case object OneAttackBonus extends AttackFunc { def apply(attack: Int) = attack + 1 }
 case class AttackAdd(bonus: Int) extends AttackFunc { def apply(attack: Int) = attack + bonus }

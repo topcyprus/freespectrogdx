@@ -1,7 +1,6 @@
 package priv.sp.house
 
 import priv.sp._
-import priv.sp.update._
 
 class Trooper {
   import CardSpec._

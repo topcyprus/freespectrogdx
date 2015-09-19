@@ -1,9 +1,10 @@
 package priv.sp.house
 
-import collection._
+import priv.sp.GameCardEffect._
 import priv.sp._
 import priv.sp.update._
-import GameCardEffect._
+
+import scala.collection._
 
 object Shaman {
   import CardSpec._

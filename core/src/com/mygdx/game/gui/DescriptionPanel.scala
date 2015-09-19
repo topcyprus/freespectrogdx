@@ -1,18 +1,24 @@
 package com.mygdx.game.gui
 
+import com.badlogic.gdx.graphics.Color
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
+import com.badlogic.gdx.scenes.scene2d.{Actor, InputEvent}
 import com.badlogic.gdx.scenes.scene2d.ui.{VerticalGroup, Label}
 import com.badlogic.gdx.utils.Align
 import com.mygdx.game.ScreenResources
 import priv.sp._
 
-class DescriptionPanel(game: SpGame, resources : ScreenResources) {
+class DescriptionPanel(game: SpGame, resources : ScreenResources, color : Color = Color.WHITE) {
   val panel = new VerticalGroup()
   val title = new Label("", resources.skin)
   val subtitle = new Label("", resources.skin)
   val description = new Label("", resources.skin)
+  description.setWrap(true) // FIXME
   description.setFontScale(0.8f)
+  description.setWidth(200)
   panel.setSize(200, 200)
   panel.align(Align.bottomLeft)
+  List(title, subtitle, description) foreach (_.setColor(color))
 
   val update : Option[Described] => Unit = {
     case None =>
@@ -27,57 +33,20 @@ class DescriptionPanel(game: SpGame, resources : ScreenResources) {
           panel.addActor(subtitle)
         case _ ⇒
       }
-      description.setText(described.description)
       panel.addActor(description)
+      description.setText(described.description)
 
   }
 }
 
-/**
-object DescriptionPanel {
-  def show(offset: Int, color: Symbol)(described: Described) = {
-    var cur = offset
-    Fonts.big.draw(0, cur, described.name, color)
-    cur += 25
-    described match {
-      case c: Creature ⇒
-        Fonts.font.draw(0, cur, "Life : " + c.life + "  Attack : " + c.attack.base.getOrElse("X"), color)
-        cur += 12
-      case _ ⇒
-    }
-    if (described.description.size < 60) {
-      Fonts.font.draw(0, cur, described.description, color)
-    } else {
-      described.description.split('\n').foreach { line ⇒
-        Fonts.font.draw(0, cur, line, color)
-        cur += 12
-      }
-    }
-    cur
+trait HoverToDesc { _ : ClickListener =>
+  def descPanel : DescriptionPanel
+  def described : Option[Described]
+
+  override def enter(event: InputEvent, x: Float, y: Float, pointer : Int, fromActor : Actor) : Unit = {
+    descPanel.update(described)
+  }
+  override def exit(event: InputEvent, x: Float, y: Float, pointer : Int, fromActor : Actor) : Unit = {
+    descPanel.update(None)
   }
 }
-class DescriptionPanel(game: Game) extends GuiElem {
-  val size = Coord2i(200, 200)
-  var describedOption = Option.empty[Described]
-  val show = DescriptionPanel.show(0, 'white) _
-
-  def render() {
-    describedOption foreach show
-  }
-}
-
-class InfoPanel(game: Game) extends GuiElem {
-  val size = Coord2i(200, 200)
-  var cardOption = Option.empty[Card]
-  val show = DescriptionPanel.show(12, 'gray) _
-
-  def add(c: Card) {
-    cardOption = Some(c)
-  }
-
-  def render() {
-    Fonts.font.draw(0, 0, "last play : ", 'gray)
-    cardOption foreach show
-  }
-}
-*/

@@ -3,7 +3,7 @@ package com.mygdx.game.gui
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.scenes.scene2d.Actor
-import com.badlogic.gdx.scenes.scene2d.ui.Label
+import com.badlogic.gdx.scenes.scene2d.ui.{Image, Label}
 import com.mygdx.game.ScreenResources
 import priv.sp.{Creature, Spell, House, Card}
 
@@ -21,8 +21,9 @@ class CardActors(val card: Card, house : House, val resources : ScreenResources)
 
   if (sprite == null) throw new Exception("sprite not found " + path)
 
-  if (card.isSpell) sprite.setPosition(-1, -1)
-  else              sprite.setPosition(3, 14)
+  val cardImage = new Image(sprite)
+  if (card.isSpell) cardImage.setPosition(-1, -1)
+  else              cardImage.setPosition(3, 14)
 
   val borderName = if (card.isSpell) "rakaSpell" else "raka"
   val borderTex = resources.atlas findRegion ("combat/"+borderName)
@@ -44,14 +45,17 @@ class CardActors(val card: Card, house : House, val resources : ScreenResources)
       List(costLabel, attackLabel, lifeLabel)
   }
 
-  val imageActor = new Actor {
-    override def draw(batch : Batch, parentAlpha : Float): Unit = {
-      sprite draw batch
-      batch.draw(borderTex, getX, getY)
-    }
-  }
-  val actors = imageActor :: labels
+
+  val borderImage = new Image(borderTex)
+
+  val actors = cardImage :: borderImage :: labels
 
   assert(sprite != null, "sprite not defined " + path)
+
+  def updateZIndex(): Unit ={
+    cardImage.setZIndex(0)
+    borderImage.setZIndex(2)
+    labels.foreach(_.setZIndex(3))
+  }
 
 }

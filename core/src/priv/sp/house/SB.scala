@@ -1,9 +1,9 @@
 package priv.sp.house
 
+import priv.sp.CardSpec._
+import priv.sp.GameCardEffect._
 import priv.sp._
 import priv.sp.update._
-import CardSpec._
-import GameCardEffect._
 
 class SB {
 
@@ -24,7 +24,7 @@ When die deals 15 damage to opposite creature.
 (Replaced by death letter after summoned)""", effects = effects(Direct -> maikoEffect), reaction = new MaikoReaction)
 
   val SB = House("Snowblood", List(
-    new Creature("Tracker", Attack(4), 14, "When alive, next summoned creature is invincible one turn.", reaction = new TrackerReaction, data = java.lang.Boolean.FALSE, effects = effects(Direct -> initTracker)),
+    new Creature("Tracker", Attack(4), 14, "When alive, next summoned creature is invincible one turn.", reaction = new TrackerReaction, data = java.lang.Boolean.FALSE, effects = effects(Direct -> initDataFalse)),
     bounty,
     maiko,
     Spell("Echo",
@@ -36,7 +36,10 @@ Each turn deals 2 damage to opposite&aligned creatures.""", status = runFlag, ef
     new Creature("War guide", Attack(5), 26,
       """When alive, next summoned creature deals damage equals to his attack to
 opponent creatures.
-Heal 1 life to aligned creatures when a creature is summoned in the pack""", reaction = new GuideReaction, data = java.lang.Boolean.FALSE),
+Heal 1 life to aligned creatures when a creature is summoned in the pack""",
+      reaction = new GuideReaction,
+      data = java.lang.Boolean.FALSE,
+      effects = effects(Direct -> initDataFalse)),
     new Creature("Janus", Attack(6), 25,
       """each turn drain (1/10maxlife) life from other side of the board
 if there is a symetric creature to heal him by 2
@@ -83,7 +86,7 @@ if earth heal 2 life to owner""", effects = effects(Direct -> amaterasu), reacti
     }
   }
 
-  private def initTracker = {env: Env ⇒
+  private def initDataFalse = {env: Env ⇒
     import env._
     player.slots(selected) setData java.lang.Boolean.FALSE
   }
@@ -276,10 +279,13 @@ trait OnSummonable {
 
 class TrackerReaction extends Reaction with OnSummonable {
   final def onSummoned(slot: SlotUpdate) = {
-    if (!selected.get.data.asInstanceOf[Boolean] && selected != slot) {
-      slot toggle invincibleFlag
-      slot.player addEffect (OnTurn -> RemoveInvincible(slot.get.id))
-      selected setData java.lang.Boolean.TRUE
+    // FIXME weird case where wall of flame kill bennu, and bennu kill wall of flame before this is called
+    selected.value foreach { state =>
+      if (!state.data.asInstanceOf[Boolean] && selected != slot) {
+        slot toggle invincibleFlag
+        slot.player addEffect (OnTurn -> RemoveInvincible(slot.get.id))
+        selected setData java.lang.Boolean.TRUE
+      }
     }
   }
 }

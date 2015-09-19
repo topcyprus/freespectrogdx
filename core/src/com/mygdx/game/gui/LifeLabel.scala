@@ -34,7 +34,7 @@ class LifeLabel(name: String, getLife : => Int, skin : Skin) {
 }
 
 
-class HouseLabel(getMana : => Int, house: House, skin : Skin, flip: Boolean = false) {
+class HouseLabel(getMana : => Int, val house: House, skin : Skin, flip: Boolean = false) {
   val label = new Label(house.name + " ", skin)
   val direction = if (flip) -1 else 1
   val manaLabel = DamagableInt(getMana, skin, if (flip) -1 else 1)
@@ -69,7 +69,7 @@ class DamagableInt(getValue: ⇒ Int, label : Label, direction : Int = 1)  {
   def refresh(silent: Boolean = false) {
     val old = current
     current = getValue
-    label.setText(current.toString)
+    label.addAction(new UpdateAction[Label](_.setText(current.toString)))
     val d = current - old
     if (d != 0 && !silent) {
       panel.addAction(new DamageAction(d, panel, label.getStyle, direction))

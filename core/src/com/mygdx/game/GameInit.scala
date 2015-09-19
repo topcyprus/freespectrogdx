@@ -1,5 +1,6 @@
 package com.mygdx.game
 
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.{Group, Actor}
@@ -14,20 +15,22 @@ import priv.util.Utils._
 
 
 class GameInit(screenResources : ScreenResources, gameResources : GameResources) {
-  val spGame = new SpGame(new Local(gameResources), gameResources)
+  val spGame           = new SpGame(new Local(gameResources), gameResources)
   val descriptionPanel = new DescriptionPanel(spGame, screenResources)
+  val historyPanel     = new DescriptionPanel(spGame, screenResources, Color.GRAY)
+  val userMenu         = new UserMenu(screenResources)
   val slotPanels = playerIds.map{ playerId =>
-    new SlotPanel(playerId, spGame, screenResources)
+    new SlotPanel(playerId, spGame, descriptionPanel, screenResources)
   }
   val cardPanels = playerIds.map{ playerId =>
     new CardPanel(playerId, spGame, descriptionPanel, screenResources)
   }
-  val userMenu         = new UserMenu(screenResources)
-  val board            = new Board(spGame.myPlayerId, slotPanels, cardPanels, descriptionPanel, userMenu)
-  screenResources.stage addActor board.panel
+  val board           = new Board(spGame.myPlayerId, slotPanels, cardPanels, descriptionPanel, historyPanel, userMenu)
   val commandRecorder = new CommandRecorder(spGame, board)
   spGame.controller   = new UserGameController(board, commandRecorder, screenResources)
   spGame.updater.updateListener = new GameUpdateListener(board, spGame, screenResources)
+
+  screenResources.stage addActor board.panel
   slotPanels foreach (_.init(commandRecorder))
   cardPanels foreach (_.init(commandRecorder))
 
@@ -101,7 +104,7 @@ class UserGameController(board : Board, commandRecorder : CommandRecorder, scree
   }
 
   def notifyPlayed(card : Option[Card]) : Unit = {
-
+    board.historyPanel.update(card)
   }
 
   def setPhase(player : PlayerId, phase : Option[String]): Unit = {

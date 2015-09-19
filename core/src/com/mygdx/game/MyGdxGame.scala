@@ -106,7 +106,7 @@ class ScreenResources {
     atlas.dispose()
   }
 
-  def loadConfig() = ConfigFactory.parseFile(Gdx.files.internal("application.conf").file())
+  def loadConfig() = ConfigFactory.parseReader(Gdx.files.internal("application.conf").reader())
 }
 
 class EffectResources(val shaders: Shaders, resources: ScreenResources) {

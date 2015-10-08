@@ -59,6 +59,12 @@ object HighPriest {
   HighPriest.initCards(Houses.basicCostFunc, hpSet)
   val additionalCards = hpSet
 
+
+  Seq(ouroboros, guardianMummy, sunStone, sunStone) foreach { c =>
+    c.houseId = HighPriest.houseId
+    c.houseIndex = HighPriest.houseIndex
+  }
+
   def getData(p: PlayerState) = p.data.asInstanceOf[HPriestData]
 
   def init = { env: Env ⇒ choosePath(env.player) }

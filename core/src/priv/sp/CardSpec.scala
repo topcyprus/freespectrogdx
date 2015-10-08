@@ -96,9 +96,10 @@ case class Damage(amount: Int, context: Context, isAbility: Boolean = false, isS
 }
 
 sealed trait CardInputSpec
-case class SelectOwner(f: (PlayerId, GameState) ⇒ Seq[Int]) extends CardInputSpec
-case object SelectOwnerSlot extends CardInputSpec
-case object SelectOwnerCreature extends CardInputSpec
+trait OwnerInputSlot
+case class SelectOwner(f: (PlayerId, GameState) ⇒ Seq[Int]) extends CardInputSpec with OwnerInputSlot
+case object SelectOwnerSlot extends CardInputSpec with OwnerInputSlot
+case object SelectOwnerCreature extends CardInputSpec with OwnerInputSlot
 case class SelectTarget(f: (PlayerId, GameState) ⇒ Seq[Int]) extends CardInputSpec
 case object SelectTargetSlot extends CardInputSpec
 case object SelectTargetCreature extends CardInputSpec

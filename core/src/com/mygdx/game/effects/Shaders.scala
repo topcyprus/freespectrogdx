@@ -7,13 +7,12 @@ import com.typesafe.config.Config
 
 import collection._
 import com.badlogic.gdx.graphics.glutils.ShaderProgram
-import priv.util.{Utils, GBufferUtils, ResourceCache}
-import com.mygdx.game.ScreenResources
+import priv.util.ResourceCache
 
 class Shaders extends ResourceCache[String, Shader] {
 
   def load(path: String) = resources.getOrElseUpdate(path, new BasicShader(path))
-  def clean() = resources.values foreach (res ⇒ res.program.dispose())
+  def dispose() = resources.values foreach (res ⇒ res.program.dispose())
 
   class BasicShader(name: String) extends Shader {
     val program = Shader create name
@@ -53,41 +52,6 @@ trait Shader {
   }
 }
 
-class HoverShader(name: String, resources: ScreenResources) extends Shader {
-  val program = Shader create name
-  val grad :: width :: height :: cursor :: _ = getUniformLocations("grads", "width", "height", "cursor")
-  val fbuffer = GBufferUtils createFloatBuffer 200
-  val texture = resources.atlas.findRegion("combat/glow")
-
-  fillBuffer(fbuffer)
-  used {
-    program.setUniform2fv(grad, fbuffer.array(), 0, 200)
-    program.setUniformf(width, texture.getRegionWidth.toFloat)
-    program.setUniformf(height, texture.getRegionHeight.toFloat)
-  }
-
-  private def fillBuffer(fbuffer: java.nio.FloatBuffer) {
-    //useless cr*p
-    def radial(cx: Int, cy: Int)(x: Int, y: Int, vx: Float, vy: Float): (Float, Float) = {
-      @inline def pow2(v: Int) = v * v
-
-      val dist = pow2(x - cx) + pow2(y - cy)
-      val fac = 2f / (1 + dist / 10)
-      (vx * fac, vy * fac)
-    }
-
-    val arr = Array.fill(100)(Utils.floatRand(math.Pi * 2))
-    val rad = radial(5, 5) _
-    for (i ← 0 until arr.length) {
-      val y = i / 10
-      val x = i - 10 * y
-      val (gx, gy) = rad(x, y, math.cos(arr(i)).floatValue, math.sin(arr(i)).floatValue)
-      fbuffer put gx
-      fbuffer put gy
-    }
-    fbuffer.rewind()
-  }
-}
 
 class SelectedShader(name: String, config : Config) extends Shader {
   pedantic = false

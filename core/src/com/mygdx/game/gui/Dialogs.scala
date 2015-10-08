@@ -3,6 +3,7 @@ package com.mygdx.game.gui
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.scenes.scene2d.ui.{Table, Skin, Dialog}
 import com.badlogic.gdx.scenes.scene2d.ui.{List => UIList}
+import com.mygdx.game.ScreenResources
 import priv.sp._
 
 object Dialogs {
@@ -14,15 +15,7 @@ object Dialogs {
   }
 }
 
-class EndMessage(msg: String, skin : Skin) extends Dialog(msg, skin){
-  button("ok")
-
-  Dialogs.center(this)
-
-}
-
-
-class GameSettings(resources : GameResources,skin : Skin) extends Dialog("game settings", skin) {
+class GameSettings(resources : GameResources, screenResources : ScreenResources) extends Dialog("game settings", screenResources.skin) {
   Dialogs.center(this)
 
   // TODO multi selection
@@ -32,7 +25,7 @@ class GameSettings(resources : GameResources,skin : Skin) extends Dialog("game s
     val specials = resources.sp.houses.special
     val randomLabel = "<random>"
     val choices = (randomLabel :: specials.map(_.name)).toArray
-    val l = new UIList[String](skin)
+    val l = new UIList[String](screenResources.skin)
     l.getSelection
     l.setItems(choices : _*)
     resources.playerChoices(id) foreach (h =>l.setSelected(h.name))
@@ -49,6 +42,7 @@ class GameSettings(resources : GameResources,skin : Skin) extends Dialog("game s
 
   }
 
+  screenResources.renderSystem.setProcessing(false) // HACK to avoid entities on dialog
   val choices = playerIds map { id ⇒
     val c = new PlayerChoice(id)
     add(c.table)
@@ -64,6 +58,7 @@ class GameSettings(resources : GameResources,skin : Skin) extends Dialog("game s
         choices.foreach(_.updateResources())
       case _ =>
     }
+    screenResources.renderSystem.setProcessing(true)
   }
 
   pack()

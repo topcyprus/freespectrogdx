@@ -128,7 +128,7 @@ trait ResourceCache[A, B] {
   def gets(path: A*): List[B] = path.map(get)(breakOut)
   def getOrElseUpdate[C <: B](path: A, create: A ⇒ C): C = resources.getOrElseUpdate(path, create(path)).asInstanceOf[C]
   def load(path: A): B
-  def clean()
+  def dispose()
 }
 
 abstract class FieldUpdate[A](parent: Option[FieldUpdate[_]], getValue: ⇒ A) {

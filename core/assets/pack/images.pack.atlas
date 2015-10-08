@@ -1,5 +1,25 @@
 
 images.pack.png
+size: 128,128
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+particle
+  rotate: false
+  xy: 2, 2
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+smoke
+  rotate: false
+  xy: 2, 36
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+
+images.pack2.png
 size: 256,256
 format: RGBA8888
 filter: Nearest,Nearest
@@ -61,7 +81,7 @@ cards/dude/Two P
   offset: 0, 0
   index: -1
 
-images.pack2.png
+images.pack3.png
 size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
@@ -130,7 +150,7 @@ cards/elementalist/Sylph
   offset: 0, 0
   index: -1
 
-images.pack3.png
+images.pack4.png
 size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
@@ -199,7 +219,7 @@ cards/junk/Trash Cyborg
   offset: 0, 0
   index: -1
 
-images.pack4.png
+images.pack5.png
 size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
@@ -282,7 +302,7 @@ cards/fairyknight/two-headed gorynych
   offset: 0, 0
   index: -1
 
-images.pack5.png
+images.pack6.png
 size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
@@ -351,7 +371,7 @@ cards/shaman/ghost wolf
   offset: 0, 0
   index: -1
 
-images.pack6.png
+images.pack7.png
 size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
@@ -420,7 +440,7 @@ cards/entomologist/Wasp Drone
   offset: 0, 0
   index: -1
 
-images.pack7.png
+images.pack8.png
 size: 256,256
 format: RGBA8888
 filter: Nearest,Nearest
@@ -482,7 +502,7 @@ cards/moutainking/Runesmith
   offset: 0, 0
   index: -1
 
-images.pack8.png
+images.pack9.png
 size: 1024,256
 format: RGBA8888
 filter: Nearest,Nearest
@@ -628,7 +648,7 @@ cards/highpriest/sun stone
   offset: 0, 0
   index: -1
 
-images.pack9.png
+images.pack10.png
 size: 512,256
 format: RGBA8888
 filter: Nearest,Nearest
@@ -718,7 +738,7 @@ cards/disciples/wind of oppression
   offset: 0, 0
   index: -1
 
-images.pack10.png
+images.pack11.png
 size: 256,256
 format: RGBA8888
 filter: Nearest,Nearest
@@ -780,7 +800,7 @@ cards/darksider/Wolf spider
   offset: 0, 0
   index: -1
 
-images.pack11.png
+images.pack12.png
 size: 1024,512
 format: RGBA8888
 filter: Nearest,Nearest
@@ -1129,7 +1149,7 @@ cards/base/woods hermit
   offset: 0, 0
   index: -1
 
-images.pack12.png
+images.pack13.png
 size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
@@ -1212,7 +1232,7 @@ cards/darkpriest/shadow of priest
   offset: 0, 0
   index: -1
 
-images.pack13.png
+images.pack14.png
 size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
@@ -1274,7 +1294,7 @@ cards/wind/Winged Warrior
   offset: 0, 0
   index: -1
 
-images.pack14.png
+images.pack15.png
 size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
@@ -1321,7 +1341,7 @@ cards/zen/Mimic
   orig: 80, 80
   offset: 0, 0
   index: -1
-cards/zen/Redlight bringer
+cards/zen/Redlight
   rotate: false
   xy: 509, 25
   size: 80, 80
@@ -1343,7 +1363,7 @@ cards/zen/Zen Fighter
   offset: 0, 0
   index: -1
 
-images.pack15.png
+images.pack16.png
 size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
@@ -1405,7 +1425,7 @@ cards/dreamweaver/Spiritual Guide
   offset: 0, 0
   index: -1
 
-images.pack16.png
+images.pack17.png
 size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
@@ -1467,7 +1487,7 @@ cards/sower/Tangling
   offset: 0, 0
   index: -1
 
-images.pack17.png
+images.pack18.png
 size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
@@ -1536,7 +1556,7 @@ cards/snowblood/War guide
   offset: 0, 0
   index: -1
 
-images.pack18.png
+images.pack19.png
 size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
@@ -1605,7 +1625,7 @@ cards/warp/Warp Queen
   offset: 0, 0
   index: -1
 
-images.pack19.png
+images.pack20.png
 size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
@@ -1674,7 +1694,7 @@ cards/troopers/Wraith
   offset: 0, 0
   index: -1
 
-images.pack20.png
+images.pack21.png
 size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
@@ -1750,7 +1770,7 @@ cards/vampires/black angel
   offset: 0, 0
   index: -1
 
-images.pack21.png
+images.pack22.png
 size: 1024,512
 format: RGBA8888
 filter: Nearest,Nearest

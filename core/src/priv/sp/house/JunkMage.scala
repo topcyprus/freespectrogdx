@@ -18,14 +18,14 @@ class JunkMage {
 
   val Junk: House = House("Junk", List(
     new Creature("Screamer", AttackSources(Some(2), Vector(ScreamerAttackSource)), 14, "+1 attack for each screamer in play", reaction = new ScreamerReaction),
-    Spell("Poison flower", "Deals 5 damage to owner target creature, his opposite creature, \nthen the opposite neighbors.\nDeals -1 mana for target and opposite creature.",
+    Spell("Poison flower", "Deals 5 damage to owner target creature, his opposite creature,  then the opposite neighbors.\nDeals -1 mana for target and opposite creature.",
       inputSpec = Some(SelectOwnerCreature),
       effects = effects(Direct -> poisonFlower)),
     new Creature("Junkyard fortune", Attack(3), 15, "Absorb 4 of first damage done to owner", reaction = new JFReaction, effects = effects(OnEndTurn -> resetProtect), data = java.lang.Boolean.FALSE),
-    new Creature("Chain controller", Attack(4), 18, "Mirror spawn of adjacent creature of cost <4.\n When adjacent creature of cost <6 die,\n fill the slot with another weak creature nearby", reaction = new ChainControllerReaction),
-    new Creature("Roaming assassin", Attack(6), 27, "At end of turn, if unblocked, move to the closest next unblocked opponent\n and deals 5 damage to it", effects = effects(OnEndTurn -> roam)),
-    new Creature("Factory", Attack(4), 29, "Mirror spawn of adjacent creature of cost < 6\n(spawn effect applied once)\n, and heals factory by 5", reaction = new FactoryReaction),
-    new Creature("Recycling Bot", Attack(8), 29, "When owner creature die, the creature heals 10 life,\n and heals 2 life to its owner for each creature lost.", reaction = new RecyclingBotReaction),
+    new Creature("Chain controller", Attack(4), 18, "Mirror spawn of adjacent creature of cost <4.\n When adjacent creature of cost <6 die, fill the slot with another weak creature nearby", reaction = new ChainControllerReaction),
+    new Creature("Roaming assassin", Attack(6), 27, "At end of turn, if unblocked, move to the closest next unblocked opponent and deals 5 damage to it", effects = effects(OnEndTurn -> roam)),
+    new Creature("Factory", Attack(4), 29, "Mirror spawn of adjacent creature of cost < 6 (spawn effect applied once), and heals factory by 5", reaction = new FactoryReaction),
+    new Creature("Recycling Bot", Attack(8), 29, "When owner creature die, the creature heals 10 life, and heals 2 life to its owner for each creature lost.", reaction = new RecyclingBotReaction),
     trashCyborg), eventListener = Some(new CustomListener(new JunkEventListener)))
 
   val jf = Junk.cards(2).asCreature

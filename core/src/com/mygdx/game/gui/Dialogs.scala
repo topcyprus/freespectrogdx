@@ -1,9 +1,9 @@
 package com.mygdx.game.gui
 
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.scenes.scene2d.ui.{Table, Skin, Dialog}
-import com.badlogic.gdx.scenes.scene2d.ui.{List => UIList}
-import com.mygdx.game.ScreenResources
+import com.badlogic.gdx.scenes.scene2d.ui.{List => _, _}
+import com.badlogic.gdx.utils.Scaling
+import com.mygdx.game.{onClick, ScreenResources}
 import priv.sp._
 
 object Dialogs {
@@ -16,41 +16,66 @@ object Dialogs {
 }
 
 class GameSettings(resources : GameResources, screenResources : ScreenResources) extends Dialog("game settings", screenResources.skin) {
-  Dialogs.center(this)
 
-  // TODO multi selection
   class PlayerChoice(id: PlayerId) {
-    val table = new Table
+    private val table = new Table
 
     val specials = resources.sp.houses.special
-    val randomLabel = "<random>"
-    val choices = (randomLabel :: specials.map(_.name)).toArray
-    val l = new UIList[String](screenResources.skin)
-    l.getSelection
-    l.setItems(choices : _*)
-    resources.playerChoices(id) foreach (h =>l.setSelected(h.name))
+    var n = 0
+    val choiceCheckBoxes : Map[String, CheckBox] = specials.map(_.name)
+      .map { choice =>
+        val checkbox = new CheckBox(choice, screenResources.skin)
+        table add checkbox
+        n += 1
+        if (n % 2 == 0) table.row()
+        (choice, checkbox)
+      }.toMap
+    table.row()
+
+    val group = column(com.mygdx.game.gui.row(
+      createBtn("all") { choiceCheckBoxes foreach (_._2.setChecked(true)) },
+      createBtn("clear") { choiceCheckBoxes foreach (_._2.setChecked(false)) },
+      createBtn("sinist") { select(resources.sp.houses.sinist) },
+      createBtn("others") { select(resources.sp.houses.others) },
+      createBtn("bs") { select(resources.sp.houses.bs) }),
+      table)
+
+    def createBtn(name : String)(f : => Unit) = {
+      val btn = new TextButton(name, screenResources.skin)
+      btn.addListener(onClick{
+        f
+      })
+      btn
+    }
+
+    resources.playerChoices(id) foreach (h => choiceCheckBoxes(h.name).setChecked(true))
     updateResources()
-    table add l
 
     def updateResources() : Unit = {
-      if (l.getSelectedIndex != -1) {
-        val choices = if (l.getSelected == randomLabel) Nil else specials.filter(x ⇒ l.getSelected == x.name)
-        resources.playerChoices = resources.playerChoices.updated(id, choices)
+      val selecteds = choiceCheckBoxes.collect { case (choice, checkbox) if checkbox.isChecked => choice }.toSet
+      resources.playerChoices = resources.playerChoices.updated(id, specials.filter(x ⇒ selecteds.contains(x.name)))
+    }
+
+    def select(houses: List[House]) : Unit = {
+      houses.foreach { h ⇒
+        choiceCheckBoxes(h.name).setChecked(true)
       }
     }
 
-
   }
 
-  screenResources.renderSystem.setProcessing(false) // HACK to avoid entities on dialog
-  val choices = playerIds map { id ⇒
-    val c = new PlayerChoice(id)
-    add(c.table)
-    c
-  }
+  screenResources.renderSystem setProcessing false  // HACK to avoid entities on dialog
+
+  val choices = playerIds map { id ⇒ new PlayerChoice(id) }
+  val pane = new SplitPane(choices(owner).group, choices(opponent).group, false, screenResources.skin)
+
+  getContentTable.add(pane)
 
   button("ok", 'ok)
   button("cancel", 'cancel)
+  pack()
+
+  Dialogs.center(this)
 
   protected override def result (obj: AnyRef) : Unit = {
     obj match {
@@ -58,8 +83,49 @@ class GameSettings(resources : GameResources, screenResources : ScreenResources)
         choices.foreach(_.updateResources())
       case _ =>
     }
-    screenResources.renderSystem.setProcessing(true)
+    screenResources.renderSystem setProcessing true
   }
 
+}
+
+class HouseDescription (house : House, resources : ScreenResources)
+  extends Dialog(house.name, resources.skin) {
+
+  val table = new Table()
+  val pane = new ScrollPane(table)
+
+  if (house.description.nonEmpty){
+    val label = new Label(house.description, resources.skin)
+    label.setWrap(true)
+    table.add(label).colspan(4).width(750)
+    table.row()
+  }
+
+  var n = 0
+  house.allCards foreach { card =>
+    val path = CardActors.getPath(card, house)
+    val image = new Image(resources.atlas createSprite path)
+    val descriptionPanel = new DescriptionPanel(resources, descWidth = 300, displayCost = true)
+
+    descriptionPanel update Some(card)
+    table.add(image).height(image.getHeight).center()
+    table.add(descriptionPanel.panel).growY().top().left().pad(10)
+    n += 1
+    if (n % 2 == 0) {
+      table.row()
+    }
+  }
+
+  getContentTable add pane
+  button("ok", 'ok)
+  setResizable(true)
   pack()
+  setWidth(math.min(getWidth, 800))
+  setHeight(math.min(getHeight, 750))
+  Dialogs.center(this)
+  resources.renderSystem setProcessing false
+
+  protected override def result (obj: AnyRef) : Unit = {
+    resources.renderSystem setProcessing true
+  }
 }

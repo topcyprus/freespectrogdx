@@ -19,7 +19,7 @@ class ZenMage {
       effects = effects(Direct -> focusSpell)),
     new Creature("Electric guard", Attack(3), 19, "deals 3 damage to creatures damaging owner.", reaction = new EGuardReaction),
     new Creature("Dreamer", Attack(6), 24, "When in play spell are summoned with one turn late butwith cost -2.", reaction = new DreamerReaction),
-    new Creature("Mimic", Attack(6), 26, "When in play, creature are summoned with one turn late with cost -2,\n giving 3 life to owner.", reaction = new MimicReaction),
+    new Creature("Mimic", Attack(6), 26, "When in play, creature are summoned with one turn late with cost -2, giving 3 life to owner.", reaction = new MimicReaction),
     new Creature("Spiral of light", Attack(3), 19, "each turn, heals 1,2,3,2,1 to self and 4 adjacent cards\ndeals 1,2,3,2,1 to 5 opposite creatures", effects = effects(OnTurn -> spiral), runAttack = new SpiralAttack),
     new Creature("Zen Fighter", Attack(5), 21, "Increase owner highest mana by 1.\nZen Fighter receives 50% damage from spells and abilities", reaction = new ZFReaction, effects = effects(OnTurn -> zenEffect))), eventListener = Some(new CustomListener(new ZenEventListener)))
 

@@ -44,6 +44,17 @@ case class House(
   def writeExternal(out: ObjectOutput) { out.writeInt(houseId) }
   def readExternal(in: ObjectInput) { houseId = in.readInt() }
   protected def readResolve(): Object = { HouseSingleton.getHouseById(houseId) }
+
+  private var additionalCards = List.empty[Card]
+  def addAdditionalCards(cards : Card*) = {
+    cards foreach { c =>
+      c.houseIndex = houseIndex
+      c.houseId = houseId
+    }
+    additionalCards  = additionalCards ++ cards
+  }
+
+  def allCards = cards ++ additionalCards
 }
 
 sealed trait ListenerBuilder
@@ -93,13 +104,7 @@ class Houses
   val specialNames: Set[String] = special.map(_.name)(breakOut)
   val specialByName: Map[String, House] = special.map { c ⇒ (c.name, c) }(breakOut)
   private val allHouses = base ++ special
-  private val allCards = {
-    (allHouses.flatMap(_.cards)
-      ++ shaman.additionalCards
-      ++ lostChurch.additionalCards
-      ++ highPriest.additionalCards
-      ++ sb.additionalCards)
-  }
+  private val allCards = allHouses.flatMap(_.allCards)
 
   val getHouseById: Map[Int, House] = allHouses.map(h ⇒ h.houseId -> h)(breakOut)
   def getCardById(id: Int): Card = allCards.find(_.id == id) getOrElse sys.error(s"card id $id not found ")

@@ -1,5 +1,6 @@
 package com.mygdx.game.gui
 
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.scenes.scene2d.{InputEvent, Actor}
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
@@ -74,11 +75,27 @@ class CardPanel(playerId: PlayerId,
     }
   }
 
-  houseLabels(4).panel.addListener(new ClickListener() with HoverToDesc {
-    def descPanel = descriptionPanel
+  houseLabels foreach { houseLabel =>
+    houseLabel.panel.addListener(new ClickListener() with HoverToDesc {
 
-    def described = Some(houseLabels(4).house)
-  })
+      def descPanel = descriptionPanel
+
+      def described = Some(houseLabel.house)
+
+      override def enter(event: InputEvent, x: Float, y: Float, pointer : Int, fromActor : Actor) : Unit = {
+        houseLabel.label setColor Color.BLUE
+        super.enter(event, x, y, pointer, fromActor)
+      }
+      override def exit(event: InputEvent, x: Float, y: Float, pointer : Int, fromActor : Actor) : Unit = {
+        houseLabel.label setColor Color.WHITE
+        super.exit(event, x, y, pointer, fromActor)
+      }
+
+      override def clicked(event: InputEvent, x: Float, y: Float): Unit = {
+        resources.stage addActor new HouseDescription(houseLabel.house, resources)
+      }
+    })
+  }
 
   val panel = new Table
   val houseActors : Seq[Actor] = houseCardButtons map { case (houseLabel, _) => houseLabel.panel }

@@ -20,75 +20,13 @@ smoke
   index: -1
 
 images.pack2.png
-size: 256,256
-format: RGBA8888
-filter: Nearest,Nearest
-repeat: none
-cards/dude/Andore
-  rotate: false
-  xy: 2, 166
-  size: 80, 80
-  orig: 80, 80
-  offset: 0, 0
-  index: -1
-cards/dude/Axl
-  rotate: false
-  xy: 2, 84
-  size: 80, 80
-  orig: 80, 80
-  offset: 0, 0
-  index: -1
-cards/dude/Bill Bull
-  rotate: false
-  xy: 84, 166
-  size: 80, 80
-  orig: 80, 80
-  offset: 0, 0
-  index: -1
-cards/dude/Bred
-  rotate: false
-  xy: 2, 2
-  size: 80, 80
-  orig: 80, 80
-  offset: 0, 0
-  index: -1
-cards/dude/Edi E
-  rotate: false
-  xy: 84, 84
-  size: 80, 80
-  orig: 80, 80
-  offset: 0, 0
-  index: -1
-cards/dude/El Gado
-  rotate: false
-  xy: 166, 166
-  size: 80, 80
-  orig: 80, 80
-  offset: 0, 0
-  index: -1
-cards/dude/Rolento
-  rotate: false
-  xy: 84, 2
-  size: 80, 80
-  orig: 80, 80
-  offset: 0, 0
-  index: -1
-cards/dude/Two P
-  rotate: false
-  xy: 166, 84
-  size: 80, 80
-  orig: 80, 80
-  offset: 0, 0
-  index: -1
-
-images.pack3.png
 size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
 cards/elementalist/ArchPhoenix
   rotate: false
-  xy: 487, 25
+  xy: 390, 25
   size: 80, 80
   orig: 80, 80
   offset: 0, 0
@@ -114,43 +52,36 @@ cards/elementalist/Frost lightning
   orig: 95, 103
   offset: 0, 0
   index: -1
-cards/elementalist/Hivemind
+cards/elementalist/Incineration
   rotate: false
   xy: 293, 2
   size: 95, 103
   orig: 95, 103
   offset: 0, 0
   index: -1
-cards/elementalist/Incineration
-  rotate: false
-  xy: 390, 2
-  size: 95, 103
-  orig: 95, 103
-  offset: 0, 0
-  index: -1
 cards/elementalist/Salamander
   rotate: false
-  xy: 569, 25
+  xy: 472, 25
   size: 80, 80
   orig: 80, 80
   offset: 0, 0
   index: -1
 cards/elementalist/Stone golem
   rotate: false
-  xy: 651, 25
+  xy: 554, 25
   size: 80, 80
   orig: 80, 80
   offset: 0, 0
   index: -1
 cards/elementalist/Sylph
   rotate: false
-  xy: 733, 25
+  xy: 636, 25
   size: 80, 80
   orig: 80, 80
   offset: 0, 0
   index: -1
 
-images.pack4.png
+images.pack3.png
 size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
@@ -219,7 +150,7 @@ cards/junk/Trash Cyborg
   offset: 0, 0
   index: -1
 
-images.pack5.png
+images.pack4.png
 size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
@@ -302,7 +233,7 @@ cards/fairyknight/two-headed gorynych
   offset: 0, 0
   index: -1
 
-images.pack6.png
+images.pack5.png
 size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
@@ -371,70 +302,139 @@ cards/shaman/ghost wolf
   offset: 0, 0
   index: -1
 
-images.pack7.png
+images.pack6.png
 size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
 cards/entomologist/Assassin Wasp
   rotate: false
-  xy: 99, 25
+  xy: 196, 25
   size: 80, 80
   orig: 80, 80
   offset: 0, 0
   index: -1
 cards/entomologist/Fire Beetle
   rotate: false
-  xy: 181, 25
+  xy: 278, 25
   size: 80, 80
   orig: 80, 80
   offset: 0, 0
   index: -1
 cards/entomologist/Giant Ant
   rotate: false
-  xy: 263, 25
+  xy: 360, 25
   size: 80, 80
   orig: 80, 80
   offset: 0, 0
   index: -1
-cards/entomologist/Insect Hive
-  rotate: false
-  xy: 345, 25
-  size: 80, 80
-  orig: 80, 80
-  offset: 0, 0
-  index: -1
-cards/entomologist/Insect Warrior
-  rotate: false
-  xy: 427, 25
-  size: 80, 80
-  orig: 80, 80
-  offset: 0, 0
-  index: -1
-cards/entomologist/Locust Swarm
+cards/entomologist/Hivemind
   rotate: false
   xy: 2, 2
   size: 95, 103
   orig: 95, 103
   offset: 0, 0
   index: -1
+cards/entomologist/Insect Hive
+  rotate: false
+  xy: 442, 25
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+cards/entomologist/Insect Warrior
+  rotate: false
+  xy: 524, 25
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+cards/entomologist/Locust Swarm
+  rotate: false
+  xy: 99, 2
+  size: 95, 103
+  orig: 95, 103
+  offset: 0, 0
+  index: -1
 cards/entomologist/Poisonpowder Moth
   rotate: false
-  xy: 509, 25
+  xy: 606, 25
   size: 80, 80
   orig: 80, 80
   offset: 0, 0
   index: -1
 cards/entomologist/Red Mantis
   rotate: false
-  xy: 591, 25
+  xy: 688, 25
   size: 80, 80
   orig: 80, 80
   offset: 0, 0
   index: -1
 cards/entomologist/Wasp Drone
   rotate: false
-  xy: 673, 25
+  xy: 770, 25
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+
+images.pack7.png
+size: 256,256
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+cards/dudes/Andore
+  rotate: false
+  xy: 2, 166
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+cards/dudes/Axl
+  rotate: false
+  xy: 2, 84
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+cards/dudes/Bill Bull
+  rotate: false
+  xy: 84, 166
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+cards/dudes/Bred
+  rotate: false
+  xy: 2, 2
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+cards/dudes/Edi E
+  rotate: false
+  xy: 84, 84
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+cards/dudes/El Gado
+  rotate: false
+  xy: 166, 166
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+cards/dudes/Rolento
+  rotate: false
+  xy: 84, 2
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+cards/dudes/Two P
+  rotate: false
+  xy: 166, 84
   size: 80, 80
   orig: 80, 80
   offset: 0, 0

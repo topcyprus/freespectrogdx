@@ -23,8 +23,8 @@ import scala.concurrent.duration.Duration
 
 class GameInit(screenResources : ScreenResources, gameResources : GameResources) {
   val spGame           = new SpGame(new Local(gameResources), gameResources)
-  val descriptionPanel = new DescriptionPanel(spGame, screenResources)
-  val historyPanel     = new DescriptionPanel(spGame, screenResources, Color.GRAY)
+  val descriptionPanel = new DescriptionPanel(screenResources)
+  val historyPanel     = new DescriptionPanel(screenResources, Color.GRAY)
   val userMenu         = new UserMenu(screenResources)
   val selectedEffect   = new SelectedEffectActor(screenResources)
   val hoveredActor     = new HoveredActor(screenResources)

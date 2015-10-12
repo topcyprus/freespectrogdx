@@ -9,26 +9,26 @@ object Entomologist {
   import CardSpec._
 
   val giantAnt = new Creature("Giant Ant", Attack(5), 23, "All damage done to Giant Ant is reduced by 2.\nGiant Ant lowers the cost of other owner's Giant Ants by it while in play", reaction = new GiantReaction, effects = effects(Direct -> ant))
-  val assassinWasp = new Creature("Assassin Wasp", AttackSources(Some(5), Vector(AssassinAttackSource)), 26, "When Summoned, Assassin Wasp summons 2/14 Wasp Drones*\nin its adjacent slots.\nAssassin Wasp gains a + 2 to it's attack for each Wasp Drone in play.", effects = effects(Direct -> assassin))
+  val assassinWasp = new Creature("Assassin Wasp", AttackSources(Some(5), Vector(AssassinAttackSource)), 26, "When Summoned, Assassin Wasp summons 2/14 Wasp Drones* in its adjacent slots.\nAssassin Wasp gains a + 2 to it's attack for each Wasp Drone in play.", effects = effects(Direct -> assassin))
 
   val Entomologist: House = House("Entomologist", List(
     new Creature("Fire Beetle", Attack(3), 12, "When summoned, Fire Beetle deals 4 damage to it's opposite creature.\nWhen Fire Beetle dies it increases owner's Fire Power by 1.",
       reaction = new FireBeetleReaction,
       effects = effects(Direct -> beetle)),
-    new Creature("Poisonpowder Moth", Attack(3), 14, "Each turn Poisonpowder Moth deals 1 damage to all opponent creatures\n& to opponent.\nWhen Poisonpowder Moth dies it deals 3 damage to all opponent creatures.", effects = effects(OnTurn -> damage(1, isAbility = true), OnTurn -> focus(damageCreatures(1, isAbility = true))), reaction = new MothReaction),
-    Spell("Hivemind", "All caster's creatures attack target creature instead of their opposite\ncreature's this turn.", inputSpec = Some(SelectTargetCreature), effects = effects(Direct -> hivemind)),
-    Spell("Locust Swarm", "Summon a Locust Swarm onto a target opponent creature.\nTarget creature takes 8 damage each turn & opponent takes 4 damage\neach turn until target creatures dies.", inputSpec = Some(SelectTargetCreature), effects = effects(Direct -> locust)),
+    new Creature("Poisonpowder Moth", Attack(3), 14, "Each turn Poisonpowder Moth deals 1 damage to all opponent creatures & to opponent.\nWhen Poisonpowder Moth dies it deals 3 damage to all opponent creatures.", effects = effects(OnTurn -> damage(1, isAbility = true), OnTurn -> focus(damageCreatures(1, isAbility = true))), reaction = new MothReaction),
+    Spell("Hivemind", "All caster's creatures attack target creature instead of their opposite creature's this turn.", inputSpec = Some(SelectTargetCreature), effects = effects(Direct -> hivemind)),
+    Spell("Locust Swarm", "Summon a Locust Swarm onto a target opponent creature.\nTarget creature takes 8 damage each turn & opponent takes 4 damage each turn until target creatures dies.", inputSpec = Some(SelectTargetCreature), effects = effects(Direct -> locust)),
     giantAnt,
     assassinWasp,
-    new Creature("Insect Hive", Attack(2), 30, "At the end of each owner's turn Insect Hive summons a 4/10 Insect Warrior*\ninto a random owner's slot.", effects = effects(OnEndTurn -> hive)),
-    new Creature("Red Mantis", Attack(7), 47, "When summoned, Red Mantis reduces all opponent's powers by 1.\nRed Mantis lowers by 1 the growth of opponent's power of\nit's opposite creature's power type.\nWhen Red Mantis dies it deals 5 damage to it's opposite creature.", effects = effects(Direct -> { env: Env ⇒
+    new Creature("Insect Hive", Attack(2), 30, "At the end of each owner's turn Insect Hive summons a 4/10 Insect Warrior* into a random owner's slot.", effects = effects(OnEndTurn -> hive)),
+    new Creature("Red Mantis", Attack(7), 47, "When summoned, Red Mantis reduces all opponent's powers by 1.\nRed Mantis lowers by 1 the growth of opponent's power of it's opposite creature's power type.\nWhen Red Mantis dies it deals 5 damage to it's opposite creature.", effects = effects(Direct -> { env: Env ⇒
       env.otherPlayer.houses.incrMana(-1, 0, 1, 2, 3, 4)
     }, OnTurn -> mantis), reaction = new MantisReaction)), data = EntoState(), eventListener = Some(new CustomListener(new EntoEventListener)))
 
   Entomologist.initCards(Houses.basicCostFunc)
 
   private val drone = new Creature("Wasp Drone", Attack(2), 14, reaction = new DroneReaction)
-  private val insect = new Creature("Insect Warrior", Attack(4), 10, "When Insect Warrior dies it increases owner's\n Insect/Entomologist Power by 1.", reaction = new InsectReaction)
+  private val insect = new Creature("Insect Warrior", Attack(4), 10, "When Insect Warrior dies it increases owner's Insect/Entomologist Power by 1.", reaction = new InsectReaction)
 
   drone.cost = 0
   insect.cost = 1

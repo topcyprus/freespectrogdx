@@ -16,7 +16,7 @@ object LostChurch {
   val prisoner = new Creature("Prisoner", Attack(2), 10, "When dying loose 1 mana of the two highest basic houses and earn 1 special mana.", reaction = new PrisonerReaction)
   val enragedPrisoner = new Creature("Enraged Prisoner", Attack(7), 35, "Immune to spell & ability when liberator is alive.", reaction = new PrisonerReaction, status = runFlag)
   val windOfOppression = Spell("wind of oppression", "Stun scarecrow's opposite creature and its neighbours. Deals 5 damage to them", effects = effects(Direct -> oppress))
-  val darkMonk = new Creature("Dark monk", Attack(2), 13, "Decrease opponent fire mana by 2\nand increase cost of them by 1 when alive.",
+  val darkMonk = new Creature("Dark monk", Attack(2), 13, "Decrease opponent fire mana by 2 and increase cost of them by 1 when alive.",
     effects = effects(Direct -> guardFire), reaction = new DarkMonkReaction)
   val preacher = new Creature("Preacher", Attack(4), 13, "When in play normal cards cost 1 more mana.\nIncrease growth of special mana by 1.\nAdd 1 attack to prisoner",
     effects = effects(OnTurn -> addMana(1, 4)), reaction = new PreacherReaction)
@@ -44,13 +44,8 @@ Can switch with prisoner to nearest empty slot""",
     description =
       "When a disciple is low on life(<half), his belief is weakened, and he loose 1/3 attack.\nWhen prisoner die, owner loose 1 mana of 2 highest basic houses and\nearn one special mana.")
 
-  val additionalCards = List(windOfOppression, darkMonk)
-
   LostChurch initCards Houses.basicCostFunc
-  List(prisoner, enragedPrisoner, windOfOppression, darkMonk).foreach { c ⇒
-    c.houseIndex = LostChurch.houseIndex
-    c.houseId = LostChurch.houseId
-  }
+  LostChurch.addAdditionalCards(prisoner, enragedPrisoner, windOfOppression, darkMonk)
   windOfOppression.cost = 3
   windOfOppression.cardIndex = 4
   darkMonk.cost = 3

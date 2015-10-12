@@ -15,16 +15,16 @@ object Shaman {
     reaction = new WolfShadowReaction,
     effects = effects(Direct -> shade),
     runAttack = new WolfAttack)
-  val protector = new Creature("Spirit protector", Attack(4), 20, "while protector remains in the game, all damage received by owner\nwill be decreased by 2,\nand enemy spells will heal wolf instead of damaging.", reaction = new ProtectorReaction)
+  val protector = new Creature("Spirit protector", Attack(4), 20, "while protector remains in the game, all damage received by owner will be decreased by 2, and enemy spells will heal wolf instead of damaging.", reaction = new ProtectorReaction)
 
   val Shaman: House = House("Shaman", List(
     Spell("Unappeasable Hunger", "wolf receives +X attack (X - attack of strongest creature on board) for 1 turn.",
       effects = effects(Direct -> hunger)),
     new Creature("Spirit of rage", Attack(2), 10, "when enters the game, permanently increases attack of neighbours by 1.", effects = effects(Direct -> rage)),
-    Spell("Power of full moon", "permanently decreases damage dealt to wolf by 1 and\nheals 8 life to his neighbours and owner.", effects = effects(Direct -> fullMoon)),
-    Spell("Phantom fury", "Deals 7 damage to all enemy creatures and\n permanently increases wolf attack by 1\nfor each creature died this turn.", effects = effects(Direct -> phantomFury)),
+    Spell("Power of full moon", "permanently decreases damage dealt to wolf by 1 and heals 8 life to his neighbours and owner.", effects = effects(Direct -> fullMoon)),
+    Spell("Phantom fury", "Deals 7 damage to all enemy creatures and permanently increases wolf attack by 1 for each creature died this turn.", effects = effects(Direct -> phantomFury)),
     protector,
-    new Creature("Spirit hunter", Attack(6), 34, "while hunter remains in the game, wolf gets +2 attack and\nheals himself on the dealt damage when attacks.",
+    new Creature("Spirit hunter", Attack(6), 34, "while hunter remains in the game, wolf gets +2 attack and heals himself on the dealt damage when attacks.",
       reaction = new HunterReaction,
       effects = effects(Direct -> hunt)),
     shadow,
@@ -36,10 +36,8 @@ object Shaman {
     eventListener = Some(new CustomListener(new ShamanEventListener)),
     description = "Spirit of ancestors:\nAt the beginning of the game ghost wolf appears in slot next to the most right.")
 
-  val additionalCards = List(wolf)
+  Shaman.addAdditionalCards(wolf)
   wolf.cost = 2
-  wolf.houseIndex = 4
-  wolf.houseId = Shaman.houseId
   Shaman initCards Houses.basicCostFunc
 
   def getData(p: PlayerUpdate) = p.value.data.asInstanceOf[WolfState]

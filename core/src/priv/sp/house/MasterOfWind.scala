@@ -16,12 +16,12 @@ object MasterOfWind {
 
   val Wind: House = House("Wind", List(
     new Creature("Winged Warrior", Attack(4), 9, "next creature summoned will attack on the same turn as summoned.", effects = effects(Direct -> winge)),
-    Spell("Simoom", "Stuns target elemental creature, gives X mana\nX = half of cost of that creature\n(it will be rounded down).",
+    Spell("Simoom", "Stuns target elemental creature, gives X mana\nX = half of cost of that creature (it will be rounded down).",
       inputSpec = Some(SelectTarget(nonSpecial)),
       effects = effects(Direct -> simoom)),
     Spell("Ball Lightning", "Deals to opponent 7 damage, allows to use additional card this turn.", effects = effects(Direct -> ballLightning)),
     Spell("Squall", "Deals 1 damage to opponent and all his creatures.\nAllows to use two additional cards this turn.", effects = effects(Direct -> squall)),
-    Spell("Energetic vortex", "increases damage dealt by next owner spell by 50%\nand transfer 2 air mana from opponent to owner.", effects = effects(Direct -> vortex)),
+    Spell("Energetic vortex", "increases damage dealt by next owner spell by 50% and transfer 2 air mana from opponent to owner.", effects = effects(Direct -> vortex)),
     spirit,
     Spell("Whirlwind", "destroys the target creature and opposite one,\nallows to use additional card this turn.",
       inputSpec = Some(SelectOwnerCreature),

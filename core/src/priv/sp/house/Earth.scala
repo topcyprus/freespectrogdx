@@ -29,9 +29,9 @@ trait EarthHouse {
 
   private val forestSpider = new Creature("forest spider", Attack(2), 11) {
     cost = 1
-    houseIndex = Earth.houseIndex
-    houseId = Earth.houseId
   }
+
+  Earth.addAdditionalCards(forestSpider)
 
   private def fury = { env: Env ⇒
     import env._

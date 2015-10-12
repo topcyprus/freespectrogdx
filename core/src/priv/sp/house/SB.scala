@@ -52,11 +52,7 @@ if earth heal 2 life to owner""", effects = effects(Direct -> amaterasu), reacti
     eventListener = Some(new CustomListener(new SBEventListener)))
 
   SB initCards Houses.basicCostFunc
-  val additionalCards = List(deathLetter)
-  additionalCards foreach { c ⇒
-    c.houseIndex = SB.houseIndex
-    c.houseId = SB.houseId
-  }
+  SB.addAdditionalCards(deathLetter)
   deathLetter.cost = 3
   val maikoAbility = Ability(maiko, deathLetter)
 

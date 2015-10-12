@@ -13,12 +13,12 @@ class Dreamweaver {
   val Dreamweaver = House("Dreamweaver", List(
     new Creature("Ethereal Wisp", AttackSources(Some(2), Vector(EtherealAttackSource)), 8, "Ethereal Wisp takes no damage from enemy spells and abilities.\nEthereal Wisp's attack is increased by 1 for each other owner's creature.", reaction = new EtherealReaction),
     roc,
-    Spell("Aurora", "All creatures are healed for 12 life and\nadd 1 mana of their own type to their owner's mana pools.", effects = effects(Direct -> aurora)),
-    new Creature("Spiritual Guide", Attack(4), 19, "When Spiritual Guide is summoned, it heals all owner's creatures\nare healed an amount equal to owner's Dream power,\nand heals its owner by 3 life for each owner's creature.", effects = effects(Direct -> guide)),
-    new Creature("Living Sword", AttackSources(Some(4), Vector(SwordAttackSource)), 28, "Living Sword gains 1 attack power for each neighboring creature.\nWhen Living Sword attacks, if there are creatures adjacent to\nthe opposing slot it also attacks those creatures.", reaction = new SwordReaction, runAttack = new SwordAttack),
-    new Creature("Rainbow Butterfly", Attack(4), 31, "Each time opponent summons a Creature,\nRainbow Butterfly's owner gains 3 mana of that creature's type.\n(All Special creatures count as Dream for this purpose.)", reaction = new RainbowReaction),
+    Spell("Aurora", "All creatures are healed for 12 life and add 1 mana of their own type to their owner's mana pools.", effects = effects(Direct -> aurora)),
+    new Creature("Spiritual Guide", Attack(4), 19, "When Spiritual Guide is summoned, it heals all owner's creatures are healed an amount equal to owner's Dream power,\nand heals its owner by 3 life for each owner's creature.", effects = effects(Direct -> guide)),
+    new Creature("Living Sword", AttackSources(Some(4), Vector(SwordAttackSource)), 28, "Living Sword gains 1 attack power for each neighboring creature.\nWhen Living Sword attacks, if there are creatures adjacent to the opposing slot it also attacks those creatures.", reaction = new SwordReaction, runAttack = new SwordAttack),
+    new Creature("Rainbow Butterfly", Attack(4), 31, "Each time opponent summons a Creature, Rainbow Butterfly's owner gains 3 mana of that creature's type. (All Special creatures count as Dream for this purpose.)", reaction = new RainbowReaction),
     castle,
-    new Creature("Night Mare", AttackSources(Some(5), Vector(EtherealAttackSource)), 44, "When Nightmare is summoned, it deals 6 damage to each opponent's\ncreaturefor each empty opponent slot.\nNight Mare's attack is increased by 1 for each other owner's creature.", effects = effects(Direct -> mare), reaction = new NightmareReaction)), eventListener = Some(new CustomListener(new DreamweaverEventListener)))
+    new Creature("Night Mare", AttackSources(Some(5), Vector(EtherealAttackSource)), 44, "When Nightmare is summoned, it deals 6 damage to each opponent's creaturefor each empty opponent slot.\nNight Mare's attack is increased by 1 for each other owner's creature.", effects = effects(Direct -> mare), reaction = new NightmareReaction)), eventListener = Some(new CustomListener(new DreamweaverEventListener)))
 
   Dreamweaver.initCards(Houses.basicCostFunc)
 

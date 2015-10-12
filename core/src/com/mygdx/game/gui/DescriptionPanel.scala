@@ -3,39 +3,43 @@ package com.mygdx.game.gui
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.scenes.scene2d.{Actor, InputEvent}
-import com.badlogic.gdx.scenes.scene2d.ui.{VerticalGroup, Label}
+import com.badlogic.gdx.scenes.scene2d.ui.{Table, Container, VerticalGroup, Label}
 import com.badlogic.gdx.utils.Align
 import com.mygdx.game.ScreenResources
 import priv.sp._
 
-class DescriptionPanel(game: SpGame, resources : ScreenResources, color : Color = Color.WHITE) {
-  val panel = new VerticalGroup()
+class DescriptionPanel(resources : ScreenResources,
+                       color : Color = Color.WHITE,
+                       descWidth : Float = 350,
+                       displayCost : Boolean = false) {
+  val panel = new Table()
   val title = new Label("", resources.skin)
+  title setFontScale 1.1f
   val subtitle = new Label("", resources.skin)
   val description = new Label("", resources.skin)
-  description.setWrap(true) // FIXME
-  description.setFontScale(0.8f)
-  description.setWidth(200)
-  panel.setSize(200, 200)
-  panel.align(Align.bottomLeft)
+  description setWrap true
+  panel align Align.bottomLeft
+  panel.add(title).left
+  panel.add(subtitle).left
+  panel.row()
+  panel.add(description).left() width descWidth colspan 2
   List(title, subtitle, description) foreach (_.setColor(color))
 
   val update : Option[Described] => Unit = {
     case None =>
-      panel.clear()
+      panel.setVisible(false)
     case Some(described) =>
-      panel.clear()
-      title.setText(described.name)
-      panel.addActor(title)
       described match {
-        case c: Creature ⇒
-          subtitle.setText("Life : " + c.life + "  Attack : " + c.attack.base.getOrElse("X"))
-          panel.addActor(subtitle)
-        case _ ⇒
+        case c : Card if displayCost => title.setText(described.name + " ("+c.cost+")")
+        case _ => title setText described.name
       }
-      panel.addActor(description)
-      description.setText(described.description)
 
+      described match {
+        case c: Creature ⇒ subtitle.setText("Life : " + c.life + "  Attack : " + c.attack.base.getOrElse("X"))
+        case _ ⇒ subtitle.setText("")
+      }
+      description.setText(described.description.replaceAll("\\n",""))
+      panel.setVisible(true)
   }
 }
 

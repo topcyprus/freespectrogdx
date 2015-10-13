@@ -1,12 +1,11 @@
 package com.mygdx.game.gui
 
 
-import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.scenes.scene2d.ui.{VerticalGroup, Label}
 import com.badlogic.gdx.utils.Align
 import com.mygdx.game.ScreenResources
-import com.mygdx.game.component.DamageComponent
+import com.mygdx.game.component.{DamageEntity, DamageComponent}
 import priv.sp.House
 
 class LifeLabel(name: String, getLife : => Int, resources : ScreenResources) {
@@ -60,9 +59,7 @@ class DamagableInt(getValue: ⇒ Int, val label : Label, resources : ScreenResou
     label.addAction(new UpdateAction[Label](_.setText(current.toString)))
     val d = current - old
     if (d != 0 && !silent) {
-      val damage = new Entity
-      damage add new DamageComponent(d, getCoord(label), label.getStyle, direction)
-      resources.engine addEntity damage
+      resources.engine addEntity DamageEntity(new DamageComponent(d, getCoord(label), label.getStyle, direction))
     }
   }
 }

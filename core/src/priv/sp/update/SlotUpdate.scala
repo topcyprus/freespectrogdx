@@ -134,8 +134,8 @@ class AttackUpdate(slot: SlotUpdate) extends FieldUpdate(Some(slot), slot.value 
   @inline def get = value getOrElse sys.error("can't get attack of empty slot " + slot.num)
   def add(source: AttackSource) { if (get.base != some0) write(Some(get add source)) }
   def forceAdd(source: AttackSource) { write(Some(get add source)) }
-  def removeFirst(source: AttackSource) { write(Some(get removeFirst source)) }
-  def removeAny(source: AttackSource) { write(Some(get removeAny source)) }
+  def removeFirst(source: AttackSource) { write(value map (_ removeFirst source)) }
+  def removeAny(source: AttackSource) { write(value map (_ removeAny source)) }
   def has[A: reflect.ClassTag] = get.sources.exists {
     case _: A ⇒ true
     case _    ⇒ false

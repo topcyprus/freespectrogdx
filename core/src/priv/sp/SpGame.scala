@@ -17,7 +17,7 @@ trait SpGameController {
 
 class SpGame(val server: GameServer, resources: GameResources) {
 
-  var state = server.initState
+  @volatile var state = server.initState
   val sp = resources.sp
   val desc = server.desc
   val myPlayerId = other(server.playerId)
@@ -25,21 +25,6 @@ class SpGame(val server: GameServer, resources: GameResources) {
   val names = playerIds.map { id ⇒ if (id == myPlayerId) "me" else server.name }
   var gameLock = new priv.util.RichLock
   var controller : SpGameController = null
-
-  /**
-  // gui
-  val commandRecorder = new CommandRecorder(this)
-  val descriptionPanel = new DescriptionPanel(this)
-  val infoPanel = new InfoPanel(this)
-  val cardPanels = playerIds map (new CardPanel(_, this))
-  val slotPanels = playerIds map (new SlotPanel(_, this))
-  val topCardPanel = new TopCardPanel(playerIds(otherPlayerId), this)
-  val board = new Board(myPlayerId, slotPanels, cardPanels, topCardPanel, descriptionPanel, infoPanel, sp)
-
-  val surrenderButton = new GuiButton("New game")
-  val skipButton = new GuiButton("Skip turn")
-  val settingsButton = new GuiButton("Settings")
-  val restartButton = new GuiButton("Restart")*/
 
   val updater = new GameStateUpdater(state, desc)
   persistUpdater() // bullshit for warp
@@ -170,36 +155,7 @@ class SpGame(val server: GameServer, resources: GameResources) {
      })
    }
 
-  /**
-   private def spawn(entity: ⇒ TimedEntity, blocking: Boolean = false) {
-     val lockOption = if (blocking) Some(gameLock.lock) else None
-     /**world.doInRenderThread {
-       world.addTask(TaskSpawn(entity, lockOption))
-     }*/
-     if (blocking) gameLock.lockWait()
-   }*/
-
    private def refresh(silent: Boolean = false) = {
       controller.refresh(silent)
-     /**gameLock.waitLock { lock ⇒
-       world.addTask(new BlockingTask(board.refresh(silent), lock))
-     }*/
    }
-
-
-
 }
-
-/**
-class SpellNotif(sp: SpWorld, card: Card) extends TimedEntity {
-  val duration = 1000L
-  val cardTex = sp.textures.get("Images/Cards/" + card.image)
-
-  def render() {
-    glColor4f(1, 1, 1, 1)
-    tex.drawAt(Coord2i(200, 100), cardTex.id, cardTex.size)
-  }
-}
-
-class EndMessage(msg: String) extends Translate(Coord2i(100, 150), new GuiButton(msg, Fonts.big))
-*/

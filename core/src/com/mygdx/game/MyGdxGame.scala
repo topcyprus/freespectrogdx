@@ -101,16 +101,16 @@ class ScreenResources {
   val skin     = new Skin(Gdx.files.internal("data/uiskin.json"))
   val engine   = new Engine()
   val renderSystem   = new RenderSystem(batch, stage.getCamera)
-  val damageSystem   = new DamageSystem(engine, batch)
+  val scriptSystem   = new ScriptSystem()
   val particleSystem = new ParticleSystem(engine)
   val slotSystem     = new SlotSystem(batch)
   val timedSystem    = new TimedSystem(engine)
 
+  engine addSystem scriptSystem
   engine addSystem timedSystem
   engine addSystem particleSystem
   engine addSystem slotSystem
   engine addSystem renderSystem
-  engine addSystem damageSystem
 
   val shapes = new ShapeRenderer()
 

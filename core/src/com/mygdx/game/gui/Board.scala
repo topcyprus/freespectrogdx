@@ -31,7 +31,7 @@ class Board(
 
   descriptionPanel.panel.setPosition(10, 200)
   historyPanel.panel.setPosition(10, 0)
-  userMenu.panel.setPosition(10, 750)
+  userMenu.panel.setPosition(10, 720)
   rightPane.setX(50)
 
   def refresh(silent : Boolean) = {

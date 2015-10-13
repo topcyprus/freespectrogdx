@@ -38,7 +38,7 @@ class DescriptionPanel(resources : ScreenResources,
         case c: Creature ⇒ subtitle.setText("Life : " + c.life + "  Attack : " + c.attack.base.getOrElse("X"))
         case _ ⇒ subtitle.setText("")
       }
-      description.setText(described.description.replaceAll("\\n",""))
+      description.setText(described.description)
       panel.setVisible(true)
   }
 }

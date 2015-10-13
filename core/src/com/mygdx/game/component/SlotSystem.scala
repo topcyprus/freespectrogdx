@@ -75,7 +75,8 @@ class SlotSystem(batch : Batch) extends BaseSystem {
           resources.engine addEntity entity
         case (Some((entity, _)), None) =>
           // FIXME ? when summoning state is not filled yet
-          //resources.engine removeEntity entity
+          println("!!! removed entity at " + slotnum + "/" + playerId)
+          resources.engine removeEntity entity
         case (Some((_, slotComponent)), Some(slotState)) =>
           slotComponent.slotCardActors update slotState
         case _ =>

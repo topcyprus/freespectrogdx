@@ -51,9 +51,12 @@ class SlotsUpdate(val player: PlayerUpdate) extends FieldUpdate(Some(player), pl
         slotState = m(slotState)
       }
     }
-    updateListener.summon(num, slotState, id) // bit fake for altar
-    if (slot.value.isEmpty) {
-      slot.add(slotState)
+    val summoned = slot.value.isEmpty
+    if (summoned) {
+      slot add slotState
+    }
+    updateListener.summon(num, slotState, id)
+    if (summoned) {
       val summonEvent = SummonEvent(num, card, player)
       otherPlayer.slots reactSummon summonEvent
       reactSummon(summonEvent)

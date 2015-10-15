@@ -160,9 +160,9 @@ class ScreenResources {
 
 class EffectResources(val shaders: Shaders, resources: ScreenResources) {
 
-  val ripple   = shaders.getOrElseUpdate("ripple", _ ⇒ new RippleShader)
+  //val ripple   = shaders.getOrElseUpdate("ripple", _ ⇒ new RippleShader)
   val grey     = shaders get "grey"
-  val test     = shaders get "test"
+  //val test     = shaders get "test"
   val repere   = shaders get "repere"
   val selected = shaders.getOrElseUpdate("sel", _ ⇒ new SelectedShader("sel", resources.config.getConfig("card.selection")))
   val particles = new MyParticleEffects(resources.atlas)

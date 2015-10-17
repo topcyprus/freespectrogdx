@@ -37,7 +37,7 @@ class Board(
 
   descriptionPanel.panel.setPosition(10, 200)
   historyPanel.panel.setPosition(10, 0)
-  userMenu.panel.setPosition(10, 720)
+  userMenu.panel.setPosition(10, 400)
   rightPane.setX(50)
 
   def refresh(silent : Boolean) = {
@@ -50,28 +50,25 @@ class Board(
 class Background(resources :ScreenResources) {
   val background = new Group
 
-  def setBackground(houses : Traversable[House]) = {
-    val backgrounds : Traversable[Texture] = for {
-      house <- houses
-      filename  <- exts.map(ext => house.name.toLowerCase + "." + ext)
+  def setBackground(house  : House) = {
+    val backgrounds = for {
+      filename  <- exts.map(ext => house.name.toLowerCase + ext)
       file = Gdx.files.internal("backgrounds/" + filename)
       if file.exists()
-    } yield {
-      val texture = new Texture(file)
-      texture
-    }
+    } yield file
 
-    (Random shuffle backgrounds).headOption match {
-      case None => background.clear()
-      case Some(texture) =>
-        val image = new Image(texture)
-        image setY (800 - image.getHeight)
-        background addActor image
-    }
+    background.clear()
+    val file = (Random shuffle backgrounds.toList).headOption getOrElse Gdx.files.internal("backgrounds/default.jpg")
+    val texture = new Texture(file)
+    val image = new Image(texture)
+    image setY (800 - image.getHeight)
+    background addActor image
   }
 
-  def default = "default.png"
-  def exts = List("jpg", "png")
+  def exts = for {
+    n <- List("", "2", "3")
+    ext <- List(".jpg", ".png")
+  } yield n + ext
 }
 
 import priv.util.TVar

@@ -45,7 +45,7 @@ class GameInit(screenResources : ScreenResources, gameResources : GameResources)
   screenResources.stage addActor board.panel
   slotPanels foreach (_.init(commandRecorder))
   cardPanels foreach (_.init(commandRecorder))
-  background setBackground spGame.state.players.map(_.desc.get.houses(4).house)
+  background setBackground spGame.state.players(spGame.server.startingPlayer).desc.get.houses(4).house
 
   userMenu.skipButton.addListener(onClick {
     println("skip")

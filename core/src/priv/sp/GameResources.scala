@@ -32,7 +32,9 @@ class GameResources {
     }
   }.get
 
-  var playerChoices: List[List[House]] = List(sp.houses.sinist, sp.houses.sinist)
+  val base = sp.houses.entomologist.Entomologist :: sp.houses.dreamweaver.Dreamweaver :: sp.houses.sinist
+  val baseEnemy = base ++ sp.houses.bs
+  var playerChoices: List[List[House]] = List(base, baseEnemy)
   def resolveChoices = playerChoices map { o ⇒
     val l = (if (o.isEmpty) sp.houses.special else o)
     l(scala.util.Random.nextInt(l.size))

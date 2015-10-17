@@ -34,7 +34,8 @@ class GameInit(screenResources : ScreenResources, gameResources : GameResources)
   val cardPanels = playerIds.map{ playerId =>
     new CardPanel(playerId, spGame, descriptionPanel, selectedEffect, hoveredActor, screenResources)
   }
-  val board           = new Board(spGame.myPlayerId, slotPanels, cardPanels, descriptionPanel, historyPanel, userMenu)
+  val background      = new Background(screenResources)
+  val board           = new Board(spGame.myPlayerId, slotPanels, cardPanels, descriptionPanel, historyPanel, background, userMenu)
   val commandRecorder = new CommandRecorder(spGame, board)
   spGame.controller   = new UserGameController(spGame, board, commandRecorder, screenResources)
   spGame.updater.updateListener = new GameUpdateListener(board, spGame, screenResources)
@@ -44,6 +45,7 @@ class GameInit(screenResources : ScreenResources, gameResources : GameResources)
   screenResources.stage addActor board.panel
   slotPanels foreach (_.init(commandRecorder))
   cardPanels foreach (_.init(commandRecorder))
+  background setBackground spGame.state.players.map(_.desc.get.houses(4).house)
 
   userMenu.skipButton.addListener(onClick {
     println("skip")

@@ -25,12 +25,7 @@ object DarkPriest {
 
   val ghost = DarkPriest.cards(0).asCreature
   DarkPriest initCards Houses.basicCostFunc
-
-  val oppCards = List(restlessSoul, shadowPriest, heretic, blackAngel)
-  oppCards foreach { card ⇒
-    card.houseIndex = 4
-    card.houseId = DarkPriest.houseId
-  }
+  DarkPriest.addAdditionalCards(restlessSoul, shadowPriest, heretic, blackAngel)
 
   def missionar = { env: Env ⇒
     import env._

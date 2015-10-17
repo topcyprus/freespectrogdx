@@ -1,9 +1,14 @@
 package com.mygdx.game.gui
 
+import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.scenes.scene2d.Group
-import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup
+import com.badlogic.gdx.scenes.scene2d.ui.{Image, VerticalGroup}
 import com.badlogic.gdx.utils.Align
+import com.mygdx.game.ScreenResources
 import priv.sp._
+
+import scala.util.Random
 
 class Board(
  val playerId: PlayerId,
@@ -11,6 +16,7 @@ class Board(
  val cardPanels : Seq[CardPanel],
  val descriptionPanel : DescriptionPanel,
  val historyPanel : DescriptionPanel,
+ background : Background,
  userMenu : UserMenu) {
 
   val rightPane = new VerticalGroup()
@@ -22,8 +28,8 @@ class Board(
       slotPanels(playerId).panel)
   rightPane addActor cardPanels(playerId).panel
   rightPane.pack()
-
   val panel = new Group
+  panel addActor background.background
   panel addActor rightPane
   panel addActor userMenu.panel
   panel addActor descriptionPanel.panel
@@ -38,6 +44,34 @@ class Board(
     slotPanels foreach (_.refresh())
     cardPanels foreach (_.refresh(silent))
   }
+
+}
+
+class Background(resources :ScreenResources) {
+  val background = new Group
+
+  def setBackground(houses : Traversable[House]) = {
+    val backgrounds : Traversable[Texture] = for {
+      house <- houses
+      filename  <- exts.map(ext => house.name.toLowerCase + "." + ext)
+      file = Gdx.files.internal("backgrounds/" + filename)
+      if file.exists()
+    } yield {
+      val texture = new Texture(file)
+      texture
+    }
+
+    (Random shuffle backgrounds).headOption match {
+      case None => background.clear()
+      case Some(texture) =>
+        val image = new Image(texture)
+        image setY (800 - image.getHeight)
+        background addActor image
+    }
+  }
+
+  def default = "default.png"
+  def exts = List("jpg", "png")
 }
 
 import priv.util.TVar

@@ -42,7 +42,6 @@ class GameResources {
     ended = true
     println("releasing resources")
     multi.release()
-    sp.clean()
     aiExecutor.shutdown()
     gameExecutor.shutdown()
   }

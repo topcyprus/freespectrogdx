@@ -45,9 +45,12 @@ import BoundedBot2AI.Tree
 case class Node(
     from: GameState,
     transition: Transition,
-    playerStats: List[PlayerStats], getChildren: Node ⇒ Stream[Tree], commandOpt: Option[Command] = None, parent: Option[Node] = None) {
+    playerStats: List[PlayerStats],
+    end : Option[PlayerId],
+    getChildren: Node ⇒ Stream[Tree],
+    commandOpt: Option[Command] = None,
+    parent: Option[Node] = None) {
 
-  val end = from.checkEnded
   val playerId = transition.playerId
   val id = currentNodeId.incrementAndGet()
   var policyRuns = Vector.empty[PolicyRun]
@@ -72,7 +75,7 @@ class BoundedBot2AI(simulator: BotSimulator) {
   }
 
   def execute() = {
-    val node = treeNode(Node(start, WaitPlayer(botPlayerId), simulator.updater.stats, getChildren _))
+    val node = treeNode(Node(start, WaitPlayer(botPlayerId), simulator.updater.stats, simulator.updater.ended, getChildren _))
     val loc = node.loc
     val (timeSpent, nbIterations) = Bot.loopWhile(settings) {
       treePolicy(loc) match {
@@ -119,7 +122,7 @@ class BoundedBot2AI(simulator: BotSimulator) {
       state = gameState
       player = transition.playerId
       nbStep += 1
-      end = state.checkEnded
+      end = simulator.updater.ended
     }
     node.policyRuns = node.policyRuns :+ policyRun
     observer.updateStats(loc, state, end, simulator.updater.stats, cardUsage)
@@ -183,7 +186,7 @@ class BoundedBot2AI(simulator: BotSimulator) {
       val randWidth = simulator.updater.randLogs.width
       simulator.updater.resetRand()
       val playerStats = simulator.updater.stats.map(_.copy())
-      (randWidth, treeNode(Node(state, outTransition, playerStats, getChildren _, commandOpt, Some(node))))
+      (randWidth, treeNode(Node(state, outTransition, playerStats, simulator.updater.ended, getChildren _, commandOpt, Some(node))))
     }
 
     if (node.isLeaf) {

@@ -4,6 +4,7 @@ import priv.sp._
 import priv.sp.update._
 import CardSpec._
 import GameCardEffect._
+import priv.util.FuncDecorators
 
 /**
  * Introduced bullshit:
@@ -302,13 +303,13 @@ class MoutainKing {
 
     override def init(p: PlayerUpdate) {
       super.init(p)
-      p.slots.onDead after (onDeath _)
+      p.slots.onDead = (FuncDecorators observe p.slots.onDead) after (onDeath _)
       p.slots.slots foreach { slot ⇒
-        slot.add after (_ ⇒ onAdd(slot))
-        slot.protect intercept (d ⇒ protect(slot, d))
+        slot.add = (FuncDecorators observe slot.add) after (_ ⇒ onAdd(slot))
+        slot.protect modifyResult (d ⇒ protect(slot, d))
       }
       p.otherPlayer.slots.slots.foreach { slot ⇒
-        slot.protect intercept (d ⇒ protectOpp(slot, d))
+        slot.protect modifyResult (d ⇒ protectOpp(slot, d))
       }
     }
 

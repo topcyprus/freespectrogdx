@@ -71,7 +71,7 @@ class Elementalist {
     import env._
     def destroy(s: SlotUpdate) {
       val card = s.get.card
-      s.destroy()
+      s.overridableDestroy()
       s.slots.player addDescMod Destroyed(card)
     }
     (player.slots reduce lowestLife) foreach destroy

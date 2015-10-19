@@ -4,6 +4,7 @@ package priv.sp.house
 import priv.sp.GameCardEffect._
 import priv.sp._
 import priv.sp.update._
+import priv.util.FuncDecorators
 
 case object OneAttackBonus extends AttackFunc { def apply(attack: Int) = attack + 1 }
 case class AttackAdd(bonus: Int) extends AttackFunc { def apply(attack: Int) = attack + bonus }
@@ -82,7 +83,7 @@ trait OwnerDeathEventListener extends HouseEventListener {
   }
   override def init(p: PlayerUpdate) {
     super.init(p)
-    p.slots.onDead after { dead ⇒ reactDead(dead) }
+    p.slots.onDead = (FuncDecorators observe p.slots.onDead) after { dead ⇒ reactDead(dead) }
   }
 }
 
@@ -99,8 +100,8 @@ trait AnyDeathEventListener extends HouseEventListener {
   }
   override def init(p: PlayerUpdate) {
     super.init(p)
-    p.slots.onDead after reactDead
-    p.otherPlayer.slots.onDead after reactDead
+    p.slots.onDead = (FuncDecorators observe p.slots.onDead) after reactDead
+    p.otherPlayer.slots.onDead = (FuncDecorators observe p.otherPlayer.slots.onDead) after reactDead
   }
 }
 
@@ -115,7 +116,7 @@ trait OppDeathEventListener extends HouseEventListener {
   }
   override def init(p: PlayerUpdate) {
     super.init(p)
-    p.otherPlayer.slots.onDead after reactDead
+    p.otherPlayer.slots.onDead = (FuncDecorators observe p.otherPlayer.slots.onDead) after reactDead
   }
 }
 

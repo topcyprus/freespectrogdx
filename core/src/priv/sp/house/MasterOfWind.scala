@@ -4,6 +4,7 @@ import priv.sp._
 import priv.sp.update._
 import GameCardEffect._
 import CardSpec._
+import priv.util.FuncDecorators
 
 /**
  * Introduced bs: player data
@@ -88,7 +89,7 @@ object MasterOfWind {
   def whirlwind = { env: Env ⇒
     import env._
     player.slots(selected).destroy()
-    otherPlayer.slots(selected).destroy()
+    otherPlayer.slots(selected).overridableDestroy()
     player addTransition WaitPlayer(playerId, wwPhase)
   }
 
@@ -145,7 +146,7 @@ object MasterOfWind {
 
     override def init(p: PlayerUpdate) {
       super.init(p)
-      p.slots.slots foreach (slot ⇒ slot.add.after(_ ⇒ onAdd(slot)))
+      p.slots.slots foreach (slot ⇒ slot.add = (FuncDecorators observe slot.add) after(_ ⇒ onAdd(slot)))
     }
   }
 }

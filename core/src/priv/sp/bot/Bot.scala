@@ -90,12 +90,12 @@ class BotSimulator(val knowledge: BotKnowledge, val context: BotContext) {
         u.flush()
         p.popTransition getOrElse {
           p.runSlots()
-          if (!u.ended) {
+          if (u.ended.isEmpty) {
             p applyEffects CardSpec.OnEndTurn
             p.slots.toggleRun()
             val otherPlayer = p.otherPlayer
             otherPlayer.prepareNextTurn()
-            if (!u.ended) {
+            if (u.ended.isEmpty) {
               otherPlayer applyEffects CardSpec.OnTurn
             }
           }

@@ -1706,6 +1706,68 @@ size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
+cards/limbo/Heavens Keeper
+  rotate: false
+  xy: 196, 25
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+cards/limbo/Hells Keeper
+  rotate: false
+  xy: 278, 25
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+cards/limbo/Limbo Baron
+  rotate: false
+  xy: 360, 25
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+cards/limbo/Limbo Wraith
+  rotate: false
+  xy: 442, 25
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+cards/limbo/Nether Grasp
+  rotate: false
+  xy: 2, 2
+  size: 95, 103
+  orig: 95, 103
+  offset: 0, 0
+  index: -1
+cards/limbo/Redemption
+  rotate: false
+  xy: 99, 2
+  size: 95, 103
+  orig: 95, 103
+  offset: 0, 0
+  index: -1
+cards/limbo/Soul Adjudicator
+  rotate: false
+  xy: 524, 25
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+cards/limbo/Tower of sins
+  rotate: false
+  xy: 606, 25
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+
+images.pack22.png
+size: 1024,128
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
 cards/vampires/Acolyte
   rotate: false
   xy: 196, 25
@@ -1770,7 +1832,7 @@ cards/vampires/Nosferatu
   offset: 0, 0
   index: -1
 
-images.pack22.png
+images.pack23.png
 size: 1024,512
 format: RGBA8888
 filter: Nearest,Nearest
@@ -1817,9 +1879,16 @@ combat/lifebar
   orig: 66, 7
   offset: 0, 0
   index: -1
-combat/mortal
+combat/limbo
   rotate: false
   xy: 212, 93
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+combat/mortal
+  rotate: false
+  xy: 294, 93
   size: 80, 80
   orig: 80, 80
   offset: 0, 0
@@ -1847,7 +1916,7 @@ combat/rakaSpell
   index: -1
 combat/sand
   rotate: false
-  xy: 294, 93
+  xy: 376, 93
   size: 80, 80
   orig: 80, 80
   offset: 0, 0

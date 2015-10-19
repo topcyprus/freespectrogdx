@@ -83,6 +83,7 @@ class Houses
   val fairy = new FairyKnight
   val highPriest = HighPriest
   val junkMage = new JunkMage
+  val limbo  = Limbo
   val lostChurch = LostChurch
   val moutainKing = new MoutainKing
   val sb = new SB
@@ -97,7 +98,7 @@ class Houses
 
   val base = List(Fire, Water, Air, Earth)
   val sinist = List(darkPriest.DarkPriest, darksider.Darksider, element.Elementalist, fairy.Fairy, highPriest.HighPriest, moutainKing.MoutainKing, shaman.Shaman, sower.Sower, vampire.Vampire, wind.Wind)
-  val others = List(dreamweaver.Dreamweaver, dudeMancer.Dude, entomologist.Entomologist, trooper.Trooper)
+  val others = List(dreamweaver.Dreamweaver, dudeMancer.Dude, entomologist.Entomologist, limbo.Limbo, trooper.Trooper)
   val bs = List(junkMage.Junk, lostChurch.LostChurch, sb.SB, warp.Warp, zenMage.Zen)
   val special = sinist ++ others ++ bs
 

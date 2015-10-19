@@ -10,13 +10,13 @@ import com.mygdx.game.ScreenResources
 import com.mygdx.game.component.{VisualComponent, SlotComponent}
 import com.typesafe.config.Config
 import priv.sp._
-import priv.sp.house.{Hird, MereMortal}
+import priv.sp.house.{Limbo, Hird, MereMortal}
 
 object CardActors {
 
   def getPath(card : Card, house : House) = {
     val houseFolder = if (card.houseIndex < 4) "base" else house.name.toLowerCase.replaceAll(" ", "")
-    "cards/" + houseFolder + "/" + card.name
+    "cards/" + houseFolder + "/" + card.name.replace("'", "")
   }
 }
 
@@ -159,6 +159,7 @@ class SlotCardActors(val cardGroup : Group, card : Creature, cardActors : CardAc
     else if ( s.card.isInstanceOf[MereMortal]) Some(imageOf("mortal"))
     else if ( s has CardSpec.invincibleFlag )  Some(cornerImageOf("shield"))
     else if ( s has CardSpec.cursedFlag )      Some(cornerImageOf("death"))
+    else if ( s.data == Limbo.LimboState)      Some(imageOf("limbo"))
     else if ( s.card.houseId == game.sp.houses.moutainKing.MoutainKing.houseId && s.data == Hird) Some(cornerImageOf("hird"))
     else None
   }

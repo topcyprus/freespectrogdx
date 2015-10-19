@@ -270,7 +270,7 @@ Can switch with prisoner to nearest empty slot""",
     override def init(p: PlayerUpdate) = {
       super.init(p)
       p.slots.slots foreach { slot ⇒
-        slot.protect intercept (d ⇒ protect(slot, d))
+        slot.protect modifyResult (d ⇒ protect(slot, d))
       }
     }
   }

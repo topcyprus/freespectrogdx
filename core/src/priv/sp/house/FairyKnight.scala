@@ -4,6 +4,7 @@ import priv.sp.CardSpec._
 import priv.sp.GameCardEffect._
 import priv.sp._
 import priv.sp.update._
+import priv.util.FuncDecorators
 
 import scala.util._
 
@@ -217,7 +218,7 @@ Cannot block cards which have already been blocked previous turn""", effects = e
     override def init(p: PlayerUpdate) {
       super.init(p)
       p.otherPlayer.slots.slots foreach { slot ⇒
-        slot.add after { _ ⇒
+        slot.add = (FuncDecorators observe slot.add) after { _ ⇒
           player.slots foreach { s ⇒
             s.get.reaction match {
               case r: OnOppSlotUpdate ⇒ r onOppAdd slot
@@ -225,7 +226,7 @@ Cannot block cards which have already been blocked previous turn""", effects = e
             }
           }
         }
-        slot.remove before { _ ⇒
+        slot.remove = (FuncDecorators observe slot.remove) before { _ ⇒
           player.slots foreach { s ⇒
             s.get.reaction match {
               case r: OnOppSlotUpdate ⇒ r onOppRemove slot

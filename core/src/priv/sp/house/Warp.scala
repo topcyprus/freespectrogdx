@@ -22,7 +22,11 @@ class Warp {
     new Creature("Schizo", Attack(5), 22, "When summoned, opposite creature lose his abilities until schizo die.", reaction = new SchizoReaction),
     new Creature("Ram", Attack(6), 26, "Opposite creature is destroyed and opponent get his mana back -2.", effects = effects(Direct -> ram)),
     new Creature("Stranger", AttackSources().add(new StrangerAttack), 30, "Attack is highest opponent mana.\nWhen summoned, take effects of opposite slot.(at least try to!)\n -immediate effects are not applied\n-can't duplicate effect to attack multiple targets", effects = effects(Direct -> merge)),
-    new Creature("Warp Queen", Attack(6), 32, "Opponent creatures lose their ability until end of next owner turn.\nDeals 4 damage to each of them", effects = effects(Direct -> warp))), eventListener = Some(OpponentListener(new WarpEventListener(_))))
+    new Creature("Warp Queen", Attack(6), 32, "Opponent creatures lose their ability until end of next owner turn.\nDeals 4 damage to each of them", effects = effects(Direct -> warp))),
+    eventListener = Some(OpponentListener({
+      case _ : Limbo.LimboEventListener => new WarpEventListener {}
+      case inner => new ProxyEventListener(inner) with WarpEventListener
+    })))
 
   val stranger = Warp.cards(6)
   Warp initCards Houses.basicCostFunc
@@ -137,7 +141,7 @@ class Warp {
   }
 
   // code horror
-  class WarpEventListener(inner: HouseEventListener) extends ProxyEventListener(inner) with OwnerDeathEventListener {
+  trait WarpEventListener extends OwnerDeathEventListener {
     private def isStranger(card: Card) = {
       card == stranger || card.isInstanceOf[MergeStranger]
     }

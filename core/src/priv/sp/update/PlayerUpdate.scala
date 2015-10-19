@@ -60,7 +60,7 @@ class PlayerUpdate(val id: PlayerId, val updater: GameStateUpdater) extends Fiel
   }
 
   def runSlot(numSlot: Int, slot: SlotState): Unit = {
-    if (slot.attack > 0 && slot.isRunnable && !ended) {
+    if (slot.attack > 0 && slot.isRunnable && ended.isEmpty) {
       val d = Damage(slot.attack, Context(id, Some(slot.card), numSlot))
       updateListener.runSlot(numSlot, id)
       slot.card.runAttack(slot.target, d, this)
@@ -117,11 +117,13 @@ class PlayerUpdate(val id: PlayerId, val updater: GameStateUpdater) extends Fiel
   })
 
   def inflict(d: Damage) = {
-    if (!ended) {
+    if (ended.isEmpty) {
       val amount = guard(mod(d)).amount
       val life = value.life - amount
       if (life <= 0) {
-        updater.ended = true
+        if (houseEventListener.onDeath()){
+          updater.ended = Some(other(id))
+        }
       } else {
         houseEventListener onPlayerDamage amount
       }
@@ -130,8 +132,10 @@ class PlayerUpdate(val id: PlayerId, val updater: GameStateUpdater) extends Fiel
   }
 
   def heal(amount: Int) = {
-    if (!ended) {
-      write(value.copy(life = value.life + amount))
+    if (ended.isEmpty) {
+      if (value.life > 0){
+        write(value.copy(life = value.life + amount))
+      }
     }
   }
 
@@ -174,7 +178,7 @@ class PlayerUpdate(val id: PlayerId, val updater: GameStateUpdater) extends Fiel
   def applyEffects(phase: CardSpec.Phase) = {
     getSlots foreach {
       case (num, s) ⇒
-        if (!ended) {
+        if (ended.isEmpty) {
           val slots = getSlots
           (slots get num) foreach { slot ⇒ // looks weird because slots can change at each iteration
             if (slot.id != s.id) { // in case of moved creature
@@ -185,7 +189,7 @@ class PlayerUpdate(val id: PlayerId, val updater: GameStateUpdater) extends Fiel
     }
     value.effects foreach {
       case (p, f) ⇒
-        if (p == phase && !ended) {
+        if (p == phase && ended.isEmpty) {
           f(playerEffectEnv)
         }
     }

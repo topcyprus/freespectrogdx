@@ -119,11 +119,11 @@ class SpGame(val server: GameServer, resources: GameResources) {
    }
 
    private def endOr(f: ⇒ Unit) {
-     state.checkEnded match {
+     updater.ended match {
        case Some(player) ⇒
          refresh()
          endGame(player)
-       case None ⇒ f
+       case _ ⇒ f
      }
    }
 

@@ -4,6 +4,7 @@ import priv.sp.CardSpec._
 import priv.sp.GameCardEffect._
 import priv.sp._
 import priv.sp.update._
+import priv.util.FuncDecorators
 
 class SB {
 
@@ -256,7 +257,7 @@ if earth heal 2 life to owner""", effects = effects(Direct -> amaterasu), reacti
     override def init(p: PlayerUpdate): Unit = {
       super.init(p)
       p.otherPlayer.slots.slots foreach { slot ⇒
-        slot.add after { _ ⇒ onEnemyAdd(slot) }
+        slot.add = (FuncDecorators observe slot.add) after { _ ⇒ onEnemyAdd(slot) }
       }
       p.submitCommand.after { c ⇒
         c.card match {

@@ -3,6 +3,7 @@ package priv.sp.house
 import priv.sp.GameCardEffect._
 import priv.sp._
 import priv.sp.update._
+import priv.util.FuncDecorators
 
 import scala.collection._
 
@@ -261,7 +262,7 @@ object Shaman {
     }
     override def init(p: PlayerUpdate) {
       super.init(p)
-      p.otherPlayer.slots.onDead after reactDead
+      p.otherPlayer.slots.onDead = (FuncDecorators observe p.otherPlayer.slots.onDead) after reactDead
       val slots = p.slots.slots // ! empty includeds
       slots.foreach { s ⇒
         s.attackUpdate.update after { _ ⇒
@@ -273,7 +274,7 @@ object Shaman {
         }
       }
       p.slots.slots.foreach { slot ⇒
-        slot.protect.intercept(d ⇒ protect(slot, d))
+        slot.protect.modifyResult(d ⇒ protect(slot, d))
       }
       p.submitCommand after { c ⇒
         c.input foreach { input ⇒

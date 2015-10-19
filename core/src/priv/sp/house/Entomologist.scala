@@ -1,5 +1,7 @@
 package priv.sp.house
 
+import priv.util.FuncDecorators
+
 import collection._
 import priv.sp._
 import priv.sp.update._
@@ -189,7 +191,7 @@ object Entomologist {
     }
     override def init(p: PlayerUpdate) {
       super.init(p)
-      p.otherPlayer.slots.onDead after reactDead
+      p.otherPlayer.slots.onDead = (FuncDecorators observe p.otherPlayer.slots.onDead) after reactDead
     }
   }
 }

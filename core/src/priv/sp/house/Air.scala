@@ -28,7 +28,7 @@ trait Air {
     new Creature("Cloud", Attack(4), 20, "Attack all opponent creatures", runAttack = MultiTargetAttack),
     Spell("Twister", "destroy target",
       inputSpec = Some(SelectTargetCreature),
-      effects = effects(Direct -> { env: Env ⇒ env.otherPlayer.slots(env.selected).destroy() })),
+      effects = effects(Direct -> { env: Env ⇒ env.otherPlayer.slots(env.selected).overridableDestroy() })),
     new Creature("Air Elemental", AttackSources().add(ManaAttack(2)), 44, "Air elemental deals 8 damage to opponent when summoned", effects = effects(Direct -> focus(damage(8, isAbility = true)), OnTurn -> addMana(1, 2))),
     new Creature("Titan", Attack(9), 40, "Deals 15 damage to opposite creature when summoned",
       effects = effects(Direct -> { env: Env ⇒

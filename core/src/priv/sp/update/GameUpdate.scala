@@ -9,7 +9,7 @@ import priv.util.FieldUpdate
 // desc is only used to get house specific listener
 class GameStateUpdater(initState: GameState, val desc: GameDesc) extends FieldUpdate(None, initState) { self ⇒
   val playerFieldUpdates = playerIds.map(id ⇒ new PlayerUpdate(id, self))
-  var ended = false
+  var ended = Option.empty[PlayerId]
   var updateListener: UpdateListener = new DefaultUpdateListener
   val houseEventListeners = playerFieldUpdates map (_.houseEventListener)
   val stats = playerFieldUpdates map (_.stats)
@@ -21,7 +21,7 @@ class GameStateUpdater(initState: GameState, val desc: GameDesc) extends FieldUp
   def state = value
 
   def apply(value: GameState) = {
-    ended = false
+    ended = None
     initNewUpdate(value)
   }
 
@@ -83,6 +83,7 @@ class HouseEventListener {
   def mod(damage: Damage) = damage
   def onDamaged(card: Creature, amount: Int, slot: SlotUpdate) = {}
   def onPlayerDamage(amount: Int) = {} // bs for mk
+  def onDeath() : Boolean = true // bs for limbo
   def interceptSubmit(c: Option[Command]): (Boolean, Option[Command]) = Reaction.falseNone
   def init(p: PlayerUpdate) = { playerField = p }
 }
@@ -92,6 +93,7 @@ class ProxyEventListener(inner: HouseEventListener) extends HouseEventListener {
 
   override def onDamaged(card: Creature, amount: Int, slot: SlotUpdate): Unit = { inner.onDamaged(card, amount, slot) }
   override def onPlayerDamage(amount: Int): Unit = { inner.onPlayerDamage(amount) }
+  override def onDeath() = { inner.onDeath() }
   override def interceptSubmit(c: Option[Command]): (Boolean, Option[Command]) = inner.interceptSubmit(c)
   override def init(p: PlayerUpdate): Unit = {
     playerField = p

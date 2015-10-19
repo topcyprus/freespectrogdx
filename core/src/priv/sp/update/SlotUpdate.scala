@@ -28,18 +28,20 @@ class SlotUpdate(val num: Int, val slots: SlotsUpdate) extends FieldUpdate(Some(
       }
     }
   }
-  def toggle(flag: Int) { write(value map (x ⇒ x.copy(status = x.status | flag))) }
-  def toggleOff(flag: Int) { write(value map (x ⇒ x.copy(status = x.status & (~flag)))) }
-  def setData(data: AnyRef) { write(value map (_.copy(data = data))) }
-  def setTarget(target: List[Int]) { write(value map (_.copy(target = target))) }
+  def toggle(flag: Int) = { write(value map (x ⇒ x.copy(status = x.status | flag))) }
+  def toggleOff(flag: Int) = { write(value map (x ⇒ x.copy(status = x.status & (~flag)))) }
+  def setData(data: AnyRef) = { write(value map (_.copy(data = data))) }
+  def setTarget(target: List[Int]) = { write(value map (_.copy(target = target))) }
+  def focus(blocking: Boolean = true) = { slots.updateListener.focus(num, playerId, blocking) }
 
   // -- code horror to intercept heal/inflict
-  def heal(amount: Int) { if (value.isDefined) get.reaction heal amount }
-  def inflict(damage: Damage) {
+  def heal(amount: Int) = { if (value.isDefined && get.life > 0) get.reaction heal amount }
+  def inflict(damage: Damage) = {
     if (value.isDefined) get.reaction inflict (player mod damage)
   }
-  def destroy() { if (value.isDefined) { get.reaction.destroy() } }
+  def destroy() = { if (value.isDefined) { get.reaction.destroy() } }
   def stun() { if (value.isDefined) { get.reaction.stun() } }
+  var overridableDestroy : () => Unit = { () => destroy() }
   // --
 
   def attack = attackUpdate.reinit()
@@ -53,11 +55,11 @@ class SlotUpdate(val num: Int, val slots: SlotsUpdate) extends FieldUpdate(Some(
   }
 
   def add(card: Creature) { add(slots.buildSlotState(this, card)) }
-  val add = new priv.util.ObservableFunc1Unit({ slot: SlotState ⇒
+  var add : Function[SlotState, Unit] = { slot: SlotState ⇒
     write(Some(slot))
     slot.reaction use this
     slots reactAdd this
-  })
+  }
 
   // /!\ don't call it directly (use inflict)
   def damageSlot(damage: Damage) = {
@@ -94,18 +96,11 @@ class SlotUpdate(val num: Int, val slots: SlotsUpdate) extends FieldUpdate(Some(
     }
   }
 
-  val protect = new priv.util.InterceptableFunc1({ d: Damage ⇒
+  val protect = new priv.util.FuncDecorator1({ d: Damage ⇒
     d
   })
 
-  def privDestroy() {
-    val s = get
-    val event = Dead(num, s, player, None)
-    remove(Some(event))
-    slots onDead event
-  }
-
-  val remove = new priv.util.ObservableFunc1[Option[Dead], SlotState]({ deadOpt: Option[Dead] ⇒
+  var remove : Function[Option[Dead], SlotState]= { deadOpt: Option[Dead] ⇒
     val slotState = get
     slotState.reaction onMyRemove deadOpt
     slots reactRemove this
@@ -114,17 +109,20 @@ class SlotUpdate(val num: Int, val slots: SlotsUpdate) extends FieldUpdate(Some(
     attackUpdate.invalidate() // FIXME hack?
     write(None)
     result
-  })
-
-  def focus(blocking: Boolean = true) {
-    slots.updateListener.focus(num, playerId, blocking)
   }
 
-  private def delayedDestroy(d: Damage) {
+  var delayedDestroy : Function[Damage, Unit] = { d: Damage =>
     val s = get
     val event = Dead(num, s, player, Some(d))
     remove(Some(event))
     slots log event
+  }
+
+  def privDestroy() = {
+    val s = get
+    val event = Dead (num, s, player, None)
+    remove (Some (event) )
+    slots onDead event
   }
 }
 

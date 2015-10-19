@@ -49,7 +49,7 @@ class GameInit(screenResources : ScreenResources, gameResources : GameResources)
 
   userMenu.skipButton.addListener(onClick {
     println("skip")
-    if (spGame.state.checkEnded.isEmpty && commandRecorder.cont.isDefined) {
+    if (spGame.updater.ended.isEmpty && commandRecorder.cont.isDefined) {
       commandRecorder.skip()
     }
   })
@@ -240,7 +240,7 @@ private class GameUpdateListener(board : Board, game : SpGame, resources : Scree
   def refresh(silent: Boolean) = {
     persistUpdater()
     controller refresh silent
-    state.checkEnded foreach endGame
+    updater.ended foreach endGame
   }
 
   def spellPlayed(c: Command) {

@@ -1,3 +1,4 @@
+#version 120
 
 uniform sampler2D u_texture;
 
@@ -12,5 +13,5 @@ void main()
 {
 	vec4 color = texture2D(u_texture, v_texCoords.st);
 	vec4 base = vec4(low(v_color[0]), low(v_color[1]), low(v_color[2]), color[3]);
-    gl_FragColor = mix(color, base, 0.5);
+  gl_FragColor = mix(color, base, 0.5);
 }

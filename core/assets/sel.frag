@@ -1,3 +1,4 @@
+#version 120
 
 uniform float size;
 uniform float cursor;

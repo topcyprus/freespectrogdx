@@ -35,11 +35,12 @@ class GameInit(screenResources : ScreenResources, gameResources : GameResources)
     new CardPanel(playerId, spGame, descriptionPanel, selectedEffect, hoveredActor, screenResources)
   }
   val background      = new Background(screenResources)
-  val board           = new Board(spGame.myPlayerId, slotPanels, cardPanels, descriptionPanel, historyPanel, background, userMenu)
+  val board           = new Board(spGame.myPlayerId, slotPanels, cardPanels, descriptionPanel, historyPanel, userMenu)
   val commandRecorder = new CommandRecorder(spGame, board)
   spGame.controller   = new UserGameController(spGame, board, commandRecorder, screenResources)
   spGame.updater.updateListener = new GameUpdateListener(board, spGame, screenResources)
 
+  screenResources.stage addActor background.background
   screenResources.stage addActor selectedEffect
   screenResources.stage addActor hoveredActor
   screenResources.stage addActor board.panel
@@ -84,9 +85,13 @@ class GameInit(screenResources : ScreenResources, gameResources : GameResources)
             screenResources.reload()
             true
           } else if (k == Input.Keys.F6) {
-            isDebug = ! isDebug
+            isDebug = !isDebug
             Gdx.app.log("input", "set debug " + isDebug)
             setDebug(board.panel)
+            true
+          } else if (k == Input.Keys.F8) {
+            Gdx.app.log("input", "give mana")
+            spGame.giveMeMana()
             true
           } else false
         }

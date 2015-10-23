@@ -43,15 +43,7 @@ class JunkMage {
     env.player.slots(env.selected).setData(Boolean.box(false))
   }
 
-  private def spawnTrash = { env: Env ⇒
-    def spawnTrashAt(num: Int) {
-      val slot = env.player.slots(num)
-      if (slot.value.isEmpty) {
-        slot.add(trash)
-      }
-    }
-    env.player.value.slotList.foreach(spawnTrashAt _)
-  }
+  private def spawnTrash = GameCardEffect fillEmptySlots trash
 
   private def gatherTrash: CardSpec.Effect = { env: Env ⇒
     val slots = env.player.slots

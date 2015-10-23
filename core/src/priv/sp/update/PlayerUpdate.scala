@@ -87,7 +87,7 @@ class PlayerUpdate(val id: PlayerId, val updater: GameStateUpdater) extends Fiel
     }) foreach submitCommand
   }
 
-  val submitCommand = new priv.util.ObservableFunc1({ command: Command ⇒
+  var submitCommand = { command: Command ⇒
     if (command.card.isSpell) {
       updateListener spellPlayed command
     }
@@ -114,22 +114,27 @@ class PlayerUpdate(val id: PlayerId, val updater: GameStateUpdater) extends Fiel
       f(env)
     }
     updateListener.refresh()
-  })
+  }
 
   def inflict(d: Damage) = {
     if (ended.isEmpty) {
       val amount = guard(mod(d)).amount
       val life = value.life - amount
-      if (life <= 0) {
-        if (houseEventListener.onDeath()){
-          updater.ended = Some(other(id))
-        }
+      if (life <= 0 && houseEventListener.onDeath()) {
+        updater.ended = Some(other(id))
       } else {
-        houseEventListener onPlayerDamage amount
+        onPlayerDamage(d.copy(amount = amount))
       }
+
       write(value.copy(life = life))
     }
   }
+
+  // bs for mk, antimancer
+  var onPlayerDamage = { d : Damage =>
+
+  }
+
 
   def heal(amount: Int) = {
     if (ended.isEmpty) {

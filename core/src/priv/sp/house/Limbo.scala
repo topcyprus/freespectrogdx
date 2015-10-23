@@ -70,6 +70,7 @@ object Limbo {
       val p = selected.player
       p heal 2
       p.slots healCreatures 2
+      selected.focus()
     }
   }
 
@@ -78,6 +79,7 @@ object Limbo {
       val p = selected.player.otherPlayer
       p heal 2
       p.slots inflictCreatures Damage(2, Context(selected.playerId, Some(hellKeeper), selected.num), isAbility = true)
+      selected.focus()
     }
   }
 
@@ -87,6 +89,7 @@ object Limbo {
         val houseIndex = slotState.card.houseIndex
         selected.player.houses.incrMana(1, houseIndex)
         selected.player.otherPlayer.houses.incrMana(-1, houseIndex)
+        selected.focus()
       }
     }
   }
@@ -100,6 +103,7 @@ object Limbo {
       (Random shuffle emptyAdjs).headOption foreach { s =>
         s add cards(Random nextInt 2)
         s setData NoLimbo
+        selected.focus()
       }
     }
   }
@@ -107,7 +111,7 @@ object Limbo {
   def netherGrasp = { env : Env =>
     val damage = Damage(3, env, isSpell = true)
     env.player.slots foreach { s =>
-      s.inflict(Damage(100, env)) // HACK
+      s inflict Damage(100, env) // HACK
       env.player.otherPlayer inflict damage
     }
   }
@@ -124,7 +128,8 @@ object Limbo {
   def cleanLimbo = { env : Env =>
     env.player.slots foreach{ s =>
       if (s.get.data == LimboState) {
-        s.inflict(Damage(100, env)) // !! HACK for phoenix (can't destroy)
+        s setData NoLimbo
+        s inflict Damage(100, env) // !! HACK for phoenix (can't destroy)
       }
     }
     if (env.player.pstate.data == LimboState) {
@@ -154,7 +159,7 @@ object Limbo {
     }
 
     override def onDeath() = {
-      (player.pstate.data == NoLimbo || {
+      player.pstate.data == NoLimbo || {
         if (hasBaron(player)) {
           player setData LimboState
           player write player.pstate.copy(life = 0)
@@ -162,7 +167,7 @@ object Limbo {
         } else {
           player.pstate.data != LimboState
         }
-      })
+      }
     }
 
     def hasBaron( p : PlayerUpdate) = {
@@ -177,10 +182,9 @@ object Limbo {
             if (slot.value.isDefined){
               val slotState = slot.get
               if ((slotState.card == baron || !(d.isSpell || d.isAbility))
-                && slotState.data != LimboState
                 && slotState.data != NoLimbo) {
                 setLimbo(slot)
-                if (slotState.card == baron) {
+                if (slotState.card == baron && slotState.data != LimboState) {
                   slot.attack add DoubleAttackSource
                 }
               } else {

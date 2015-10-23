@@ -61,6 +61,16 @@ object GameCardEffect {
     env.player.houses.incrMana(amount, houseIndex: _*)
   }
   def addDescMod(mod: DescMod) = { env: Env ⇒ env.player.addDescMod(mod) }
+
+  def fillEmptySlots(creature : Creature) = { env : Env =>
+    def spawnCreature(num: Int) : Unit = {
+      val slot = env.player.slots(num)
+      if (slot.value.isEmpty) {
+        slot add creature
+      }
+    }
+    env.player.value.slotList foreach spawnCreature
+  }
 }
 
 case class Ability(card: Card, ability: Card) extends DescMod {

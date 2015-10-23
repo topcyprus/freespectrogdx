@@ -1,6 +1,5 @@
 package priv.sp.update
 
-import collection._
 import priv.sp._
 import priv.util.FieldUpdate
 

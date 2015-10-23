@@ -41,7 +41,12 @@ object Shaman {
   wolf.cost = 2
   Shaman initCards Houses.basicCostFunc
 
-  def getData(p: PlayerUpdate) = p.value.data.asInstanceOf[WolfState]
+  def getData(p: PlayerUpdate) = {
+    if (p.value.data == null) { // hack for antimancer
+      p.setData(WolfState())
+    }
+    p.value.data.asInstanceOf[WolfState]
+  }
 
   def initWolf = { env: Env ⇒
     val openSlots = env.player.slots.getOpenSlots.take(5)
@@ -276,7 +281,7 @@ object Shaman {
       p.slots.slots.foreach { slot ⇒
         slot.protect.modifyResult(d ⇒ protect(slot, d))
       }
-      p.submitCommand after { c ⇒
+      p.submitCommand = (FuncDecorators observe p.submitCommand)  after { c ⇒
         c.input foreach { input ⇒
           getData(p).enhanceds.get(c.card.id) foreach { bonus ⇒
             val slot = p.slots(input.num)

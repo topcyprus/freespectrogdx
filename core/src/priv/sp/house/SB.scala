@@ -259,7 +259,7 @@ if earth heal 2 life to owner""", effects = effects(Direct -> amaterasu), reacti
       p.otherPlayer.slots.slots foreach { slot ⇒
         slot.add = (FuncDecorators observe slot.add) after { _ ⇒ onEnemyAdd(slot) }
       }
-      p.submitCommand.after { c ⇒
+      p.submitCommand = (FuncDecorators observe p.submitCommand) after { c ⇒
         c.card match {
           case creature: Creature ⇒
             c.input foreach { i ⇒ onSummon(player.slots(i.num)) }
@@ -278,10 +278,12 @@ class TrackerReaction extends Reaction with OnSummonable {
   final def onSummoned(slot: SlotUpdate) = {
     // FIXME weird case where wall of flame kill bennu, and bennu kill wall of flame before this is called
     selected.value foreach { state =>
-      if (!state.data.asInstanceOf[Boolean] && selected != slot) {
-        slot toggle invincibleFlag
-        slot.player addEffect (OnTurn -> RemoveInvincible(slot.get.id))
-        selected setData java.lang.Boolean.TRUE
+      slot.value foreach { s => // hack for retaliator who can kill f2 before f2 becoming invincible
+        if (!state.data.asInstanceOf[Boolean] && selected != slot) {
+          slot toggle invincibleFlag
+          slot.player addEffect (OnTurn -> RemoveInvincible(s.id))
+          selected setData java.lang.Boolean.TRUE
+        }
       }
     }
   }

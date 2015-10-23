@@ -649,6 +649,75 @@ cards/highpriest/sun stone
   index: -1
 
 images.pack10.png
+size: 1024,128
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+cards/antimancer/Angry Mob
+  rotate: false
+  xy: 196, 25
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+cards/antimancer/Bombardier
+  rotate: false
+  xy: 278, 25
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+cards/antimancer/Bribery
+  rotate: false
+  xy: 2, 2
+  size: 95, 103
+  orig: 95, 103
+  offset: 0, 0
+  index: -1
+cards/antimancer/Harvester
+  rotate: false
+  xy: 360, 25
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+cards/antimancer/Martyr
+  rotate: false
+  xy: 442, 25
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+cards/antimancer/Mirror Priest
+  rotate: false
+  xy: 524, 25
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+cards/antimancer/Resistance
+  rotate: false
+  xy: 99, 2
+  size: 95, 103
+  orig: 95, 103
+  offset: 0, 0
+  index: -1
+cards/antimancer/Retaliator
+  rotate: false
+  xy: 606, 25
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+cards/antimancer/Voodoo Doll
+  rotate: false
+  xy: 688, 25
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+
+images.pack11.png
 size: 512,256
 format: RGBA8888
 filter: Nearest,Nearest
@@ -738,7 +807,7 @@ cards/disciples/wind of oppression
   offset: 0, 0
   index: -1
 
-images.pack11.png
+images.pack12.png
 size: 256,256
 format: RGBA8888
 filter: Nearest,Nearest
@@ -800,7 +869,7 @@ cards/darksider/Wolf spider
   offset: 0, 0
   index: -1
 
-images.pack12.png
+images.pack13.png
 size: 1024,512
 format: RGBA8888
 filter: Nearest,Nearest
@@ -1149,7 +1218,7 @@ cards/base/woods hermit
   offset: 0, 0
   index: -1
 
-images.pack13.png
+images.pack14.png
 size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
@@ -1239,7 +1308,7 @@ cards/darkpriest/shadow of priest
   offset: 0, 0
   index: -1
 
-images.pack14.png
+images.pack15.png
 size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
@@ -1301,7 +1370,7 @@ cards/wind/Winged Warrior
   offset: 0, 0
   index: -1
 
-images.pack15.png
+images.pack16.png
 size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
@@ -1370,7 +1439,7 @@ cards/zen/Zen Fighter
   offset: 0, 0
   index: -1
 
-images.pack16.png
+images.pack17.png
 size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
@@ -1432,7 +1501,7 @@ cards/dreamweaver/Spiritual Guide
   offset: 0, 0
   index: -1
 
-images.pack17.png
+images.pack18.png
 size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
@@ -1494,7 +1563,7 @@ cards/sower/Tangling
   offset: 0, 0
   index: -1
 
-images.pack18.png
+images.pack19.png
 size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
@@ -1563,7 +1632,7 @@ cards/snowblood/War guide
   offset: 0, 0
   index: -1
 
-images.pack19.png
+images.pack20.png
 size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
@@ -1632,7 +1701,7 @@ cards/warp/Warp Queen
   offset: 0, 0
   index: -1
 
-images.pack20.png
+images.pack21.png
 size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
@@ -1701,7 +1770,7 @@ cards/troopers/Wraith
   offset: 0, 0
   index: -1
 
-images.pack21.png
+images.pack22.png
 size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
@@ -1763,7 +1832,7 @@ cards/limbo/Tower of sins
   offset: 0, 0
   index: -1
 
-images.pack22.png
+images.pack23.png
 size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
@@ -1832,7 +1901,7 @@ cards/vampires/Nosferatu
   offset: 0, 0
   index: -1
 
-images.pack23.png
+images.pack24.png
 size: 1024,512
 format: RGBA8888
 filter: Nearest,Nearest

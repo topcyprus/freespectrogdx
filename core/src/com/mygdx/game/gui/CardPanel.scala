@@ -58,7 +58,7 @@ class CardPanel(playerId: PlayerId,
               cardButton.cardActorsOption foreach { h ⇒
                 commandRecorder setCommand Command(game.myPlayerId, h.desc.card, None, h.desc.cost)
                 if (h.desc.card.inputSpec.isDefined) {
-                  lastSelected.foreach{ b =>
+                  lastSelected foreach { b =>
                     b.selected = false
                   }
 

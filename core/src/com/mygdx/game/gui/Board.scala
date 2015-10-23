@@ -16,7 +16,6 @@ class Board(
  val cardPanels : Seq[CardPanel],
  val descriptionPanel : DescriptionPanel,
  val historyPanel : DescriptionPanel,
- background : Background,
  userMenu : UserMenu) {
 
   val rightPane = new VerticalGroup()
@@ -29,7 +28,6 @@ class Board(
   rightPane addActor cardPanels(playerId).panel
   rightPane.pack()
   val panel = new Group
-  panel addActor background.background
   panel addActor rightPane
   panel addActor userMenu.panel
   panel addActor descriptionPanel.panel

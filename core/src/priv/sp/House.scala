@@ -74,6 +74,7 @@ class Houses
   import CardSpec._
   import GameCardEffect._
 
+  val antimancer = Antimancer
   val darkPriest = DarkPriest
   val darksider = Darksider
   val dudeMancer = new DudeMancer
@@ -98,7 +99,7 @@ class Houses
 
   val base = List(Fire, Water, Air, Earth)
   val sinist = List(darkPriest.DarkPriest, darksider.Darksider, element.Elementalist, fairy.Fairy, highPriest.HighPriest, moutainKing.MoutainKing, shaman.Shaman, sower.Sower, vampire.Vampire, wind.Wind)
-  val others = List(dreamweaver.Dreamweaver, dudeMancer.Dude, entomologist.Entomologist, limbo.Limbo, trooper.Trooper)
+  val others = List(antimancer.Antimancer, dreamweaver.Dreamweaver, dudeMancer.Dude, entomologist.Entomologist, limbo.Limbo, trooper.Trooper)
   val bs = List(junkMage.Junk, lostChurch.LostChurch, sb.SB, warp.Warp, zenMage.Zen)
   val special = sinist ++ others ++ bs
 

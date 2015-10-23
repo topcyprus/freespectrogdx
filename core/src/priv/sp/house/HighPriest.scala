@@ -4,6 +4,7 @@ import priv.sp._
 import priv.sp.update._
 import GameCardEffect._
 import CardSpec._
+import priv.util.FuncDecorators
 
 /**
  * Introduced bullshit :
@@ -60,7 +61,9 @@ object HighPriest {
   HighPriest.addAdditionalCards(hpSet : _*)
   HighPriest.addAdditionalCards(guardianMummy, serpent, sunStone)
 
-  def getData(p: PlayerState) = p.data.asInstanceOf[HPriestData]
+  def getData(p: PlayerState) = {
+    p.data.asInstanceOf[HPriestData]
+  }
 
   def init = { env: Env ⇒ choosePath(env.player) }
 
@@ -310,7 +313,7 @@ object HighPriest {
           }
         }
       }
-      p.otherPlayer.submitCommand after(onOppSubmit _)
+      p.otherPlayer.submitCommand = (FuncDecorators observe p.otherPlayer.submitCommand) after(onOppSubmit _)
     }
   }
 }

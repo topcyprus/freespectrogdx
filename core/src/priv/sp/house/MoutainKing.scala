@@ -289,12 +289,12 @@ class MoutainKing {
         }
       }
     }
-    override def onPlayerDamage(amount: Int) {
+    def onPlayerDamage(damage: Damage) {
       player.slots.foreach { s ⇒
         val c = s.get.card
         if (c.houseIndex == 4) {
           s.get.reaction match {
-            case br: BerserkerReaction ⇒ br.onPlayerDamage(amount, s)
+            case br: BerserkerReaction ⇒ br.onPlayerDamage(damage.amount, s)
             case _                     ⇒
           }
         }
@@ -310,6 +310,9 @@ class MoutainKing {
       }
       p.otherPlayer.slots.slots.foreach { slot ⇒
         slot.protect modifyResult (d ⇒ protectOpp(slot, d))
+      }
+      p.onPlayerDamage = (FuncDecorators observe p.onPlayerDamage) after { d: Damage =>
+        onPlayerDamage(d)
       }
     }
 

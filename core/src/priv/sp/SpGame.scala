@@ -89,6 +89,7 @@ class SpGame(val server: GameServer, resources: GameResources) {
 
   def giveMeMana() {
     persist(updater.lift(_.players(owner).houses.incrMana(10, 0, 1, 2, 3, 4)))
+    refresh()
   }
 
 
@@ -96,23 +97,25 @@ class SpGame(val server: GameServer, resources: GameResources) {
      println(player + " submit " + commandOption)
      controller.disableSlots()
      persist(updater.lift(_.players(player).submit(commandOption)))
-     refresh()
-     controller.notifyPlayed(commandOption.map(_.card))
+     endOr {
+       refresh()
+       controller.notifyPlayed(commandOption.map(_.card))
 
-     if (state.players(player).transitions.isEmpty) {
-       playerIds.foreach(p => controller.setCardEnabled(p, false))
-       controller.setPhase(player, None)
-       run(player)
-     } else {
-       val t = persist(updater.lift { u ⇒
-         u.players(player).popTransition.get
-       })
-       endOr {
-         t match {
-           case WaitPlayer(p, name) ⇒
-             if (p != player) playerIds.foreach(p => controller.setCardEnabled(p, false))
-             controller.setPhase(p, Some(name))
-             waitPlayer(p)
+       if (state.players(player).transitions.isEmpty) {
+         playerIds.foreach(p => controller.setCardEnabled(p, false))
+         controller.setPhase(player, None)
+         run(player)
+       } else {
+         val t = persist(updater.lift { u ⇒
+           u.players(player).popTransition.get
+         })
+         endOr {
+           t match {
+             case WaitPlayer(p, name) ⇒
+               if (p != player) playerIds.foreach(p => controller.setCardEnabled(p, false))
+               controller.setPhase(p, Some(name))
+               waitPlayer(p)
+           }
          }
        }
      }

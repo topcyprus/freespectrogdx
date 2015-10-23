@@ -82,7 +82,6 @@ class HouseEventListener {
 
   def mod(damage: Damage) = damage
   def onDamaged(card: Creature, amount: Int, slot: SlotUpdate) = {}
-  def onPlayerDamage(amount: Int) = {} // bs for mk
   def onDeath() : Boolean = true // bs for limbo
   def interceptSubmit(c: Option[Command]): (Boolean, Option[Command]) = Reaction.falseNone
   def init(p: PlayerUpdate) = { playerField = p }
@@ -92,7 +91,6 @@ class HouseEventListener {
 class ProxyEventListener(inner: HouseEventListener) extends HouseEventListener {
 
   override def onDamaged(card: Creature, amount: Int, slot: SlotUpdate): Unit = { inner.onDamaged(card, amount, slot) }
-  override def onPlayerDamage(amount: Int): Unit = { inner.onPlayerDamage(amount) }
   override def onDeath() = { inner.onDeath() }
   override def interceptSubmit(c: Option[Command]): (Boolean, Option[Command]) = inner.interceptSubmit(c)
   override def init(p: PlayerUpdate): Unit = {

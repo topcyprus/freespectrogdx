@@ -158,6 +158,7 @@ trait PlayerEvent extends BoardEvent {
 }
 case class Dead(num: Int, slot: SlotState, player: PlayerUpdate, damage: Option[Damage]) extends PlayerEvent {
   def isEffect = damage.isEmpty || damage.get.isEffect
+  def isSpell = damage.isEmpty || damage.get.isSpell
   def isDestroy = damage.isEmpty
   def card = slot.card
 }
@@ -255,6 +256,12 @@ case class AttackSources(base: Option[Int] = None, sources: Vector[AttackSource]
   def add(source: AttackSource) = copy(sources = sources :+ source)
   def removeFirst(source: AttackSource) = {
     val idx = sources.indexOf(source)
+    if (idx != -1) {
+      copy(sources = sources.patch(idx, Vector.empty, 1))
+    } else this
+  }
+  def removeFirstEq(source: AttackSource) = {
+    val idx = sources.indexWhere(_ eq source)
     if (idx != -1) {
       copy(sources = sources.patch(idx, Vector.empty, 1))
     } else this

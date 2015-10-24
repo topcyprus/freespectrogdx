@@ -90,28 +90,25 @@ if earth heal 2 life to owner""", effects = effects(Direct -> amaterasu), reacti
 
   def maikoEffect: Effect = { env: Env ⇒
     import env._
-    val malus = MaikoMalus(selected)
-    def temper(s: SlotUpdate) {
-      s.attack add malus
-    }
-    player.slots foreach temper
-    otherPlayer.slots foreach temper
+    val malus = Lower1Attack(selected)
+    player.slots foreach malus.temper
+    otherPlayer.slots foreach malus.temper
     player addDescMod maikoAbility
   }
 
   class MaikoReaction extends Reaction {
     final override def onAdd(slot: SlotUpdate) = {
       if (slot != selected) {
-        val malus = MaikoMalus(selected.num)
+        val malus = Lower1Attack(selected.num)
         slot.attack add malus
       }
     }
     final override def onRemove(slot: SlotUpdate) = {
-      val malus = MaikoMalus(selected.num)
+      val malus = Lower1Attack(selected.num)
       slot.attack removeFirst malus
     }
     final override def cleanUp(): Unit = {
-      val malus = MaikoMalus(selected.num)
+      val malus = Lower1Attack(selected.num)
       def removeMalus(s: SlotUpdate) { s.attack removeFirst malus }
       selected.player.slots foreach removeMalus
       selected.otherPlayer.slots foreach removeMalus
@@ -289,4 +286,10 @@ class TrackerReaction extends Reaction with OnSummonable {
   }
 }
 
-case class MaikoMalus(id: Int) extends AttackFunc { def apply(attack: Int) = math.max(0, attack - 1) }
+case class Lower1Attack(id: Int) extends AttackFunc {
+  def apply(attack: Int) = math.max(0, attack - 1)
+
+  def temper(s: SlotUpdate) : Unit = {
+    s.attack add this
+  }
+}

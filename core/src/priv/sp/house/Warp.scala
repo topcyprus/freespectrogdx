@@ -12,7 +12,7 @@ import priv.sp.update._
  */
 // FIXME: schizo when unbridle
 class Warp {
-  val photographer = new Creature("Photographer", Attack(4), 21, "If adjacent creature die, he's replaced by photographer with same life.", reaction = new PhotoReaction)
+  val photographer = new Creature("Photographer", Attack(4), 16, "If adjacent creature die, he's replaced by photographer with same life.", reaction = new PhotoReaction)
 
   val Warp = House("Warp", List(
     new Creature("Errant", Attack(4), 19, "Hide in shadow after killing a creature, come back when damaged.", runAttack = new ErrantAttack, reaction = new ErrantReaction),

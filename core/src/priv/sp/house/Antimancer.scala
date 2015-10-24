@@ -39,7 +39,8 @@ object Antimancer {
       reaction = new HarvesterReaction),
 
     new Creature("Voodoo Doll", Attack(8), 39,
-      "At the beginning of its owner's turn Voodoo Doll drains 1 life from each of opponent's cards.",
+      "At the beginning of its owner's turn Voodoo Doll drains 1 life from each of opponent's cards.\n"
+      +"Drain life means each opponent card looses 1 life and player gains life equal to the amount drained.",
       effects = effects(OnTurn -> voodoo)),
 
     bombardier,
@@ -51,20 +52,28 @@ object Antimancer {
   ),
   eventListener = Some(new CustomListener(new AntimancerListener)))
 
-  Antimancer.initCards({ i: Int ⇒ i + 2 })
-  Antimancer.addAdditionalCards(angryMob)
+  Antimancer initCards { i: Int ⇒ i + 2 }
+  Antimancer addAdditionalCards angryMob
 
   def cost7OrInf(p: PlayerId, state: GameState): List[Int] = {
     state.players(p).slots.foldLeft(List.empty[Int]) {
       case (acc, (i, s)) ⇒
-        if (s.card.cost < 8) (i :: acc) else acc
+        if (s.card.cost < 8) i :: acc else acc
     }
   }
 
-  def resist = GameCardEffect fillEmptySlots angryMob
+  def resist = { env : Env =>
+    def spawnCreature(num: Int) : Unit = {
+      val slot = env.player.slots(num)
+      if (slot.value.isEmpty && slot.oppositeSlot.value.isEmpty) {
+        slot add angryMob
+      }
+    }
+    env.player.value.slotList foreach spawnCreature
+  }
 
   def bribe = { env : Env =>
-    env.updater.randLogs.unorderedShuffle(env.player.slots.getOpenSlots).headOption.foreach{ s =>
+    env.updater.randLogs.unorderedShuffle(env.player.slots.getOpenSlots).headOption foreach { s =>
       val oppSlot = env.otherPlayer.slots(env.selected)
       val card = oppSlot.get.card
       oppSlot.overridableDestroy()
@@ -97,7 +106,7 @@ object Antimancer {
   class MartyrReaction extends Reaction {
 
     final override def onDeath(dead: Dead) : Unit = {
-      if (dead.isEffect || dead.isDestroy) {
+      if (dead.isSpell || dead.isDestroy) {
         selected.player.slots(dead.num) add dead.card
         selected.focus()
       }

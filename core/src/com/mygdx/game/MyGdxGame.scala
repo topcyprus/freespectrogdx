@@ -80,6 +80,7 @@ class GameScreen(game :Game) extends ScreenAdapter {
     screenResources.engine.removeAllEntities()
     if (currentGame != null) {
       currentGame.spGame.gameLock.release()
+      currentGame.listener.lock.release()
     }
     val gameInit = new GameInit(screenResources, gameResources)
     gameInit.userMenu.surrenderButton.clearListeners()

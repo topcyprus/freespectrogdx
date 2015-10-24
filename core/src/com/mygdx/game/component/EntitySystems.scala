@@ -62,8 +62,8 @@ class ParticleSystem(engine : Engine) extends IteratingSystem(Family.all(classOf
   override def processEntity(entity : Entity, deltaTime : Float) = {
     val particleComponent = pm get entity
 
-    particleComponent.effect update deltaTime
-    if (particleComponent.effect.isComplete){
+    particleComponent update deltaTime
+    if (particleComponent.isComplete){
       particleComponent.endPromise.success(())
       if (particleComponent.isEndingEntity){
         engine removeEntity entity

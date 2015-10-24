@@ -20,7 +20,7 @@ object Limbo {
       "Hell's Keeper deals 2 damage to the opponent and each of the opponent's creatures.",
     reaction = new HellKeeperReaction)
 
-  val baron = new Creature("Limbo Baron", Attack(3), 21,
+  val baron = new Creature("Limbo Baron", Attack(6), 36,
     "when a spell or ability damages and kills KEEPER OF LIMBO or Limbo Baron they enter 'Limbo-state'." +
       " When Limbo Baron enters 'Limbo-state' its attack doubles.")
 
@@ -63,7 +63,7 @@ object Limbo {
     effects = List(OnEndTurn -> cleanLimbo),
     eventListener = Some(new CustomListener(new LimboEventListener)))
 
-  Limbo.initCards(Houses.basicCostFunc)
+  Limbo initCards Houses.basicCostFunc
 
   class HeavenKeeperReaction extends Reaction with LimboReaction {
     def onLimbo(s : SlotUpdate): Unit = {
@@ -95,25 +95,31 @@ object Limbo {
   }
 
   class SoulReaction extends Reaction with LimboReaction {
-    val cards = List(heavenKeeper, hellKeeper)
+    val possibleCards = Set(heavenKeeper, hellKeeper)
 
     def onLimbo(s : SlotUpdate): Unit = {
-      val emptyAdjs = selected.adjacentSlots filter (_.value.isEmpty)
+      selected.player.pstate.desc.get.houses(4).cards.headOption.foreach { c =>
+        c.card match {
+          case creature : Creature if possibleCards contains creature =>
+            val emptyAdjs = selected.adjacentSlots filter (_.value.isEmpty)
 
-      (Random shuffle emptyAdjs).headOption foreach { s =>
-        s add cards(Random nextInt 2)
-        s setData NoLimbo
-        selected.focus()
+            (Random shuffle emptyAdjs).headOption foreach { s =>
+              s add creature
+              s setData NoLimbo
+              selected.focus()
+            }
+          case _ =>
+        }
       }
     }
   }
 
   def netherGrasp = { env : Env =>
-    val damage = Damage(3, env, isSpell = true)
-    env.player.slots foreach { s =>
+    val amount = env.player.slots.foldl(0) { (i, s) =>
       s inflict Damage(100, env) // HACK
-      env.player.otherPlayer inflict damage
+      i + 3
     }
+    env.player.otherPlayer.slots inflictCreatures Damage(amount, env, isSpell = true)
   }
 
   def redeem = { env : Env =>

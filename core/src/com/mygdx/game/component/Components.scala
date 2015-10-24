@@ -28,6 +28,15 @@ class ParticleComponent(
   val isEndingEntity : Boolean = false,
   val endPromise : Promise[Unit] = Promise[Unit]() ) extends Component {
 
+  var time : Float = 0f
+
+  def update(deltaTime : Float) = {
+    time = time + deltaTime
+    effect.update(deltaTime)
+  }
+
+  def isComplete = effect.isComplete || time >= duration
+
   effect.reset()
   effect.start()
 }

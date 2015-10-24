@@ -1,12 +1,12 @@
 package com.mygdx.game
 
+
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.actions.AfterAction
 import com.badlogic.gdx.scenes.scene2d.{Action, Actor}
 import com.badlogic.gdx.scenes.scene2d.ui.{WidgetGroup, VerticalGroup, HorizontalGroup}
 
-import scala.concurrent.duration.Duration
-import scala.concurrent.{Await, Promise}
+import scala.concurrent.Promise
 import scala.util.Success
 
 
@@ -40,16 +40,13 @@ package object gui {
     }
   }
 
-  def waitAction(actor : Actor) = {
-    Await.result(promAction(actor).future, Duration.Inf)
-  }
-
   def promAction(actor : Actor) : Promise[Unit] = {
     val prom = new PromiseAction
     val afterAction = new AfterAction()
     actor addAction afterAction
     afterAction.setAction(prom)
-    prom.prom
+    val promise = prom.prom
+    promise
   }
 
   class PromiseAction extends Action {

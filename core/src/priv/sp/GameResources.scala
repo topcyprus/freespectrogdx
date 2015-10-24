@@ -32,7 +32,7 @@ class GameResources {
     }
   }.get
 
-  val base = sp.houses.entomologist.Entomologist :: sp.houses.dreamweaver.Dreamweaver :: sp.houses.sinist
+  val base = sp.houses.others ++ sp.houses.sinist
   val baseEnemy = base ++ sp.houses.bs
   var playerChoices: List[List[House]] = List(base, baseEnemy)
   def resolveChoices = playerChoices map { o ⇒

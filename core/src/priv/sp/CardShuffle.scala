@@ -71,9 +71,10 @@ class CardModel(val cp: CPSolver, val houses: List[HModel]) {
 class HModel(val house: House, spHouses: Houses, getCardRange: GetCardRange)(implicit cp: CPSolver) {
   val isSpecial = spHouses isSpecial house
   val cards = if (isSpecial) {
-    val (c0, ctemp) = range.partition(_ < 3)
-    val (c1, ctemp2) = ctemp.partition(_ < 5)
-    val (c2, c3) = ctemp2.partition(_ < 7)
+    val n = range.size / 4
+    val (c0, ctemp) = range.splitAt(n)
+    val (c1, ctemp2) = ctemp.splitAt(n)
+    val (c2, c3) = ctemp2.splitAt(n)
     (CPIntVar(c0)
       :: CPIntVar(c1)
       :: CPIntVar(c2)
@@ -83,7 +84,7 @@ class HModel(val house: House, spHouses: Houses, getCardRange: GetCardRange)(imp
   }
 
   def getSolveds: Set[Int] = cards.map(_.value)(breakOut)
-  private def range = getCardRange(house).to[immutable.Set]
+  private def range = getCardRange(house)
 }
 
 class CardShuffler(cardModel: CardModel) extends CpHelper {

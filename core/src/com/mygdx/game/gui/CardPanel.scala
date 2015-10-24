@@ -72,6 +72,17 @@ class CardPanel(playerId: PlayerId,
           }
         })
       }
+    } else {
+      cardButtons foreach { cardButton ⇒
+        cardButton.visible = true
+        cardButton.group.addListener(new ClickListener() with HoverToDesc {
+          def descPanel = descriptionPanel
+
+          def described = cardButton.cardActorsOption collect { case h if cardButton.visible =>
+            h.desc.card
+          }
+        })
+      }
     }
   }
 

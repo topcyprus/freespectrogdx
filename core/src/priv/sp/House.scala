@@ -82,6 +82,7 @@ class Houses
   val element = new Elementalist
   val entomologist = Entomologist
   val fairy = new FairyKnight
+  val faerieDruid = FaerieDruid
   val highPriest = HighPriest
   val junkMage = new JunkMage
   val limbo  = Limbo
@@ -99,9 +100,11 @@ class Houses
 
   val base = List(Fire, Water, Air, Earth)
   val sinist = List(darkPriest.DarkPriest, darksider.Darksider, element.Elementalist, fairy.Fairy, highPriest.HighPriest, moutainKing.MoutainKing, shaman.Shaman, sower.Sower, vampire.Vampire, wind.Wind)
-  val others = List(antimancer.Antimancer, dreamweaver.Dreamweaver, dudeMancer.Dude, entomologist.Entomologist, limbo.Limbo, trooper.Trooper)
+  val others = List(antimancer.Antimancer, dreamweaver.Dreamweaver, entomologist.Entomologist,
+    faerieDruid.FaerieDruid, limbo.Limbo)
+  val olds = List(dudeMancer.Dude, trooper.Trooper)
   val bs = List(junkMage.Junk, lostChurch.LostChurch, sb.SB, warp.Warp, zenMage.Zen)
-  val special = sinist ++ others ++ bs
+  val special = (sinist ++ others).sortBy(_.name) ++ olds ++ bs
 
   val specialNames: Set[String] = special.map(_.name)(breakOut)
   val specialByName: Map[String, House] = special.map { c ⇒ (c.name, c) }(breakOut)

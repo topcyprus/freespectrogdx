@@ -1,6 +1,5 @@
 package priv.sp
 
-import collection._
 import CardSpec._
 import priv.sp.update._
 

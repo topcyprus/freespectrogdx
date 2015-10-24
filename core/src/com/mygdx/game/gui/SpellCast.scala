@@ -4,7 +4,7 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.graphics.g2d.{Batch, ParticleEffect}
 import com.badlogic.gdx.math.Vector2
 import com.mygdx.game.ScreenResources
-import com.mygdx.game.component.{Drawable, ParticleComponent, VisualComponent}
+import com.mygdx.game.component.{TimedComponent, Drawable, ParticleComponent, VisualComponent}
 import com.mygdx.game.effects.{BlackMass, Lightning}
 import priv.sp._
 
@@ -66,7 +66,17 @@ class SpellCast(board: Board, game : SpGame, resources : ScreenResources) {
         val pos = getCoord(getLeftSlot(opponent))
         effect.setPosition(pos.x, pos.y)
         Some(effect)
-      } else if (c.card == vampire.Vampire.cards(4)) {
+      } else if (c.card == limbo.Limbo.cards(4)) {
+        val effect = particles.get("nether_grasp")
+        val pos = getCoord(getLeftSlot(c.player))
+        effect.setPosition(pos.x, pos.y)
+        Some(effect)
+      }  else if (c.card == limbo.Limbo.cards(6)) {
+        val effect = particles.get("redemption")
+        val pos = getTargetCoord(c).get
+        effect.setPosition(pos.x, pos.y)
+        Some(effect)
+      }else if (c.card == vampire.Vampire.cards(4)) {
         val effect = particles.get("blood_burst")
         val pos = getTargetCoord(c).get
         effect.setPosition(pos.x, pos.y)
@@ -105,11 +115,13 @@ class SpellCast(board: Board, game : SpGame, resources : ScreenResources) {
 
   def withSlotOffet(vec : Vector2) = vec.add(50f, 50f)
 
-  def createEffectEntity(effect : ParticleEffect, duration : Float = 3f) = {
+  def createEffectEntity(effect : ParticleEffect) = {
     val entity = new Entity
+
+    val duration = math.min(3, effect.getEmitters.toArray.map(_.getDuration.getLowMax).max)
     val particleComponent = new ParticleComponent(effect, duration, isEndingEntity = true)
-    entity.add(particleComponent)
-    entity.add(new VisualComponent(new Drawable{ def draw(batch : Batch) = effect.draw(batch) }))
+    entity add particleComponent
+    entity add new VisualComponent(new Drawable{ def draw(batch : Batch) = effect.draw(batch) })
     (entity, particleComponent)
   }
 }

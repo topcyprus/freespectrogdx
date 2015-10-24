@@ -14,6 +14,7 @@ class JunkMage {
   import CardSpec._
   import GameCardEffect._
 
+  private val trash = new Creature("Trash", Attack(2), 11)
   private val trashCyborg = new Creature("Trash Cyborg", Attack(3), 30, "Fill the board with trash 2/11 and one cyborg.\nEvery turn 2 pieces of trash assemble into the cyborg", effects = effects(Direct -> spawnTrash, OnTurn -> gatherTrash))
 
   val Junk: House = House("Junk", List(
@@ -29,13 +30,9 @@ class JunkMage {
     trashCyborg), eventListener = Some(new CustomListener(new JunkEventListener)))
 
   val jf = Junk.cards(2).asCreature
+  trash.cost = 1
   Junk.initCards(Houses.basicCostFunc)
-
-  private val trash = new Creature("Trash", Attack(2), 11) {
-    cost = 1
-    houseIndex = Junk.houseIndex
-    houseId = Junk.houseId
-  }
+  Junk.addAdditionalCards(trash)
 
   private val screamer = Junk.cards(0)
 

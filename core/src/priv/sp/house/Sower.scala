@@ -20,7 +20,7 @@ class Sower {
     Spell("Pollination", "turns target creature of X level into special creature of (X minus 3) level with full hp and heals X life to owner.",
       inputSpec = Some(SelectOwnerCreature),
       effects = effects(Direct -> pollinate)),
-    new Creature("Blood sundew", Attack(6), 24, "when deals damage, regenerates the same amount of hp.", runAttack = new BloodSundewAttack),
+    new Creature("Blood sundew", Attack(6), 24, "when deals damage, regenerates the same amount of hp.", runAttack = new HealingAttack),
     new Creature("Predator plant", Attack(6), 33, "when attacks creature, deals X additional damage to it (X = difference between its current and max hp).", runAttack = new PredatorPlantAttack),
     new Creature("Forest drake", Attack(5), 55, "when owner summons special creature, creates its copy in nearest empty slot.", reaction = new ForestDrakeReaction),
     new Creature("Fiery flower", Attack(0), 35, "Every turn halves health of enemy creature with highest hp and gives 1 fire power to owner.\nWhen enters the game, deals to opponent X damage (X = his fire power)", effects = effects(OnTurn -> fieryFlower, Direct -> { env: Env ⇒
@@ -103,7 +103,7 @@ class Sower {
 }
 
 // code horror
-private class BloodSundewAttack extends RunAttack with DamageAttack {
+class HealingAttack extends RunAttack with DamageAttack {
 
   def apply(target: List[Int], d: Damage, player: PlayerUpdate) {
     val num = target.head

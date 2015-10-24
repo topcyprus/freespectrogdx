@@ -11,7 +11,7 @@ case class AttackAdd(bonus: Int) extends AttackFunc { def apply(attack: Int) = a
 
 class RemoveAttack(attack: AttackSource) extends Function[Env, Unit] {
   def apply(env: Env) {
-    env.player.slots foreach (_.attack.removeFirst(attack))
+    env.player.slots foreach (_.attack.removeFirstEq(attack))
     env.player removeEffect (_ == this)
   }
 }

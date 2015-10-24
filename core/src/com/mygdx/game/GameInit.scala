@@ -1,20 +1,18 @@
 package com.mygdx.game
 
-import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.actions.{MoveToAction, TemporalAction}
-import com.badlogic.gdx.scenes.scene2d.ui.{Label, Image}
+import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.{Group, Actor}
-import com.mygdx.game.component.{Drawable, VisualComponent}
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import collection.JavaConverters._
 import com.badlogic.gdx.{InputMultiplexer, Input, InputAdapter, Gdx}
 import com.mygdx.game.gui._
 import priv.sp._
 import priv.sp.update.UpdateListener
-import priv.util.TVar
+import priv.util.{RichLock, TVar}
 import priv.util.Utils._
 
 import scala.concurrent.Await
@@ -38,7 +36,8 @@ class GameInit(screenResources : ScreenResources, gameResources : GameResources)
   val board           = new Board(spGame.myPlayerId, slotPanels, cardPanels, descriptionPanel, historyPanel, userMenu)
   val commandRecorder = new CommandRecorder(spGame, board)
   spGame.controller   = new UserGameController(spGame, board, commandRecorder, screenResources)
-  spGame.updater.updateListener = new GameUpdateListener(board, spGame, screenResources)
+  val listener        = new GameUpdateListener(board, spGame, screenResources)
+  spGame.updater.updateListener = listener
 
   screenResources.stage addActor background.background
   screenResources.stage addActor selectedEffect
@@ -61,6 +60,7 @@ class GameInit(screenResources : ScreenResources, gameResources : GameResources)
     board.cardPanels foreach (_.setEnabled(false))
     spGame.gameLock.release()
     spGame.gameLock = new priv.util.RichLock
+    listener.lock.release()
     spGame.server.reset()
     screenResources.engine.removeAllEntities()
     screenResources.engine.getSystems.toArray.foreach(_.setProcessing(true))
@@ -168,10 +168,22 @@ class UserGameController(game : SpGame, board : Board, commandRecorder : Command
 }
 
 
-private class GameUpdateListener(board : Board, game : SpGame, resources : ScreenResources) extends UpdateListener {
+class GameUpdateListener(board : Board, game : SpGame, resources : ScreenResources) extends UpdateListener {
   val spellCast = new SpellCast(board, game, resources)
   import board._
   import game._
+
+  val lock = new RichLock()
+
+  def waitAction(actor : Actor) = {
+    lock waitLock { lock =>
+      promAction(actor).future onComplete { _ =>
+        lock synchronized {
+          lock.notifyAll()
+        }
+      }
+    }
+  }
 
   def focus(num: Int, playerId: PlayerId, blocking: Boolean) : Unit = {
     resources.slotSystem

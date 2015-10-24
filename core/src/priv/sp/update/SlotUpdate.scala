@@ -133,6 +133,7 @@ class AttackUpdate(slot: SlotUpdate) extends FieldUpdate(Some(slot), slot.value 
   def add(source: AttackSource) { if (get.base != some0) write(Some(get add source)) }
   def forceAdd(source: AttackSource) { write(Some(get add source)) }
   def removeFirst(source: AttackSource) { write(value map (_ removeFirst source)) }
+  def removeFirstEq(source: AttackSource) { write(value map (_ removeFirstEq source)) }
   def removeAny(source: AttackSource) { write(value map (_ removeAny source)) }
   def has[A: reflect.ClassTag] = get.sources.exists {
     case _: A ⇒ true

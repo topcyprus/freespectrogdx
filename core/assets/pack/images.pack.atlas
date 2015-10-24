@@ -18,6 +18,13 @@ smoke
   orig: 64, 64
   offset: 0, 0
   index: -1
+thin
+  rotate: false
+  xy: 68, 68
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
 
 images.pack2.png
 size: 1024,128
@@ -1375,6 +1382,75 @@ size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
+cards/faeriedruid/Butterfly Cloud
+  rotate: false
+  xy: 2, 2
+  size: 95, 103
+  orig: 95, 103
+  offset: 0, 0
+  index: -1
+cards/faeriedruid/Butterfly Rabble
+  rotate: false
+  xy: 196, 25
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+cards/faeriedruid/Faerie Dragon
+  rotate: false
+  xy: 278, 25
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+cards/faeriedruid/Faerie Fire
+  rotate: false
+  xy: 99, 2
+  size: 95, 103
+  orig: 95, 103
+  offset: 0, 0
+  index: -1
+cards/faeriedruid/Faerie Piper
+  rotate: false
+  xy: 360, 25
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+cards/faeriedruid/Faerie Ring
+  rotate: false
+  xy: 442, 25
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+cards/faeriedruid/Faerie Twins
+  rotate: false
+  xy: 524, 25
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+cards/faeriedruid/Nightwing Butterfly
+  rotate: false
+  xy: 606, 25
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+cards/faeriedruid/Unicorn
+  rotate: false
+  xy: 688, 25
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+
+images.pack17.png
+size: 1024,128
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
 cards/zen/Cocoon
   rotate: false
   xy: 99, 25
@@ -1439,7 +1515,7 @@ cards/zen/Zen Fighter
   offset: 0, 0
   index: -1
 
-images.pack17.png
+images.pack18.png
 size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
@@ -1501,7 +1577,7 @@ cards/dreamweaver/Spiritual Guide
   offset: 0, 0
   index: -1
 
-images.pack18.png
+images.pack19.png
 size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
@@ -1563,7 +1639,7 @@ cards/sower/Tangling
   offset: 0, 0
   index: -1
 
-images.pack19.png
+images.pack20.png
 size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
@@ -1632,7 +1708,7 @@ cards/snowblood/War guide
   offset: 0, 0
   index: -1
 
-images.pack20.png
+images.pack21.png
 size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
@@ -1701,7 +1777,7 @@ cards/warp/Warp Queen
   offset: 0, 0
   index: -1
 
-images.pack21.png
+images.pack22.png
 size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
@@ -1770,7 +1846,7 @@ cards/troopers/Wraith
   offset: 0, 0
   index: -1
 
-images.pack22.png
+images.pack23.png
 size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
@@ -1832,7 +1908,7 @@ cards/limbo/Tower of sins
   offset: 0, 0
   index: -1
 
-images.pack23.png
+images.pack24.png
 size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
@@ -1901,7 +1977,7 @@ cards/vampires/Nosferatu
   offset: 0, 0
   index: -1
 
-images.pack24.png
+images.pack25.png
 size: 1024,512
 format: RGBA8888
 filter: Nearest,Nearest

@@ -15,7 +15,7 @@ object LostChurch {
 
   val prisoner = new Creature("Prisoner", Attack(2), 10, "When dying loose 1 mana of the two highest basic houses and earn 1 special mana.", reaction = new PrisonerReaction)
   val enragedPrisoner = new Creature("Enraged Prisoner", Attack(7), 35, "Immune to spell & ability when liberator is alive.", reaction = new PrisonerReaction, status = runFlag)
-  val windOfOppression = Spell("wind of oppression", "Stun scarecrow's opposite creature and its neighbours. Deals 5 damage to them", effects = effects(Direct -> oppress))
+  val windOfOppression = Spell("wind of oppression", "Stun scarecrow's opposite creature and its neighbours. Deals 4 damage to them", effects = effects(Direct -> oppress))
   val darkMonk = new Creature("Dark monk", Attack(2), 13, "Decrease opponent fire mana by 2 and increase cost of them by 1 when alive.",
     effects = effects(Direct -> guardFire), reaction = new DarkMonkReaction)
   val preacher = new Creature("Preacher", Attack(4), 13, "When in play normal cards cost 1 more mana.\nIncrease growth of special mana by 1.\nAdd 1 attack to prisoner",
@@ -23,8 +23,8 @@ object LostChurch {
   val falseProphet: Creature = new Creature("false prophet", Attack(4), 18, "Until his death, normal cards cost 1 more mana.\nGive 2 mana to each basic house.\nTake one mana back when dying",
     reaction = new FalseProphetReaction, effects = effects(Direct -> prophetize))
   val astralEscape = new Creature("Astral escape", Attack(4), 30, "Damage done to prisoner is redirected to Astral escape", reaction = new AstralEscapeReaction)
-  val scarecrow: Creature = new Creature("Scarecrow", Attack(8), 28,
-    """Stuns&Deals 5 damage to opposite creature
+  val scarecrow: Creature = new Creature("Scarecrow", Attack(8), 25,
+    """Stuns&Deals 4 damage to opposite creature
 Can switch with prisoner to nearest empty slot""",
     effects = effects(Direct -> scare), inputSpec = Some(SelectOwner(openOrPrisoner)), reaction = new ScarecrowReaction)
   val liberator = new Creature("Liberator", Attack(3), liberatorLife, "Turns prisoner into Enraged prisoner.\n When dying inflict " + liberatorLife + " damage to him.", reaction = new LiberatorReaction, effects = effects(Direct -> focus(deliverPrisoner)))
@@ -37,12 +37,14 @@ Can switch with prisoner to nearest empty slot""",
     astralEscape,
     scarecrow,
     liberator,
-    new Creature("Falconer", Attack(6), 35, "Each turns deals (slot distance) damage to opponent creatures.", effects = effects(OnTurn -> focus(falcon))),
+    new Creature("Falconer", Attack(6), 30, "Each turns deals (slot distance) damage to opponent creatures.", effects = effects(OnTurn -> focus(falcon))),
     Spell("Madden", "Deals 8 damage to opponent creature \nHeals by 3 for each creature killed and add everyone 1 attack.", effects = effects(Direct -> madden))),
     effects = List(OnEndTurn -> spawnPrisoner, OnTurn -> weaken),
     eventListener = Some(new CustomListener(new LCEventListener)),
     description =
-      "When a disciple is low on life(<half), his belief is weakened, and he loose 1/3 attack.\nWhen prisoner die, owner loose 1 mana of 2 highest basic houses and\nearn one special mana.")
+      "Prisoner 2/10 spawn at the end of owner's turn in random empty owner slot.\n"  +
+        "When prisoner die, owner loose 1 mana of 2 highest basic houses and\nearn one special mana.\n" +
+        "When a disciple is low on life(<half), his belief is weakened, and he loose 1/3 attack.")
 
   LostChurch initCards Houses.basicCostFunc
   LostChurch.addAdditionalCards(prisoner, enragedPrisoner, windOfOppression, darkMonk)
@@ -137,7 +139,7 @@ Can switch with prisoner to nearest empty slot""",
     val slot = env.otherPlayer.slots(env.selected)
     if (slot.value.isDefined) {
       env.focus()
-      slot inflict Damage(5, env, isAbility = true)
+      slot inflict Damage(4, env, isAbility = true)
       slot.stun()
     }
     env.player addDescMod scarecrowAbility
@@ -148,7 +150,7 @@ Can switch with prisoner to nearest empty slot""",
       slotInterval(slot.num - 1, slot.num + 1) foreach { n ⇒
         val oppSlot = otherPlayer.slots(n)
         if (oppSlot.value.isDefined) {
-          oppSlot inflict Damage(5, env, isAbility = true)
+          oppSlot inflict Damage(4, env, isAbility = true)
           oppSlot toggle stunFlag
         }
       }

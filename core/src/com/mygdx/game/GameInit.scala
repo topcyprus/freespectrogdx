@@ -61,6 +61,7 @@ class GameInit(screenResources : ScreenResources, gameResources : GameResources)
     spGame.gameLock.release()
     spGame.gameLock = new priv.util.RichLock
     listener.lock.release()
+    listener.lock = new priv.util.RichLock
     spGame.server.reset()
     screenResources.engine.removeAllEntities()
     screenResources.engine.getSystems.toArray.foreach(_.setProcessing(true))
@@ -173,7 +174,7 @@ class GameUpdateListener(board : Board, game : SpGame, resources : ScreenResourc
   import board._
   import game._
 
-  val lock = new RichLock()
+  var lock = new RichLock()
 
   def waitAction(actor : Actor) = {
     lock waitLock { lock =>

@@ -59,7 +59,7 @@ object HighPriest {
   HighPriest initCards Houses.basicCostFunc
   HighPriest.initCards(Houses.basicCostFunc, hpSet)
   HighPriest.addAdditionalCards(hpSet : _*)
-  HighPriest.addAdditionalCards(guardianMummy, serpent, sunStone)
+  HighPriest.addAdditionalCards(guardianMummy, serpent, sunStone, puzzle)
 
   def getData(p: PlayerState) = {
     p.data.asInstanceOf[HPriestData]

@@ -237,7 +237,7 @@ class BotObserver(context: BotContext, knowledge: BotKnowledge) {
 
   val cardStats = playerIds.map { p ⇒ new DummyCardStats(p, context, knowledge) }
   val choices = new Choices(cardStats, settings)
-  val heuris = new LifeHeuris(context, settings)
+  val heuris = new LifeManaHeuris(context, settings)
   heuris.init(start)
 
   def select(node1: Node, node2: Node, isFairOnly: Boolean) = {

@@ -61,6 +61,11 @@ class SpellCast(board: Board, game : SpGame, resources : ScreenResources) {
         val pos = getCoord(getLeftSlot(other(c.player)))
         effect.setPosition(pos.x, pos.y)
         Some(effect)
+      } else if (c.card == faerieDruid.FaerieDruid.cards(1)) {
+        val effect = particles.get("faerie_fire")
+        val pos = getCoord(getLeftSlot(other(c.player)))
+        effect.setPosition(pos.x, pos.y)
+        Some(effect)
       } else if (c.card == Water.cards(7)) {
         val effect = particles.get("acid_rain")
         val pos = getCoord(getLeftSlot(opponent))

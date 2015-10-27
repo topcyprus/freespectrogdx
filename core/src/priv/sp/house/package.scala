@@ -26,4 +26,12 @@ package object house {
     else Some(dists.minBy(_._2)._1)
   }
 
+  @inline def nonSpecial(p: PlayerId, state: GameState): List[Int] = listSlotWhere(p, state)(_.houseIndex < 4)
+
+  def listSlotWhere(p: PlayerId, state: GameState)(f : Card => Boolean): List[Int] = {
+    state.players(p).slots.foldLeft(List.empty[Int]) {
+      case (acc, (i, s)) ⇒
+        if (f(s.card)) i :: acc else acc
+    }
+  }
 }

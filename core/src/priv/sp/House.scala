@@ -22,6 +22,7 @@ case class House(
   var houseId = House.currentId.incrementAndGet()
 
   def costs = cards.map(_.cost)
+  def cardIndexes1 = cards.map(_.cardIndex1)
 
   def initCards(costFn: Int ⇒ Int, cs: List[Card] = cards) {
     cs.zipWithIndex foreach {
@@ -75,6 +76,7 @@ class Houses
   import GameCardEffect._
 
   val antimancer = Antimancer
+  val colors = new Colors
   val darkPriest = DarkPriest
   val darksider = Darksider
   val dudeMancer = new DudeMancer
@@ -100,7 +102,7 @@ class Houses
 
   val base = List(Fire, Water, Air, Earth)
   val sinist = List(darkPriest.DarkPriest, darksider.Darksider, element.Elementalist, fairy.Fairy, highPriest.HighPriest, moutainKing.MoutainKing, shaman.Shaman, sower.Sower, vampire.Vampire, wind.Wind)
-  val others = List(antimancer.Antimancer, dreamweaver.Dreamweaver, entomologist.Entomologist,
+  val others = List(antimancer.Antimancer, colors.Colors, dreamweaver.Dreamweaver, entomologist.Entomologist,
     faerieDruid.FaerieDruid, limbo.Limbo)
   val olds = List(dudeMancer.Dude, trooper.Trooper)
   val bs = List(junkMage.Junk, lostChurch.LostChurch, sb.SB, warp.Warp, zenMage.Zen)

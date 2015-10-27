@@ -37,14 +37,14 @@ object CardModel {
 
   trait GetCardRange { def apply(house: House): List[Int] }
   case object BasicCardRange extends GetCardRange {
-    def apply(house: House) = house.costs
+    def apply(house: House) = house.cardIndexes1
   }
   class ExcludePlayerCards(p: PlayerDesc) extends GetCardRange {
-    val playerCards = p.houses.map { h ⇒ h.house.name -> h.cards.map(_.cost).to[immutable.Set] }.toMap
+    val playerCards = p.houses.map { h ⇒ h.house.name -> h.cards.map(_.card.cardIndex1).to[immutable.Set] }.toMap
     def apply(house: House) = {
       playerCards.get(house.name) match {
-        case Some(cards) ⇒ house.costs filterNot (cards.contains _)
-        case None        ⇒ house.costs
+        case Some(cards) ⇒ house.cardIndexes1 filterNot (cards.contains _)
+        case None        ⇒ house.cardIndexes1
       }
     }
   }
@@ -60,7 +60,7 @@ class CardModel(val cp: CPSolver, val houses: List[HModel]) {
     (0 to 4).map { i ⇒
       val house = houses(i).house
       val solveds = houses(i).getSolveds
-      PlayerHouseDesc(house, house.cards.filter(c ⇒ solveds.contains(c.cost)).map(CardDesc(_))(breakOut))
+      PlayerHouseDesc(house, house.cards.filter(c ⇒ solveds.contains(c.cardIndex1)).map(CardDesc(_))(breakOut))
     }(breakOut): Vector[PlayerHouseDesc])
 }
 

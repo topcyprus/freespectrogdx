@@ -4,8 +4,6 @@ import collection._
 import java.io.Serializable
 
 object GameState {
-  val some0 = Some(0)
-  val some1 = Some(1)
 
   def toString(s: GameState) = {
     s.players.map { p ⇒

@@ -243,11 +243,12 @@ class FuncDecorator1[A, B](f: A ⇒ B) extends Function[A, B] {
   }
 
 
-  def modifyResult(g: B ⇒ B) {
+  def modifyResult(g: B ⇒ B) = {
     val old = inner
     inner = { x: A ⇒
       g(old(x))
     }
+    this
   }
 }
 

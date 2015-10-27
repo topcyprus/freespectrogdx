@@ -8,6 +8,7 @@ package object sp {
   val nbSlots = 6
   val baseSlotRange = 0 until nbSlots
   val baseSlotList = baseSlotRange.toList
+  val some0 = Option(0)
   def adjacents(n: Int) = List(n - 1, n + 1).filter(inSlotRange _)
   def slotInterval(n: Int, m: Int) = (math.max(0, n) to math.min(5, m))
 

@@ -33,13 +33,6 @@ object MasterOfWind {
 
   Wind initCards Houses.basicCostFunc
 
-  def nonSpecial(p: PlayerId, state: GameState): List[Int] = {
-    state.players(p).slots.foldLeft(List.empty[Int]) {
-      case (acc, (i, s)) ⇒
-        if (s.card.houseIndex < 4) (i :: acc) else acc
-    }
-  }
-
   def winge = { env: Env ⇒
     env.player.updateData[WindState](_.copy(winged = true))
   }

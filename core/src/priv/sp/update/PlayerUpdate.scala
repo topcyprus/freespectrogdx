@@ -235,10 +235,10 @@ class PlayerUpdate(val id: PlayerId, val updater: GameStateUpdater) extends Fiel
   def removeDescMod(dmod: DescMod) = { write(value.copy(desc = value.desc.remove(dmod))) }
 
   // sub optimal?
-  private def guard(damage: Damage) = {
+  var guard = { damage: Damage =>
     slots.foldl(damage) {
       case (acc, slot) ⇒
-        slot.get.reaction.onProtect(DamageEvent(acc, None, this))
+        slot.get.reaction onProtect DamageEvent(acc, None, this)
     }
   }
 

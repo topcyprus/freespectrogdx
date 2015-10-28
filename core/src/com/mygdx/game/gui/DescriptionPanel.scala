@@ -43,14 +43,20 @@ class DescriptionPanel(resources : ScreenResources,
   }
 }
 
-trait HoverToDesc { _ : ClickListener =>
+trait HoverToDesc extends ClickListener {
   def descPanel : DescriptionPanel
   def described : Option[Described]
 
   override def enter(event: InputEvent, x: Float, y: Float, pointer : Int, fromActor : Actor) : Unit = {
-    descPanel.update(described)
+    super.enter(event, x, y, pointer, fromActor)
+    if (isOver) {
+      descPanel.update(described)
+    }
   }
   override def exit(event: InputEvent, x: Float, y: Float, pointer : Int, fromActor : Actor) : Unit = {
-    descPanel.update(None)
+    super.exit(event, x, y, pointer, fromActor)
+    if (!isOver) {
+      descPanel.update(None)
+    }
   }
 }

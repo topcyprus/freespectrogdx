@@ -76,7 +76,7 @@ class Houses
   import GameCardEffect._
 
   val antimancer = Antimancer
-  val colors = new Colors
+  val colors = Colors
   val darkPriest = DarkPriest
   val darksider = Darksider
   val dudeMancer = new DudeMancer

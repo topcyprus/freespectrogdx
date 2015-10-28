@@ -6,7 +6,7 @@ import priv.sp._
 import priv.sp.update.{SlotUpdate, PlayerUpdate, HouseEventListener}
 import priv.util.FuncDecorators
 
-class Colors {
+object Colors {
 
   // /!\ direct effect should use player data because slot data is not set yet
   val violet = new Creature("Violet", AttackSources(), 29,

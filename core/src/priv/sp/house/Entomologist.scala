@@ -89,7 +89,7 @@ object Entomologist {
 
   def locust = { env: Env ⇒
     import env._
-    val s = otherPlayer.slots(selected)
+    val s = getTargetSelectedSlot()
     s toggle CardSpec.cursedFlag
     player addEffect (OnEndTurn -> Locust(s.get.id))
   }

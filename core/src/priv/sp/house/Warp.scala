@@ -11,7 +11,7 @@ import priv.sp.update._
  *        proxy for houseeventlistener
  */
 // FIXME: schizo when unbridle
-class Warp {
+object Warp {
   val photographer = new Creature("Photographer", Attack(4), 16, "If adjacent creature die, he's replaced by photographer with same life.", reaction = new PhotoReaction)
 
   val Warp = House("Warp", List(
@@ -24,7 +24,9 @@ class Warp {
     new Creature("Stranger", AttackSources().add(new StrangerAttack), 30, "Attack is highest opponent mana.\nWhen summoned, take effects of opposite slot.(at least try to!)\n -immediate effects are not applied\n-can't duplicate effect to attack multiple targets", effects = effects(Direct -> merge)),
     new Creature("Warp Queen", Attack(6), 32, "Opponent creatures lose their ability until end of next owner turn.\nDeals 4 damage to each of them", effects = effects(Direct -> warp))),
     eventListener = Some(OpponentListener({
-      case _ : Limbo.LimboEventListener | _ : Colors.ColorListener => new WarpEventListener {}
+      case _ : Limbo.LimboEventListener
+         | _ : Colors.ColorListener
+         | _ : SoulReaper.SoulReaperListener => new WarpEventListener {}
       case inner => new ProxyEventListener(inner) with WarpEventListener
     })))
 

@@ -91,7 +91,7 @@ class Elementalist {
     val own = player.getHouses.reduceLeft((h1, h2) ⇒ if (h1.mana > h2.mana) h1 else h2).mana
     val x = math.max(0, own - opp)
     otherPlayer inflict Damage(x, env, isSpell = true)
-    otherPlayer.blockSlot(selected)
+    otherPlayer blockSlot selected
   }
 
   class SylphReaction extends Reaction {

@@ -1975,6 +1975,68 @@ size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
+cards/soulreaper/Damnation
+  rotate: false
+  xy: 2, 2
+  size: 95, 103
+  orig: 95, 103
+  offset: 0, 0
+  index: -1
+cards/soulreaper/Dark Passage
+  rotate: false
+  xy: 99, 2
+  size: 95, 103
+  orig: 95, 103
+  offset: 0, 0
+  index: -1
+cards/soulreaper/Death Sentence
+  rotate: false
+  xy: 196, 2
+  size: 95, 103
+  orig: 95, 103
+  offset: 0, 0
+  index: -1
+cards/soulreaper/Eternal Rage
+  rotate: false
+  xy: 293, 2
+  size: 95, 103
+  orig: 95, 103
+  offset: 0, 0
+  index: -1
+cards/soulreaper/Furious souls
+  rotate: false
+  xy: 390, 2
+  size: 95, 103
+  orig: 95, 103
+  offset: 0, 0
+  index: -1
+cards/soulreaper/Onslaught of souls
+  rotate: false
+  xy: 487, 2
+  size: 95, 103
+  orig: 95, 103
+  offset: 0, 0
+  index: -1
+cards/soulreaper/Soul Shackles
+  rotate: false
+  xy: 584, 2
+  size: 95, 103
+  orig: 95, 103
+  offset: 0, 0
+  index: -1
+cards/soulreaper/Tribute
+  rotate: false
+  xy: 681, 2
+  size: 95, 103
+  orig: 95, 103
+  offset: 0, 0
+  index: -1
+
+images.pack26.png
+size: 1024,128
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
 cards/vampires/Acolyte
   rotate: false
   xy: 196, 25
@@ -2039,7 +2101,7 @@ cards/vampires/Nosferatu
   offset: 0, 0
   index: -1
 
-images.pack26.png
+images.pack27.png
 size: 1024,512
 format: RGBA8888
 filter: Nearest,Nearest

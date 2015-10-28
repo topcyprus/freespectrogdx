@@ -7,6 +7,7 @@ import com.badlogic.gdx.utils.Align
 import com.mygdx.game.ScreenResources
 import com.mygdx.game.component.{DamageEntity, DamageComponent}
 import priv.sp.House
+import priv.sp.house.SoulReaperData
 
 class LifeLabel(name: String, getLife : => Int, resources : ScreenResources) {
   val panel = new VerticalGroup()
@@ -64,4 +65,12 @@ class DamagableInt(getValue: ⇒ Int, val label : Label, resources : ScreenResou
   }
 }
 
-
+class DataPanel(getData : => Any, resources : ScreenResources) {
+  val label = new Label("", resources.skin)
+  def refresh() = {
+    getData match {
+      case SoulReaperData(x) => label.setText(x + " souls")
+      case _ =>
+    }
+  }
+}

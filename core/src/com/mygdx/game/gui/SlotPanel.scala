@@ -9,6 +9,7 @@ import priv.sp._
 
 class SlotPanel(playerId: PlayerId, val game: SpGame, descriptionPanel : DescriptionPanel, resources : ScreenResources) {
   val lifeLabel = new LifeLabel(game.names(playerId), game.state.players(playerId).life, resources)
+  val dataPanel = new DataPanel(game.state.players(playerId).data, resources)
   val slots =
     baseSlotRange.map(num ⇒
       new SlotButton(
@@ -19,8 +20,10 @@ class SlotPanel(playerId: PlayerId, val game: SpGame, descriptionPanel : Descrip
       }, resources)).toList
 
   val panel = new Group
-  panel.addActor(lifeLabel.panel)
-  lifeLabel.panel.setY(50)
+  panel addActor lifeLabel.panel
+  lifeLabel.panel setY 50
+
+  panel addActor dataPanel.label
 
   val slotPanel = new HorizontalGroup()
   slots.map(_.group) foreach slotPanel.addActor
@@ -55,5 +58,6 @@ class SlotPanel(playerId: PlayerId, val game: SpGame, descriptionPanel : Descrip
   def refresh() {
     lifeLabel.lifeDamagable.refresh()
     slots foreach (_.refresh())
+    dataPanel.refresh()
   }
 }

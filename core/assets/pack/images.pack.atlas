@@ -2127,6 +2127,13 @@ combat/death
   orig: 30, 29
   offset: 0, 0
   index: -1
+combat/eternalrage
+  rotate: false
+  xy: 116, 38
+  size: 30, 29
+  orig: 30, 29
+  offset: 0, 0
+  index: -1
 combat/glow
   rotate: false
   xy: 796, 369
@@ -2136,7 +2143,7 @@ combat/glow
   index: -1
 combat/hird
   rotate: false
-  xy: 796, 236
+  xy: 976, 448
   size: 20, 27
   orig: 20, 27
   offset: 0, 0
@@ -2192,7 +2199,7 @@ combat/sand
   index: -1
 combat/shield
   rotate: false
-  xy: 116, 41
+  xy: 796, 237
   size: 23, 26
   orig: 23, 26
   offset: 0, 0

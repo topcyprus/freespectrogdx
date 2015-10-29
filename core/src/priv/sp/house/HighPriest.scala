@@ -123,7 +123,7 @@ object HighPriest {
     }
     if (nbApis > 1) {
       player heal (3 * (nbApis - 1))
-      getSelectedSlot().focus()
+      getOwnerSelectedSlot().focus()
     }
   }
 

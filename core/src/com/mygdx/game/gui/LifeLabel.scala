@@ -2,6 +2,7 @@ package com.mygdx.game.gui
 
 
 import com.badlogic.gdx.graphics.Color
+import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.ui.{VerticalGroup, Label}
 import com.badlogic.gdx.utils.Align
 import com.mygdx.game.ScreenResources
@@ -37,8 +38,11 @@ class HouseLabel(getMana : => Int, val house: House, resources : ScreenResources
   val label = new Label(house.name + " ", resources.skin)
   val direction = if (flip) -1 else 1
   val manaDamageable = DamagableInt(getMana, resources, if (flip) -1 else 1)
-  val panel = row(label, manaDamageable.label)
-  panel.align(Align.bottom)
+  val panel = new Group()
+  panel.setHeight(10)
+  val actor = row(label, manaDamageable.label)
+  resources.configure(actor, "house.label")
+  panel.addActor(actor)
 }
 
 object DamagableInt {
@@ -67,6 +71,7 @@ class DamagableInt(getValue: ⇒ Int, val label : Label, resources : ScreenResou
 
 class DataPanel(getData : => Any, resources : ScreenResources) {
   val label = new Label("", resources.skin)
+  resources.configure(label, "dataPanel")
   def refresh() = {
     getData match {
       case SoulReaperData(x) => label.setText(x + " souls")

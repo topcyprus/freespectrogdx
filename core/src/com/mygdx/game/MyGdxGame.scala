@@ -2,15 +2,17 @@ package com.mygdx.game
 
 import com.badlogic.ashley.core.{Entity, Engine}
 import com.badlogic.gdx.graphics.Texture.TextureFilter
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter
 import com.mygdx.game.component._
 import com.mygdx.game.gui.BasicAction
 import priv.sp.GameResources
 
 import collection.JavaConverters._
-import com.badlogic.gdx.graphics.GL20
-import com.badlogic.gdx.graphics.g2d.{Batch, TextureAtlas}
+import com.badlogic.gdx.graphics.{Color, GL20}
+import com.badlogic.gdx.graphics.g2d.{BitmapFont, Batch, TextureAtlas}
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
-import com.badlogic.gdx.scenes.scene2d.Stage
+import com.badlogic.gdx.scenes.scene2d.{Actor, Stage}
 import com.badlogic.gdx.scenes.scene2d.ui.{Label, Skin}
 import com.badlogic.gdx.{Gdx, ScreenAdapter, Game}
 import com.mygdx.game.actor.Repere
@@ -95,11 +97,13 @@ class GameScreen(game :Game) extends ScreenAdapter {
 
 
 class ScreenResources {
+
+  var config   = loadConfig()
   val stage    = new Stage()
   val batch    = stage.getBatch
   val renderer = new ShapeRenderer()
   val atlas    = new TextureAtlas(Gdx.files.internal("pack/images.pack.atlas"))
-  val skin     = new Skin(Gdx.files.internal("data/uiskin.json"))
+  var skin     = loadSkin()
   val engine   = new Engine()
   val renderSystem   = new RenderSystem(batch, stage.getCamera)
   val scriptSystem   = new ScriptSystem()
@@ -115,14 +119,11 @@ class ScreenResources {
 
   val shapes = new ShapeRenderer()
 
-  var config   = loadConfig()
   var effectResources = new EffectResources(new Shaders, this)
   val beforeProcess = new BeforeProcess
 
   atlas.getTextures.asScala.foreach(_.setFilter(TextureFilter.Linear, TextureFilter.Linear)) // smooth textures, to fix glitches when card moves and viewport resizing
   Gdx.input setInputProcessor stage
-
-
 
   def addEndMessage(msg : String) = beforeProcess invoke {
     val endMessageLabel = new Label(msg, skin)
@@ -143,6 +144,7 @@ class ScreenResources {
       val old = effectResources
       effectResources = new EffectResources(new Shaders, this)
       old.shaders.dispose()
+      skin = loadSkin()
     } catch { case NonFatal(t) => t.printStackTrace() }
   }
 
@@ -157,6 +159,39 @@ class ScreenResources {
   }
 
   def loadConfig() = ConfigFactory.parseReader(Gdx.files.internal("application.conf").reader())
+  def configure(actor : Actor, name : String) = {
+    if (config hasPath name) {
+      val c = config getConfig name
+      if (c hasPath "pos") {
+        val pos = (c getDoubleList "pos").asScala.toList.map(_.toFloat)
+        if (pos.size == 2) actor.setPosition(pos(0), pos(1))
+        else actor.setPosition(pos(0), pos(1), pos(2).toInt)
+      }
+      if (c hasPath "color") {
+        val col = (c getDoubleList "color").asScala.toList.map(_.toFloat)
+        val alpha = if (col.size == 4) col(3) else 1f
+        actor.setColor(col(0), col(1), col(2), alpha)
+      }
+    }
+  }
+
+  def loadSkin() = {
+    val font = generateFont()
+    val skin = new Skin()
+    skin addRegions new TextureAtlas(Gdx.files.internal("data/uiskin.atlas"))
+    skin.add("default-font", font)
+    skin load Gdx.files.internal("data/uiskin.json")
+    skin
+  }
+
+  def generateFont() = {
+    val generator = new FreeTypeFontGenerator(Gdx.files.internal(config getString "font.name"))
+    val parameter = new FreeTypeFontParameter()
+    parameter.size = config getInt "font.size"
+    val font = generator generateFont parameter
+    generator.dispose()
+    font
+  }
 }
 
 class EffectResources(val shaders: Shaders, resources: ScreenResources) {

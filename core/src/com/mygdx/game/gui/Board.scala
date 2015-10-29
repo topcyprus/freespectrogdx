@@ -16,16 +16,21 @@ class Board(
  val cardPanels : Seq[CardPanel],
  val descriptionPanel : DescriptionPanel,
  val historyPanel : DescriptionPanel,
- userMenu : UserMenu) {
+ userMenu : UserMenu,
+ resources: ScreenResources) {
 
   val rightPane = new VerticalGroup()
 
   rightPane align Align.right
-  rightPane addActor cardPanels(other(playerId)).panel
+
+  val otherCardPanel = cardPanels(other(playerId)).panel
+  val cardPanel = cardPanels(playerId).panel
+
+  rightPane addActor otherCardPanel
   rightPane addActor column(
       slotPanels(other(playerId)).panel,
       slotPanels(playerId).panel)
-  rightPane addActor cardPanels(playerId).panel
+  rightPane addActor cardPanel
   rightPane.pack()
   val panel = new Group
   panel addActor rightPane
@@ -33,9 +38,9 @@ class Board(
   panel addActor descriptionPanel.panel
   panel addActor historyPanel.panel
 
-  descriptionPanel.panel.setPosition(10, 200)
-  historyPanel.panel.setPosition(10, 0)
-  userMenu.panel.setPosition(10, 400)
+  resources.configure(descriptionPanel.panel, "description")
+  resources.configure(historyPanel.panel, "history")
+  resources.configure(userMenu.panel, "userMenu")
   rightPane.setX(50)
 
   def refresh(silent : Boolean) = {

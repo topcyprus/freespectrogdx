@@ -70,7 +70,7 @@ object SoulReaper {
     val slot = getTargetSelectedSlot()
     slot.value foreach { s =>
       slot remove None
-      Warp.bridle(s.copy(attack = 0, attackSources = AttackSources()), slot)
+      Warp.bridle(s.copy(attack = 0, attackSources = AttackSources(Some(0))), slot)
       otherPlayer blockSlot selected
       player addEffect (OnTurn -> new ShackleEffect(selected))
     }
@@ -104,7 +104,7 @@ object SoulReaper {
   }
 
   def tribute = { env : Env =>
-    val slot = env.getSelectedSlot()
+    val slot = env.getOwnerSelectedSlot()
     val life = slot.get.life
     env.player heal math.min(life, 36)
     slot.destroy()
@@ -115,10 +115,10 @@ object SoulReaper {
     env.player setData initData
   }
 
-  def eternalRage = { env : Env => env.getSelectedSlot() setData Eternal }
+  def eternalRage = { env : Env => env.getOwnerSelectedSlot() setData Eternal }
 
   def pass = { env : Env =>
-    val slot = env.getSelectedSlot()
+    val slot = env.getOwnerSelectedSlot()
     val x = math.min(12, getX(env.player))
     slot heal x
     slot.filledAdjacents foreach (_ heal x)

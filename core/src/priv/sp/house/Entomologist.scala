@@ -43,7 +43,7 @@ object Entomologist {
   def getData(p: PlayerUpdate) = p.value.data.asInstanceOf[EntoState]
 
   def beetle: Effect = { env: Env ⇒
-    val selected = env.getSelectedSlot()
+    val selected = env.getOwnerSelectedSlot()
     selected.oppositeSlot inflict Damage(4, env, isAbility = true)
   }
 
@@ -169,7 +169,7 @@ object Entomologist {
 
   def mantis: Effect = { env: Env ⇒
     import env._
-    val slot = getSelectedSlot()
+    val slot = getOwnerSelectedSlot()
     slot.oppositeSlot.value foreach { s ⇒
       env.otherPlayer.houses.incrMana(-1, s.card.houseIndex)
     }

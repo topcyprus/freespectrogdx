@@ -12,8 +12,8 @@ object Colors {
   val violet = new Creature("Violet", AttackSources(), 29,
     "permanently reduces cost of owner's cards with cost 2X and lower by 1." +
       "Damage dealt by enemy's spells is reduced by 3 while Violet stays on the board.",
-    effects = effects(Direct -> violetEffect),
-    reaction = new VioletReaction)
+  effects = effects(Direct -> violetEffect),
+  reaction = new VioletReaction)
 
   val azure = new Creature("Azure", AttackSources(), 24,
     "While Azure stays on the board, owner's creatures with cost X, X +1, X-1 receive no damage from spells and " +
@@ -48,7 +48,8 @@ object Colors {
       reaction = new EmeraldReaction),
 
     new Creature("Crimson", AttackSources(), 34,
-      "Increases damage dealt to both players by creatures by X.",
+      "Increases damage dealt to both players by creatures by X." +
+        "(not including creature abilities or multi target attacks)",
       reaction = new CrimsonReaction)),
 
   eventListener = Some(new CustomListener(new ColorListener)),
@@ -61,9 +62,10 @@ object Colors {
   class CrimsonReaction extends Reaction {
 
     override def onProtect(d: DamageEvent) = {
-      if (d.target.isEmpty && ! d.damage.isEffect) {
-        val x = getData(selected)
-        d.damage.copy(amount = d.damage.amount + x)
+      if (d.target.isEmpty
+        && ! d.damage.isEffect
+        && ! d.damage.context.card.exists(_.asCreature.runAttack.isMultiTarget)) {
+        d.damage.copy(amount = d.damage.amount + getData(selected))
       } else d.damage
     }
   }
@@ -112,7 +114,7 @@ object Colors {
   }
 
   def silver = { env : Env =>
-    val x = getData(env.getSelectedSlot())
+    val x = getData(env.getOwnerSelectedSlot())
     env.player.slots.healCreatures(x - 1)
     if (x > 5) {
       env.player.houses.incrMana(-1, 4)
@@ -136,7 +138,7 @@ object Colors {
   }
 
   def azureEffect = { env : Env =>
-    val x = getData(env.getSelectedSlot())
+    val x = getData(env.getOwnerSelectedSlot())
     val damage = Damage(4, env, isAbility = true)
     env.player.slots foreach { slot =>
       if (slot.get.card.cost > x -2 && slot.get.card.cost < x + 2) {
@@ -197,8 +199,8 @@ object Colors {
                 if (slot.value.isDefined) {
                   val x = getData(p)
                   p.houses.incrMana(-x, 4) // zeroize
-                  slot.attack.add(AttackAdd(x))
-                  slot.setData(ColorData(x))
+                  slot.attack add AttackAdd(x)
+                  slot setData ColorData(x)
                 }
               }
             case _ =>
@@ -210,12 +212,15 @@ object Colors {
           player removeDescMod HideCardMod(dead.card)
         }
       }
-      p.otherPlayer.guard = (FuncDecorators decorate p.otherPlayer.guard) modifyResult { damage =>
-        player.slots.foldl(damage) { (acc, s) =>
-          s.get.reaction match {
-            case cr : CrimsonReaction => cr.onProtect(DamageEvent(acc, None, player))
-            case _ => acc
-          }
+      // ice guard should be applied after crimson
+      p.otherPlayer.guard = (FuncDecorators decorate p.otherPlayer.guard) update { f =>
+        { damage =>
+          f(player.slots.foldl(damage) { (acc, s) =>
+            s.get.reaction match {
+              case cr : CrimsonReaction => cr onProtect DamageEvent(acc, None, player)
+              case _ => acc
+            }
+          })
         }
       }
     }
@@ -226,7 +231,7 @@ object Colors {
   val discolorPhase = "discolor phase"
   def discolor = { env : Env =>
     import env._
-    getSelectedSlot().destroy()
+    getOwnerSelectedSlot().destroy()
     player addTransition WaitPlayer(playerId, discolorPhase)
   }
 

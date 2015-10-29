@@ -13,7 +13,7 @@ object GameCardEffect {
     @inline def player = updater.players(playerId)
     @inline def otherPlayer = updater.players(other(playerId))
     @inline def getMana(houseIndex: Int): Int = updater.state.players(playerId).houses(houseIndex).mana
-    def getSelectedSlot() = player.slots(selected)
+    def getOwnerSelectedSlot() = player.slots(selected)
     def getTargetSelectedSlot() = otherPlayer.slots(selected)
 
     //bs not safe FIXME

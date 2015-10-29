@@ -50,7 +50,7 @@ class Vampire {
 
   private def bloodTies = { env: Env ⇒
     import env._
-    val slot = getSelectedSlot()
+    val slot = getOwnerSelectedSlot()
     val attack = slot.get.attack
     slot.destroy()
     slot.filledAdjacents foreach { s ⇒
@@ -74,7 +74,7 @@ class Vampire {
 
   private def ghoulify: Effect = { env: Env ⇒
     import env._
-    getSelectedSlot().adjacentSlots foreach { slot ⇒
+    getOwnerSelectedSlot().adjacentSlots foreach { slot ⇒
       if (slot.value.isDefined) {
         slot.destroy()
         slot add ghoul

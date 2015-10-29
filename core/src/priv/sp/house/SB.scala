@@ -131,7 +131,7 @@ if earth heal 2 life to owner""", effects = effects(Direct -> amaterasu), reacti
     import env._
     val aligneds = getAligneds(otherPlayer.slots, selected)
     if (aligneds.nonEmpty) {
-      getSelectedSlot.focus()
+      getOwnerSelectedSlot.focus()
       val d = Damage(2, env, isAbility = true)
       aligneds foreach { s ⇒
         s inflict d
@@ -192,7 +192,7 @@ if earth heal 2 life to owner""", effects = effects(Direct -> amaterasu), reacti
       }
     }
     if (hasDrained) {
-      getSelectedSlot.focus()
+      getOwnerSelectedSlot.focus()
     }
   }
 
@@ -217,7 +217,7 @@ if earth heal 2 life to owner""", effects = effects(Direct -> amaterasu), reacti
 
   def amaterasu = { env: Env ⇒
     import env._
-    val selected = getSelectedSlot
+    val selected = getOwnerSelectedSlot
     player.slots foreach { s ⇒
       if (s.get.card.houseIndex < 4) {
         s.focus()

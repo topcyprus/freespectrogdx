@@ -38,12 +38,10 @@ Cannot block cards which have already been blocked previous turn""", effects = e
     eventListener = Some(new CustomListener(new FKEventListener)))
 
   Fairy initCards Houses.basicCostFunc
-  val additionalCards = List(vodyanoy, thgorynych, ohgorynych)
-  additionalCards foreach { c ⇒
-    c.houseIndex = Fairy.houseIndex
-    c.houseId = Fairy.houseId
-  }
-  additionalCards foreach (_.cost = 8)
+  Fairy.addAdditionalCards(vodyanoy, thgorynych, ohgorynych)
+  vodyanoy.cost = 1
+  thgorynych.cost = 8
+  ohgorynych.cost = 8
 
   trait OnOppSlotUpdate {
     def onOppAdd(slot: SlotUpdate)
@@ -82,7 +80,7 @@ Cannot block cards which have already been blocked previous turn""", effects = e
 
   def lesovik = { env: Env ⇒
     import env._
-    val slot = getSelectedSlot
+    val slot = getOwnerSelectedSlot
     val oppSlot = slot.oppositeSlot
     addLesovikMod(slot, oppSlot)
   }
@@ -131,7 +129,7 @@ Cannot block cards which have already been blocked previous turn""", effects = e
   def sirin = { env: Env ⇒
     import env._
     val malus = SirinMalus(selected)
-    val slot = getSelectedSlot
+    val slot = getOwnerSelectedSlot
     val oppSlot = slot.oppositeSlot
     if (oppSlot.value.isDefined) {
       malus temper oppSlot
@@ -156,7 +154,7 @@ Cannot block cards which have already been blocked previous turn""", effects = e
 
   def alko = { env: Env ⇒
     import env._
-    val slot = getSelectedSlot
+    val slot = getOwnerSelectedSlot
     val cards = otherPlayer.value.desc.get.houses flatMap (_.cards.map(_.card))
     val filtereds = slot.value match {
       case Some(x) if x.data != null ⇒

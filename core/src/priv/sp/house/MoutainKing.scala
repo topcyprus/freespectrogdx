@@ -14,7 +14,7 @@ class MoutainKing {
 
   val soldier = new Creature("Dwarven soldier", Attack(3), 12, "On entering the game increases attack of neighbors by 3 for 1 turn.\nHird: decreases attack of opposite creature by 1 for each\ndwarven soldier on the board.", effects = effects(Direct -> soldierEffect), reaction = new SoldierReaction)
   val shieldman = new Creature("Dwarven shieldman", Attack(3), 15, "Redirects to himself half of the damage dealt to neighbors.\nHird: cannot be killed with magic (at least 1 hp will be left).", reaction = new ShieldmanReaction)
-  val runesmith = new Creature("Runesmith", AttackSources(Some(7), Vector(RuneAttackSource)), 26, "Runesmith can only be harmed by opposite creature if blocked.\nHird: +1 attack for each dwarf in the game (including himself).", reaction = new RuneReaction)
+  val runesmith = new Creature("Runesmith", AttackSources(Some(7), Vector(RuneAttackSource)), 24, "Runesmith can only be harmed by opposite creature if blocked.\nHird: +1 attack for each dwarf in the game (including himself).", reaction = new RuneReaction)
   val ballista = new Creature("Ballista", Attack(6), 34, "When enemy creature enters the game, halves its health and loses 10 health itself.\nHird: loses only 7 health on activating ability.", reaction = new BallistaReaction)
   val berserker = new Creature("Berserker", AttackSources(Some(6), Vector(BerserkerAttackSource)), 40, "When owner receives more than 4 damage attacks out-of-turn opposite slot.\nHird: +3 attack and damage dealt to berserker.", reaction = new BerserkerReaction)
   val moutainKing = new Creature("Moutain king", Attack(5), 45, "When allied dwarf enters the game, heals himself by 6 and permanently increases his attack by 2.\nWhen enters the game stuns strongest opponent creature.\nHird: reduces cost of dwarven cards by 1.", effects = effects(Direct -> moutain), reaction = new MountainReaction)
@@ -37,7 +37,7 @@ class MoutainKing {
   def soldierEffect = { env: Env ⇒
     import env._
     val bonus = AttackAdd(3)
-    getSelectedSlot().filledAdjacents foreach (_.attack.add(bonus))
+    getOwnerSelectedSlot().filledAdjacents foreach (_.attack.add(bonus))
     player addEffect (OnEndTurn -> new CountDown(1, { e ⇒
       e.player.slots(selected).filledAdjacents foreach (_.attack.removeFirst(bonus))
     }))

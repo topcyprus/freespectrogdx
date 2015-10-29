@@ -123,7 +123,7 @@ object Limbo {
   }
 
   def redeem = { env : Env =>
-    val slot = env.getSelectedSlot()
+    val slot = env.getOwnerSelectedSlot()
     if (slot.get.data == LimboState) {
       val card = slot.get.card
       slot.destroy()

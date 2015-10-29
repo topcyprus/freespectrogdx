@@ -10,7 +10,7 @@ import com.mygdx.game.ScreenResources
 import com.mygdx.game.component.{VisualComponent, SlotComponent}
 import com.typesafe.config.Config
 import priv.sp._
-import priv.sp.house.{Limbo, Hird, MereMortal}
+import priv.sp.house.{SoulReaper, Limbo, Hird, MereMortal}
 
 object CardActors {
 
@@ -37,16 +37,16 @@ class CardActors(val card: Card, house : House, val resources : ScreenResources)
   costLabel setColor Color.BLUE
   val labels :List[Label] = card match {
     case spell: Spell ⇒
-      costLabel.setPosition(65, 75)
+      resources.configure(costLabel, "spell.label.cost")
       List(costLabel)
     case creature: Creature ⇒
-      costLabel.setPosition(65, 80)
+      resources.configure(costLabel, "card.label.cost")
       val attackLabel = new Label(creature.attack.base.map(_.toString) getOrElse "?", resources.skin)
       val lifeLabel = new Label(creature.life.toString, resources.skin)
       attackLabel setColor Color.RED
-      attackLabel.setPosition(2, 2)
-      lifeLabel setColor Color.GREEN
-      lifeLabel.setPosition(65, 2)
+      resources.configure(attackLabel, "card.label.attack")
+      lifeLabel setColor Color.OLIVE
+      resources.configure(lifeLabel, "card.label.life")
       List(costLabel, attackLabel, lifeLabel)
   }
 
@@ -160,6 +160,7 @@ class SlotCardActors(val cardGroup : Group, card : Creature, cardActors : CardAc
     else if ( s has CardSpec.invincibleFlag )  Some(cornerImageOf("shield"))
     else if ( s has CardSpec.cursedFlag )      Some(cornerImageOf("death"))
     else if ( s.data == Limbo.LimboState)      Some(imageOf("limbo"))
+    else if ( s.data == SoulReaper.Eternal)    Some(cornerImageOf("eternalrage"))
     else if ( s.card.houseId == game.sp.houses.moutainKing.MoutainKing.houseId && s.data == Hird) Some(cornerImageOf("hird"))
     else None
   }

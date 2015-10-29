@@ -83,7 +83,7 @@ class JunkMage {
     import env._
 
     val damage = Damage(5, env, isSpell = true)
-    val slot = getSelectedSlot
+    val slot = getOwnerSelectedSlot
     val h = slot.get.card.houseIndex
     slot.inflict(damage)
     player.houses.incrMana(-1, h)

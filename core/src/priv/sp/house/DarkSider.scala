@@ -102,7 +102,7 @@ When enters the game, stuns all enemy creatures.""",
   }
 
   def horror = { env: Env ⇒
-    env.getSelectedSlot().oppositeSlot.value foreach { s ⇒
+    env.getOwnerSelectedSlot().oppositeSlot.value foreach { s ⇒
       env.otherPlayer addDescMod Destroyed(s.card)
     }
   }

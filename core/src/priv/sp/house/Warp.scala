@@ -12,17 +12,46 @@ import priv.sp.update._
  */
 // FIXME: schizo when unbridle
 object Warp {
-  val photographer = new Creature("Photographer", Attack(4), 16, "If adjacent creature die, he's replaced by photographer with same life.", reaction = new PhotoReaction)
+  val photographer = new Creature("Photographer", Attack(4), 16,
+    "If adjacent creature die, he's replaced by photographer with same life.",
+    reaction = new PhotoReaction)
 
   val Warp = House("Warp", List(
-    new Creature("Errant", Attack(4), 19, "Hide in shadow after killing a creature, come back when damaged.", runAttack = new ErrantAttack, reaction = new ErrantReaction),
-    Spell("EarthQuake", "Deals to opponent creatures damage equals to difference between owner and opponent mana", effects = effects(Direct -> quake)),
-    new Creature("Cloak", Attack(2).add(new CloakAttack), 15, "When die restore the creature.\nAttack is added to underlying creature attack", inputSpec = Some(SelectOwnerCreature), reaction = new CloakReaction),
+
+    new Creature("Errant", Attack(4), 19, "Hide in shadow after killing a creature, come back when damaged.",
+      runAttack = new ErrantAttack,
+      reaction = new ErrantReaction),
+
+    Spell("EarthQuake", "Deals to opponent creatures damage equals to difference between owner and opponent mana",
+      effects = effects(Direct -> quake)),
+
+    new Creature("Cloak", Attack(2).add(new CloakAttack), 15,
+      "When die restore the creature.\n" +
+        "Attack is added to underlying creature attack",
+      inputSpec = Some(SelectOwnerCreature),
+      reaction = new CloakReaction),
+
     photographer,
-    new Creature("Schizo", Attack(5), 22, "When summoned, opposite creature lose his abilities until schizo die.", reaction = new SchizoReaction),
-    new Creature("Ram", Attack(6), 26, "Opposite creature is destroyed and opponent get his mana back -2.", effects = effects(Direct -> ram)),
-    new Creature("Stranger", AttackSources().add(new StrangerAttack), 30, "Attack is highest opponent mana.\nWhen summoned, take effects of opposite slot.(at least try to!)\n -immediate effects are not applied\n-can't duplicate effect to attack multiple targets", effects = effects(Direct -> merge)),
-    new Creature("Warp Queen", Attack(6), 32, "Opponent creatures lose their ability until end of next owner turn.\nDeals 4 damage to each of them", effects = effects(Direct -> warp))),
+
+    new Creature("Schizo", Attack(5), 22,
+      "When summoned, opposite creature lose his abilities until schizo die.",
+      reaction = new SchizoReaction),
+
+    new Creature("Ram", Attack(6), 26,
+      "Opposite creature is destroyed and opponent get his mana back -2.\n" +
+        "(Cost of the creature -2)",
+      effects = effects(Direct -> ram)),
+
+    new Creature("Stranger", AttackSources().add(new StrangerAttack), 30,
+      "Attack is highest opponent mana.\n" +
+        "When summoned, take effects of opposite slot.(at least try to!)\n" +
+        " -immediate effects are not applied\n" +
+        " -can't duplicate effect to attack multiple targets", effects = effects(Direct -> merge)),
+
+    new Creature("Warp Queen", Attack(6), 32,
+      "Opponent creatures lose their ability until end of next owner turn.\n" +
+      "Deals 4 damage to each of them", effects = effects(Direct -> warp))),
+
     eventListener = Some(OpponentListener({
       case _ : Limbo.LimboEventListener
          | _ : Colors.ColorListener
@@ -150,7 +179,7 @@ object Warp {
 
     override def init(p: PlayerUpdate) {
       super.init(p)
-      if (p.otherPlayer.value.data != null) {
+      if (p.otherPlayer.value.data != null && !p.otherPlayer.value.data.isInstanceOf[SoulReaperData]) { // HACK
         player setData p.otherPlayer.value.data
       }
       p.otherPlayer.houses.update after { _ ⇒ refreshStranger() }

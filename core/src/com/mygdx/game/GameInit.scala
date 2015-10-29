@@ -33,7 +33,7 @@ class GameInit(screenResources : ScreenResources, gameResources : GameResources)
     new CardPanel(playerId, spGame, descriptionPanel, selectedEffect, hoveredActor, screenResources)
   }
   val background      = new Background(screenResources)
-  val board           = new Board(spGame.myPlayerId, slotPanels, cardPanels, descriptionPanel, historyPanel, userMenu)
+  val board           = new Board(spGame.myPlayerId, slotPanels, cardPanels, descriptionPanel, historyPanel, userMenu, screenResources)
   val commandRecorder = new CommandRecorder(spGame, board)
   spGame.controller   = new UserGameController(spGame, board, commandRecorder, screenResources)
   val listener        = new GameUpdateListener(board, spGame, screenResources)
@@ -174,6 +174,7 @@ class GameUpdateListener(board : Board, game : SpGame, resources : ScreenResourc
   import board._
   import game._
 
+  // TODO probably better to recreate the listener instead of recreating a lock when restart
   var lock = new RichLock()
 
   def waitAction(actor : Actor) = {

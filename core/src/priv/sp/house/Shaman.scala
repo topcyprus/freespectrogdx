@@ -97,7 +97,7 @@ object Shaman {
   }
 
   def rage = { env: Env ⇒
-    env.getSelectedSlot.filledAdjacents foreach { s ⇒
+    env.getOwnerSelectedSlot.filledAdjacents foreach { s ⇒
       env.player.updateData[WolfState](x ⇒ x.copy(enhanceds = x.enhanceds + (s.get.card.id -> (x.enhanceds(s.get.card.id) + 1))))
       s.attack add OneAttackBonus
     }
@@ -130,7 +130,7 @@ object Shaman {
   def shade = { env: Env ⇒
     import env._
     player.updateData[WolfState](x ⇒ x.copy(shadows = x.shadows + env.selected))
-    getSelectedSlot.filledAdjacents foreach { slot ⇒
+    getOwnerSelectedSlot.filledAdjacents foreach { slot ⇒
       player runSlot slot
     }
   }

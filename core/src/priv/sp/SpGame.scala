@@ -97,9 +97,9 @@ class SpGame(val server: GameServer, resources: GameResources) {
      println(player + " submit " + commandOption)
      controller.disableSlots()
      persist(updater.lift(_.players(player).submit(commandOption)))
+     controller.notifyPlayed(commandOption.map(_.card))
      endOr {
        refresh()
-       controller.notifyPlayed(commandOption.map(_.card))
 
        if (state.players(player).transitions.isEmpty) {
          playerIds.foreach(p => controller.setCardEnabled(p, false))

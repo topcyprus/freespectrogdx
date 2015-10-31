@@ -35,7 +35,7 @@ class LifeManaHeuris(context: BotContext, val settings: Settings) {
 
   def init(st: GameState) {
     start = new HeurisValue(st)
-    pressure = math.min(start.bot.life, start.human.life) / 50
+    pressure = math.min(1, math.min(start.bot.life, start.human.life) / 60)
   }
   def apply(state: GameState): Float = {
     math.max(0f, (1 + (new HeurisValue(state).value - start.value))/ 2f)

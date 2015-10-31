@@ -187,7 +187,10 @@ class ScreenResources {
   def generateFont() = {
     val generator = new FreeTypeFontGenerator(Gdx.files.internal(config getString "font.name"))
     val parameter = new FreeTypeFontParameter()
-    parameter.size = config getInt "font.size"
+    val c = config getConfig "font"
+    parameter.size          = c getInt "size"
+    parameter.shadowOffsetX = c getInt "shadowOffsetX"
+    parameter.shadowOffsetY = c getInt "shadowOffsetY"
     val font = generator generateFont parameter
     generator.dispose()
     font

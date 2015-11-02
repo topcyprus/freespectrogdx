@@ -1,11 +1,12 @@
 package com.mygdx.game.gui
 
 import com.badlogic.ashley.core.Entity
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.g2d.{Batch, ParticleEffect}
 import com.badlogic.gdx.math.Vector2
 import com.mygdx.game.ScreenResources
-import com.mygdx.game.component.{TimedComponent, Drawable, ParticleComponent, VisualComponent}
-import com.mygdx.game.effects.{BlackMass, Lightning}
+import com.mygdx.game.component._
+import com.mygdx.game.effects.{SoundEntity, BlackMass, Lightning}
 import priv.sp._
 
 import scala.concurrent.Future
@@ -16,6 +17,7 @@ class SpellCast(board: Board, game : SpGame, resources : ScreenResources) {
   def cast(c : Command) : Option[Future[Unit]] = {
     val particles = resources.effectResources.particles
 
+    playSound(c.card)
     if (c.card == Air.cards(5)) {
       getSourceCoord(c) map { source =>
         val playerPos = getCoord(getPlayerLabel(other(c.player))).add(30, 20)
@@ -128,5 +130,15 @@ class SpellCast(board: Board, game : SpGame, resources : ScreenResources) {
     entity add particleComponent
     entity add new VisualComponent(new Drawable{ def draw(batch : Batch) = effect.draw(batch) })
     (entity, particleComponent)
+  }
+
+  def playSound(card : Card) = {
+    val soundName = card.name.toLowerCase.replaceAll(" ", "")
+    val key = "sounds."+soundName
+    if (resources.config hasPath key) {
+      val path = "sounds/" + (resources.config getString key)
+      val sound = Gdx.audio.newSound(Gdx.files.internal(path))
+      resources.engine addEntity SoundEntity(sound, 4, resources)
+    }
   }
 }

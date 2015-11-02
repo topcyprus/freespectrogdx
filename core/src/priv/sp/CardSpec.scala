@@ -206,7 +206,6 @@ class Reaction extends Actions {
   // broadcast is already done for player target (for ice guard)
   def onProtect(d: DamageEvent) = d.damage
   def onDeath(dead: Dead) {}
-  def onDamaged(card: Creature, amount: Int) = false
 }
 
 trait RunAttack {

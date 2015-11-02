@@ -26,12 +26,14 @@ class LifeHeuris(context: BotContext, val settings: Settings) {
 
 /**
  * a ratio using mana ratio when there's less pressure on life
+ * the theory is that the more there's pressure on life, the less there's freedom to maximize mana or board
  */
 class LifeManaHeuris(context: BotContext, val settings: Settings) {
   import context._
   val name = "lifemanaratio" // not a real rusher
   var start = null.asInstanceOf[HeurisValue]
   var pressure = 0f
+  val manaFactor = 0.7f
 
   def init(st: GameState) {
     start = new HeurisValue(st)
@@ -47,9 +49,12 @@ class LifeManaHeuris(context: BotContext, val settings: Settings) {
 
     val lifeDelta = bot.life - human.life
     val manaDelta = manaRatio(bot) - manaRatio(human)
-    val value = (1 - pressure) * ( math.max(0f, 40f + lifeDelta) / 100f ) + pressure * manaDelta
+    val boardDelta = boardRatio(bot) - boardRatio(human)
+    val value = ((1 - pressure) * ( math.max(0f, 40f + lifeDelta) / 100f )
+    + pressure * (pressure * manaDelta + (1- pressure) * boardDelta))
 
     def manaRatio(p : PlayerState) = (p.houses.take(4).map(h => h.mana / 12f).sum + p.houses(4).mana / 8f) / 5f
+    def boardRatio(p : PlayerState) = p.slots.map{ case (i, s) => s.life.toFloat / s.card.life }.sum / 6f
   }
 
 }

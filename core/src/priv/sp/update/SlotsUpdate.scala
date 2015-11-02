@@ -66,19 +66,32 @@ class SlotsUpdate(val player: PlayerUpdate) extends FieldUpdate(Some(player), pl
     if (player.value isInSlotRange dest) {
       val slot = slots(num)
       slot.value foreach { s ⇒
-        updateListener.move(num, dest, id)
-        val removed = slot remove None
-        if (slots(dest).value.isDefined) {
-          move(dest, num)
-        }
         val slotDest = slots(dest)
-        slotDest add SlotState(
-          removed.card, removed.life, removed.status,
-          removed.attackSources, getAttack(slotDest, removed.attackSources),
-          List(dest), removed.id, removed.reaction, removed.data)
-        removed.reaction use slotDest
+        if (slotDest.value.isDefined) {
+          swap(slot, slotDest)
+        } else {
+          updateListener.move(num, dest, id)
+          val removed = slot remove None
+          privMove(removed, slots(dest))
+        }
       }
     }
+  }
+
+  private def swap(slot : SlotUpdate, dest : SlotUpdate): Unit = {
+    updateListener.swap(slot.num, dest.num, id)
+    val removed = slot remove None
+    val removed2 = dest remove None
+    privMove(removed, dest)
+    privMove(removed2, slot)
+  }
+
+  private def privMove(slotState : SlotState, to : SlotUpdate) : Unit = {
+    to add SlotState(
+      slotState.card, slotState.life, slotState.status,
+      slotState.attackSources, getAttack(to, slotState.attackSources),
+      List(to.num), slotState.id, slotState.reaction, slotState.data)
+    slotState.reaction use to
   }
 
   // If observed , because of simple onMyDeath(ie selfProtect, onMyDamage) method to be preferred, selected slot may be filtered out

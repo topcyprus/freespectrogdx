@@ -212,6 +212,32 @@ class GameUpdateListener(board : Board, game : SpGame, resources : ScreenResourc
     }
     slotOption foreach { slot => waitAction(slot.group) }
   }
+
+  def swap(num: Int, dest: Int, playerId: PlayerId) : Unit = {
+    val slotOption = resources.beforeProcess invoke {
+      for {
+        (_, srcEntity) <- resources.slotSystem.findEntity(num, playerId)
+        (_, destEntity) <- resources.slotSystem.findEntity(dest, playerId)
+      } yield {
+        val src = getCoord(slotPanels(playerId).slots(num).group)
+        val target = getCoord(slotPanels(playerId).slots(dest).group)
+        val move = new MoveToAction()
+        move.setPosition(target.x + 15, target.y + 15)
+        move setDuration 1
+        srcEntity.group addAction move
+        srcEntity.slotnum = dest
+
+        val moveDest = new MoveToAction()
+        moveDest.setPosition(src.x + 15, src.y + 15)
+        moveDest setDuration 1
+        destEntity.group addAction moveDest
+        destEntity.slotnum = dest
+        srcEntity
+      }
+    }
+    slotOption foreach { slot => waitAction(slot.group) }
+  }
+
   def runSlot(num: Int, playerId: PlayerId) : Unit = {
     resources.slotSystem
       .findEntity(num, playerId)

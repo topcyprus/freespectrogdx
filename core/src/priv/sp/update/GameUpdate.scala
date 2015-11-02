@@ -56,6 +56,7 @@ class GameStateUpdater(initState: GameState, val desc: GameDesc) extends FieldUp
 trait UpdateListener {
   def focus(num: Int, playerId: PlayerId, blocking: Boolean = true): Unit
   def move(num: Int, dest: Int, playerId: PlayerId): Unit
+  def swap(num: Int, dest: Int, playerId: PlayerId): Unit
   def runSlot(num: Int, playerId: PlayerId): Unit
   def summon(num: Int, slot: SlotState, playerId: PlayerId): Unit
   def die(num: Int, playerId: PlayerId): Unit
@@ -67,6 +68,7 @@ trait UpdateListener {
 class DefaultUpdateListener extends UpdateListener {
   def focus(num: Int, playerId: PlayerId, blocking: Boolean): Unit = {}
   def move(num: Int, dest: Int, playerId: PlayerId): Unit = {}
+  def swap(num: Int, dest: Int, playerId: PlayerId): Unit = {}
   def runSlot(num: Int, playerId: PlayerId): Unit = {}
   def summon(num: Int, slot: SlotState, playerId: PlayerId): Unit = {}
   def die(num: Int, playerId: PlayerId): Unit = {}
@@ -81,7 +83,6 @@ class HouseEventListener {
   def player = playerField.reinit()
 
   def mod(damage: Damage) = damage
-  def onDamaged(card: Creature, amount: Int, slot: SlotUpdate) = {}
   def onDeath() : Boolean = true // bs for limbo
   def interceptSubmit(c: Option[Command]): (Boolean, Option[Command]) = Reaction.falseNone
   def init(p: PlayerUpdate) = { playerField = p }
@@ -90,7 +91,6 @@ class HouseEventListener {
 // bs for warp class
 class ProxyEventListener(inner: HouseEventListener) extends HouseEventListener {
 
-  override def onDamaged(card: Creature, amount: Int, slot: SlotUpdate): Unit = { inner.onDamaged(card, amount, slot) }
   override def onDeath() = { inner.onDeath() }
   override def interceptSubmit(c: Option[Command]): (Boolean, Option[Command]) = inner.interceptSubmit(c)
   override def init(p: PlayerUpdate): Unit = {

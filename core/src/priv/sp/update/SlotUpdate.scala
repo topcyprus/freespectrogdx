@@ -12,7 +12,6 @@ class SlotUpdate(val num: Int, val slots: SlotsUpdate) extends FieldUpdate(Some(
   val otherPlayerId = other(playerId)
   val attackUpdate = new AttackUpdate(this)
   lazy val adjacentSlots: List[SlotUpdate] = adjacents(num).map { n ⇒ slots(n) }
-  lazy val otherHouseListener = updater.houseEventListeners(otherPlayerId)
   def otherPlayer = updater.players(otherPlayerId)
 
   def oppositeSlot = otherPlayer.slots(num)
@@ -28,8 +27,8 @@ class SlotUpdate(val num: Int, val slots: SlotsUpdate) extends FieldUpdate(Some(
       }
     }
   }
-  def toggle(flag: Int) = { write(value map (x ⇒ x.copy(status = x.status | flag))) }
-  def toggleOff(flag: Int) = { write(value map (x ⇒ x.copy(status = x.status & (~flag)))) }
+  def toggle(flag: Int)     = { write(value map (x ⇒ x.copy(status = x.status | flag))) }
+  def toggleOff(flag: Int)  = { write(value map (x ⇒ x.copy(status = x.status & (~flag)))) }
   def setData(data: AnyRef) = { write(value map (_.copy(data = data))) }
   def setTarget(target: List[Int]) = { write(value map (_.copy(target = target))) }
   def focus(blocking: Boolean = true) = { slots.updateListener.focus(num, playerId, blocking) }
@@ -67,7 +66,7 @@ class SlotUpdate(val num: Int, val slots: SlotsUpdate) extends FieldUpdate(Some(
       val slotState = get
       val d = protect(slotState.reaction selfProtect damage) // /!\ possible side effect (jf can protect herself once and toggle a flag)
       val slot = get
-      val amount = (slot inflict d) match {
+      val amount = slot inflict d match {
         case None ⇒
           delayedDestroy(d)
           slot.life
@@ -75,9 +74,12 @@ class SlotUpdate(val num: Int, val slots: SlotsUpdate) extends FieldUpdate(Some(
           write(Some(newslot))
           slot.life - newslot.life
       }
-      slotState.reaction onMyDamage damage.copy(amount = amount)
-      slots.player.updater.houseEventListeners foreach (_.onDamaged(slot.card, amount, this))
+      onDamage((slot, damage.copy(amount = amount)))
     }
+  }
+
+  var onDamage : Function[(SlotState, Damage), Unit] = { case ((slotState : SlotState, d : Damage)) =>
+    slotState.reaction onMyDamage d
   }
 
   def drain(damage: Damage) {
@@ -91,8 +93,7 @@ class SlotUpdate(val num: Int, val slots: SlotsUpdate) extends FieldUpdate(Some(
         write(Some(newslot))
         slot.life - newslot.life
       }
-      slot.reaction onMyDamage damage.copy(amount = amount)
-      slots.player.updater.houseEventListeners foreach (_.onDamaged(slot.card, amount, this))
+      onDamage((slot, damage.copy(amount = amount)))
     }
   }
 

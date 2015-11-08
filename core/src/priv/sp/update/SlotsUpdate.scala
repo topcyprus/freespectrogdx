@@ -41,7 +41,7 @@ class SlotsUpdate(val player: PlayerUpdate) extends FieldUpdate(Some(player), pl
     foreach(_.get.reaction.inflict(d))
   }
 
-  def summon(num: Int, card: Creature) {
+  def summon(num: Int, card: Creature) : Int = {
     val slot = slots(num)
     var slotState = buildSlotState(slot, card)
     slot.value foreach { s ⇒
@@ -60,6 +60,7 @@ class SlotsUpdate(val player: PlayerUpdate) extends FieldUpdate(Some(player), pl
       otherPlayer.slots reactSummon summonEvent
       reactSummon(summonEvent)
     }
+    slotState.id
   }
 
   def move(num: Int, dest: Int) {
@@ -88,7 +89,7 @@ class SlotsUpdate(val player: PlayerUpdate) extends FieldUpdate(Some(player), pl
 
   private def privMove(slotState : SlotState, to : SlotUpdate) : Unit = {
     to add SlotState(
-      slotState.card, slotState.life, slotState.status,
+      slotState.card, slotState.life, slotState.maxLife, slotState.status,
       slotState.attackSources, getAttack(to, slotState.attackSources),
       List(to.num), slotState.id, slotState.reaction, slotState.data)
     slotState.reaction use to
@@ -103,7 +104,7 @@ class SlotsUpdate(val player: PlayerUpdate) extends FieldUpdate(Some(player), pl
   def buildSlotState(slot: SlotUpdate, card: Creature, id: Int = SlotState.currentId.incrementAndGet) = {
     val reaction = card.newReaction
     reaction use slot
-    SlotState(card, card.life, card.status, card.attack, getAttack(slot, card.attack), List(slot.num), id, reaction, card.data)
+    SlotState(card, card.life, card.life, card.status, card.attack, getAttack(slot, card.attack), List(slot.num), id, reaction, card.data)
   }
   def getAttack(slot: SlotUpdate, attackSources: AttackSources) = {
     (attackSources.base.getOrElse(0) /: attackSources.sources) { (acc, s) ⇒

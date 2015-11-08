@@ -221,6 +221,16 @@ class ObservableFunc1[A, B](f: A ⇒ B) extends Function[A, B] {
     this
   }
 
+  def after2(g : (A, B) => Unit) = {
+    val old = inner
+    inner = { x: A ⇒
+      val res = old(x)
+      g(x, res)
+      res
+    }
+    this
+  }
+
   def before(g: A ⇒ Unit) = {
     val old = inner
     inner = { x: A ⇒

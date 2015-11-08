@@ -18,7 +18,12 @@ class SlotUpdate(val num: Int, val slots: SlotsUpdate) extends FieldUpdate(Some(
   def filledAdjacents = adjacentSlots filter (_.value.isDefined)
   def oppositeState: Option[SlotState] = otherPlayer.getSlots get num
 
-  @inline def get = value.get
+  def get = {
+    value match {
+      case Some(x) => x
+      case None => throw new Exception("empty slot " + num)
+    }
+  }
   // some crap
   def toggleRun() {
     value.foreach { x ⇒

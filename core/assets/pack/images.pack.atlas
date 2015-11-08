@@ -27,6 +27,19 @@ thin
   index: -1
 
 images.pack2.png
+size: 512,512
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+particles/explode
+  rotate: false
+  xy: 2, 2
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+
+images.pack3.png
 size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
@@ -88,7 +101,7 @@ cards/elementalist/Sylph
   offset: 0, 0
   index: -1
 
-images.pack3.png
+images.pack4.png
 size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
@@ -157,7 +170,7 @@ cards/junk/Trash Cyborg
   offset: 0, 0
   index: -1
 
-images.pack4.png
+images.pack5.png
 size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
@@ -240,7 +253,7 @@ cards/fairyknight/two-headed gorynych
   offset: 0, 0
   index: -1
 
-images.pack5.png
+images.pack6.png
 size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
@@ -309,7 +322,7 @@ cards/shaman/ghost wolf
   offset: 0, 0
   index: -1
 
-images.pack6.png
+images.pack7.png
 size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
@@ -385,7 +398,7 @@ cards/entomologist/Wasp Drone
   offset: 0, 0
   index: -1
 
-images.pack7.png
+images.pack8.png
 size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
@@ -447,7 +460,7 @@ cards/colors/Violet
   offset: 0, 0
   index: -1
 
-images.pack8.png
+images.pack9.png
 size: 256,256
 format: RGBA8888
 filter: Nearest,Nearest
@@ -509,7 +522,7 @@ cards/dudes/Two P
   offset: 0, 0
   index: -1
 
-images.pack9.png
+images.pack10.png
 size: 256,256
 format: RGBA8888
 filter: Nearest,Nearest
@@ -571,7 +584,7 @@ cards/moutainking/Runesmith
   offset: 0, 0
   index: -1
 
-images.pack10.png
+images.pack11.png
 size: 1024,256
 format: RGBA8888
 filter: Nearest,Nearest
@@ -717,7 +730,7 @@ cards/highpriest/sun stone
   offset: 0, 0
   index: -1
 
-images.pack11.png
+images.pack12.png
 size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
@@ -786,7 +799,7 @@ cards/antimancer/Voodoo Doll
   offset: 0, 0
   index: -1
 
-images.pack12.png
+images.pack13.png
 size: 512,256
 format: RGBA8888
 filter: Nearest,Nearest
@@ -876,7 +889,7 @@ cards/disciples/wind of oppression
   offset: 0, 0
   index: -1
 
-images.pack13.png
+images.pack14.png
 size: 256,256
 format: RGBA8888
 filter: Nearest,Nearest
@@ -938,7 +951,7 @@ cards/darksider/Wolf spider
   offset: 0, 0
   index: -1
 
-images.pack14.png
+images.pack15.png
 size: 1024,512
 format: RGBA8888
 filter: Nearest,Nearest
@@ -1287,7 +1300,7 @@ cards/base/woods hermit
   offset: 0, 0
   index: -1
 
-images.pack15.png
+images.pack16.png
 size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
@@ -1377,7 +1390,7 @@ cards/darkpriest/shadow of priest
   offset: 0, 0
   index: -1
 
-images.pack16.png
+images.pack17.png
 size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
@@ -1439,7 +1452,7 @@ cards/wind/Winged Warrior
   offset: 0, 0
   index: -1
 
-images.pack17.png
+images.pack18.png
 size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
@@ -1508,7 +1521,7 @@ cards/faeriedruid/Unicorn
   offset: 0, 0
   index: -1
 
-images.pack18.png
+images.pack19.png
 size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
@@ -1577,7 +1590,69 @@ cards/zen/Zen Fighter
   offset: 0, 0
   index: -1
 
-images.pack19.png
+images.pack20.png
+size: 1024,128
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+cards/kinetician/Call the fittest
+  rotate: false
+  xy: 2, 2
+  size: 95, 103
+  orig: 95, 103
+  offset: 0, 0
+  index: -1
+cards/kinetician/Focused Force
+  rotate: false
+  xy: 99, 2
+  size: 95, 103
+  orig: 95, 103
+  offset: 0, 0
+  index: -1
+cards/kinetician/Force barrier
+  rotate: false
+  xy: 196, 2
+  size: 95, 103
+  orig: 95, 103
+  offset: 0, 0
+  index: -1
+cards/kinetician/Lone mage
+  rotate: false
+  xy: 390, 25
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+cards/kinetician/Magerunner
+  rotate: false
+  xy: 472, 25
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+cards/kinetician/Manipulator
+  rotate: false
+  xy: 554, 25
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+cards/kinetician/Tricker
+  rotate: false
+  xy: 636, 25
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+cards/kinetician/Warp reality
+  rotate: false
+  xy: 293, 2
+  size: 95, 103
+  orig: 95, 103
+  offset: 0, 0
+  index: -1
+
+images.pack21.png
 size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
@@ -1639,7 +1714,7 @@ cards/dreamweaver/Spiritual Guide
   offset: 0, 0
   index: -1
 
-images.pack20.png
+images.pack22.png
 size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
@@ -1701,7 +1776,7 @@ cards/sower/Tangling
   offset: 0, 0
   index: -1
 
-images.pack21.png
+images.pack23.png
 size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
@@ -1770,7 +1845,7 @@ cards/snowblood/War guide
   offset: 0, 0
   index: -1
 
-images.pack22.png
+images.pack24.png
 size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
@@ -1839,7 +1914,7 @@ cards/warp/Warp Queen
   offset: 0, 0
   index: -1
 
-images.pack23.png
+images.pack25.png
 size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
@@ -1908,7 +1983,7 @@ cards/troopers/Wraith
   offset: 0, 0
   index: -1
 
-images.pack24.png
+images.pack26.png
 size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
@@ -1970,7 +2045,7 @@ cards/limbo/Tower of sins
   offset: 0, 0
   index: -1
 
-images.pack25.png
+images.pack27.png
 size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
@@ -2032,7 +2107,7 @@ cards/soulreaper/Tribute
   offset: 0, 0
   index: -1
 
-images.pack26.png
+images.pack28.png
 size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
@@ -2101,7 +2176,7 @@ cards/vampires/Nosferatu
   offset: 0, 0
   index: -1
 
-images.pack27.png
+images.pack29.png
 size: 1024,512
 format: RGBA8888
 filter: Nearest,Nearest

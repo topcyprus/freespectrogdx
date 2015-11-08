@@ -82,7 +82,7 @@ object Warp {
       val s = slot.get
       slot.destroy()
       val merged = new MergeStranger(s.card, opp.card)
-      slot add SlotState(merged, s.life, s.status, s.card.attack, player.slots.getAttack(slot, s.card.attack), s.target, s.id, merged.newReaction, merged.data)
+      slot add SlotState(merged, s.life, s.maxLife, s.status, s.card.attack, player.slots.getAttack(slot, s.card.attack), s.target, s.id, merged.newReaction, merged.data)
     }
   }
   def ram = { env: Env ⇒
@@ -110,7 +110,7 @@ object Warp {
     val c = if (s.card.isInstanceOf[MergeStranger]) new MereMortal(s.card) else cache.getOrElseUpdate(s.card, new MereMortal(s.card)) // hack
     val reaction = c.newReaction
     reaction use slot
-    slot write Some(SlotState(c, s.life, s.status, s.attackSources, slot.slots.getAttack(slot, s.attackSources), s.target, s.id, reaction, s.data))
+    slot write Some(SlotState(c, s.life, s.maxLife, s.status, s.attackSources, slot.slots.getAttack(slot, s.attackSources), s.target, s.id, reaction, s.data))
   }
   def unbridle(slot: SlotUpdate) {
     slot.value foreach { s ⇒
@@ -121,7 +121,7 @@ object Warp {
           reaction use slot
 
           slot add SlotState(
-              m.c, removed.life, removed.status,
+              m.c, removed.life, removed.maxLife, removed.status,
               removed.attackSources, slot.slots.getAttack(slot, removed.attackSources),
               removed.target, removed.id, reaction, removed.data)
         case _ ⇒
@@ -237,7 +237,7 @@ class CloakReaction extends Reaction {
     if (cloaked != null) {
       val slot = player.slots(num)
       val card = cloaked.card
-      slot add SlotState(card, cloaked.life, cloaked.status, card.attack, player.slots.getAttack(slot, card.attack), List(slot.num), cloaked.id, cloaked.reaction, card.data)
+      slot add SlotState(card, cloaked.life, cloaked.maxLife, cloaked.status, card.attack, player.slots.getAttack(slot, card.attack), List(slot.num), cloaked.id, cloaked.reaction, card.data)
     }
   }
 }

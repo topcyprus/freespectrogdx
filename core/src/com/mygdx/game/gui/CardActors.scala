@@ -102,12 +102,13 @@ class SlotCardActors(val cardGroup : Group, card : Creature, cardActors : CardAc
   val costLabel = cardActors.labels(1)
   val lifeBarTex = cardActors.resources.atlas findRegion "combat/lifebar"
   var life = card.life
+  var maxLife = card.life
   val lifeDamagable = new DamagableInt(life, lifeLabel, cardActors.resources)
   val lifeBar = new Image(lifeBarTex) {
     setZIndex(4)
     setY(cardActors.borderTex.getRegionHeight - lifeBarTex.getRegionHeight)
     override def act(delta : Float): Unit = {
-      setWidth(66f * life / math.max(life, card.life))
+      setWidth(66f * life / math.max(life, maxLife))
     }
   }
   var decorators = List.empty[Actor]
@@ -118,6 +119,7 @@ class SlotCardActors(val cardGroup : Group, card : Creature, cardActors : CardAc
     lifeLabel setText slotState.life.toString
     costLabel setText slotState.attack.toString
     life = slotState.life
+    maxLife = slotState.maxLife
     lifeDamagable.refresh()
     decorators = decorateStatus(slotState).toList
     cardGroup.clearChildren()

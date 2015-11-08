@@ -231,7 +231,7 @@ class GameUpdateListener(board : Board, game : SpGame, resources : ScreenResourc
         moveDest.setPosition(src.x + 15, src.y + 15)
         moveDest setDuration 1
         destEntity.group addAction moveDest
-        destEntity.slotnum = dest
+        destEntity.slotnum = num
         srcEntity
       }
     }

@@ -87,6 +87,7 @@ class Houses
   val faerieDruid = FaerieDruid
   val highPriest = HighPriest
   val junkMage = new JunkMage
+  val kinetician = Kinetician
   val limbo  = Limbo
   val lostChurch = LostChurch
   val moutainKing = new MoutainKing
@@ -102,7 +103,9 @@ class Houses
   //  val test = new TestMage
 
   val base = List(Fire, Water, Air, Earth)
-  val sinist = List(darkPriest.DarkPriest, darksider.Darksider, element.Elementalist, fairy.Fairy, highPriest.HighPriest, moutainKing.MoutainKing, shaman.Shaman, sower.Sower, vampire.Vampire, wind.Wind)
+  val sinist = List(darkPriest.DarkPriest, darksider.Darksider, element.Elementalist, fairy.Fairy,
+    highPriest.HighPriest, Kinetician.Kinetician, moutainKing.MoutainKing,
+    shaman.Shaman, sower.Sower, vampire.Vampire, wind.Wind)
   val others = List(antimancer.Antimancer, colors.Colors, dreamweaver.Dreamweaver, entomologist.Entomologist,
     faerieDruid.FaerieDruid, limbo.Limbo, soulReaper.SoulReaper)
   val olds = List(dudeMancer.Dude, trooper.Trooper)

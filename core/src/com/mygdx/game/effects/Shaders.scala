@@ -15,7 +15,7 @@ class Shaders extends ResourceCache[String, Shader] {
   def dispose() = resources.values foreach (res ⇒ res.program.dispose())
 
   class BasicShader(name: String) extends Shader {
-    val program = Shader create name
+    val program = Shader create ("data/shaders/" + name)
   }
 }
 
@@ -55,7 +55,7 @@ trait Shader {
 
 class SelectedShader(name: String, config : Config) extends Shader {
   pedantic = false
-  val program = Shader create name
+  val program = Shader create ("data/shaders/" + name)
   val size :: cursor :: _ = getUniformLocations("size", "cursor")
 
   val animLength = config getInt "animlength"

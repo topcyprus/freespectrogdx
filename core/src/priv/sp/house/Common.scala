@@ -1,6 +1,7 @@
 
 package priv.sp.house
 
+import priv.sp.CardSpec._
 import priv.sp.GameCardEffect._
 import priv.sp._
 import priv.sp.update._
@@ -8,6 +9,7 @@ import priv.util.FuncDecorators
 
 case object OneAttackBonus extends AttackFunc { def apply(attack: Int) = attack + 1 }
 case class AttackAdd(bonus: Int) extends AttackFunc { def apply(attack: Int) = attack + bonus }
+case class SetAttack(x: Int) extends AttackFunc { def apply(attack: Int) = x }
 
 class RemoveAttack(attack: AttackSource) extends Function[Env, Unit] {
   def apply(env: Env) {
@@ -197,4 +199,56 @@ case class Destroyeds(excls: Set[Card]) extends DescMod {
   def apply(house: House, cards: Vector[CardDesc]): Vector[CardDesc] = {
     cards filterNot { c ⇒ excls contains c.card }
   }
+}
+
+
+case class Targeting(target: Option[Int] = None)
+
+trait ChangeTarget {
+
+  def getTargeting(player : PlayerUpdate) : Targeting
+
+  def setTarget(player : PlayerUpdate, target : Option[Int] ) : Unit
+
+  val changeTarget = { env: Env ⇒
+    import env._
+    val target = otherPlayer.slots(selected).get
+    setTarget(player, Some(target.id))
+    player.slots foreach { s ⇒
+      s.write(s.value.map(_.copy(target = List(selected))))
+    }
+    player addEffect (OnEndTurn -> new RecoverTarget)
+  }
+
+  class RecoverTarget extends Function[Env, Unit] {
+    def apply(env: Env) {
+      if (getTargeting(env.player).target.isDefined) {
+        recoverTarget(env.player)
+      }
+      env.player removeEffect (_ == this)
+    }
+  }
+
+  def recoverTarget(player: PlayerUpdate) {
+    player.slots foreach { s ⇒
+      s write s.value.map(_.copy(target = List(s.num)))
+    }
+    setTarget(player, None)
+  }
+
+  trait ChangeTargetListener extends HouseEventListener{
+
+    def reactDead(dead: Dead) {
+      getTargeting(player).target foreach { id ⇒
+        if (id == dead.slot.id) {
+          recoverTarget(player)
+        }
+      }
+    }
+    override def init(p: PlayerUpdate) {
+      super.init(p)
+      p.otherPlayer.slots.onDead = (FuncDecorators observe p.otherPlayer.slots.onDead) after reactDead
+    }
+  }
+
 }

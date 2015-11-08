@@ -87,14 +87,14 @@ class PlayerUpdate(val id: PlayerId, val updater: GameStateUpdater) extends Fiel
     }) foreach submitCommand
   }
 
-  var submitCommand = { command: Command ⇒
+  var submitCommand : Function[Command, Option[Int]]= { command: Command ⇒
     if (command.card.isSpell) {
       updateListener spellPlayed command
     }
     houses.incrMana(-command.cost, command.card.houseIndex) // could be after but it's ugly(-> hack for fury)
     updateListener.refresh(silent = true)
-    if (!command.card.isSpell) {
-      command.input foreach { slotInput ⇒
+    val slotIdOption = if (!command.card.isSpell) {
+      command.input map { slotInput ⇒
         val targetSlots = command.card.inputSpec match {
           case Some(SelectTargetCreature) ⇒
             otherPlayer.slots
@@ -104,7 +104,7 @@ class PlayerUpdate(val id: PlayerId, val updater: GameStateUpdater) extends Fiel
         stats.nbSummon += 1
         targetSlots.summon(slotInput.num, command.card.asCreature)
       }
-    }
+    } else None
     command.card.effects(CardSpec.Direct) foreach { f ⇒
       val env = new GameCardEffect.Env(command.player, updater)
       env.card = Some(command.card)
@@ -114,6 +114,7 @@ class PlayerUpdate(val id: PlayerId, val updater: GameStateUpdater) extends Fiel
       f(env)
     }
     updateListener.refresh()
+    slotIdOption
   }
 
   def inflict(d: Damage) = {

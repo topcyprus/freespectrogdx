@@ -76,7 +76,7 @@ object Antimancer {
     env.updater.randLogs.unorderedShuffle(env.player.slots.getOpenSlots).headOption foreach { s =>
       val oppSlot = env.otherPlayer.slots(env.selected)
       val card = oppSlot.get.card
-      oppSlot.overridableDestroy()
+      oppSlot.destroy()
       s add card
     }
   }

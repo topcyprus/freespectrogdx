@@ -103,7 +103,8 @@ class ScreenResources {
   val batch    = stage.getBatch
   val renderer = new ShapeRenderer()
   val atlas    = new TextureAtlas(Gdx.files.internal("pack/images.pack.atlas"))
-  var skin     = loadSkin()
+  var skin     = loadSkin("font")
+  var skin2    = loadSkin("font2")
   val engine   = new Engine()
   val renderSystem   = new RenderSystem(batch, stage.getCamera)
   val scriptSystem   = new ScriptSystem()
@@ -144,7 +145,8 @@ class ScreenResources {
       val old = effectResources
       effectResources = new EffectResources(new Shaders, this)
       old.shaders.dispose()
-      skin = loadSkin()
+      skin = loadSkin("font")
+      skin2 = loadSkin("font2")
     } catch { case NonFatal(t) => t.printStackTrace() }
   }
 
@@ -175,8 +177,8 @@ class ScreenResources {
     }
   }
 
-  def loadSkin() = {
-    val font = generateFont()
+  def loadSkin(fontKey : String) = {
+    val font = generateFont(fontKey)
     val skin = new Skin()
     skin addRegions new TextureAtlas(Gdx.files.internal("data/uiskin.atlas"))
     skin.add("default-font", font)
@@ -184,10 +186,10 @@ class ScreenResources {
     skin
   }
 
-  def generateFont() = {
-    val generator = new FreeTypeFontGenerator(Gdx.files.internal(config getString "font.name"))
+  def generateFont(fontKey : String) = {
+    val c = config getConfig fontKey
+    val generator = new FreeTypeFontGenerator(Gdx.files.internal(c getString "name"))
     val parameter = new FreeTypeFontParameter()
-    val c = config getConfig "font"
     parameter.size          = c getInt "size"
     parameter.shadowOffsetX = c getInt "shadowOffsetX"
     parameter.shadowOffsetY = c getInt "shadowOffsetY"

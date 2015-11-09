@@ -8,7 +8,7 @@ trait SpGameController {
   def endGame(msg : String) : Unit
   def disableSlots() : Unit
   def setCardEnabled(player : PlayerId, enabled : Boolean = true) : Unit
-  def notifyPlayed(card : Option[Card]) : Unit
+  def notifyPlayed(playerId : PlayerId, card : Option[Card]) : Unit
   def setPhase(player : PlayerId, phase : Option[String]): Unit
   def refresh(silent : Boolean) : Unit
   def addVisibleCard(player : PlayerId, card : Card) : Unit
@@ -93,26 +93,26 @@ class SpGame(val server: GameServer, resources: GameResources) {
   }
 
 
-   private def submit(commandOption: Option[Command], player: PlayerId) = {
-     println(player + " submit " + commandOption)
+   private def submit(commandOption: Option[Command], playerId: PlayerId) = {
+     println(playerId + " submit " + commandOption)
      controller.disableSlots()
-     persist(updater.lift(_.players(player).submit(commandOption)))
-     controller.notifyPlayed(commandOption.map(_.card))
+     persist(updater.lift(_.players(playerId).submit(commandOption)))
+     controller.notifyPlayed(playerId, commandOption.map(_.card))
      endOr {
        refresh()
 
-       if (state.players(player).transitions.isEmpty) {
+       if (state.players(playerId).transitions.isEmpty) {
          playerIds.foreach(p => controller.setCardEnabled(p, false))
-         controller.setPhase(player, None)
-         run(player)
+         controller.setPhase(playerId, None)
+         run(playerId)
        } else {
          val t = persist(updater.lift { u ⇒
-           u.players(player).popTransition.get
+           u.players(playerId).popTransition.get
          })
          endOr {
            t match {
              case WaitPlayer(p, name) ⇒
-               if (p != player) playerIds.foreach(p => controller.setCardEnabled(p, false))
+               if (p != playerId) playerIds.foreach(p => controller.setCardEnabled(p, false))
                controller.setPhase(p, Some(name))
                waitPlayer(p)
            }

@@ -27,6 +27,7 @@ package object house {
   }
 
   @inline def nonSpecial(p: PlayerId, state: GameState): List[Int] = listSlotWhere(p, state)(_.houseIndex < 4)
+  @inline def special(p: PlayerId, state: GameState): List[Int] = listSlotWhere(p, state)(_.houseIndex == 4)
 
   def listSlotWhere(p: PlayerId, state: GameState)(f : Card => Boolean): List[Int] = {
     state.players(p).slots.foldLeft(List.empty[Int]) {

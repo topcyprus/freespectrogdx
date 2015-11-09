@@ -16,7 +16,7 @@ case class House(
     effects: List[CardSpec.PhaseEffect] = Nil,
     eventListener: Option[ListenerBuilder] = None,
     data: AnyRef = null,
-    description : String = "") extends Externalizable with Described {
+    description : String = "") extends Externalizable {
   def this() = this(null, Nil)
 
   var houseId = House.currentId.incrementAndGet()

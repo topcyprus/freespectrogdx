@@ -13,10 +13,13 @@ trait EarthHouse {
       inputSpec = Some(SelectOwnerCreature),
       effects = effects(Direct -> heal(8), Direct -> healCreature(8))),
     new Creature("Forest Sprite", Attack(1), 22, "attack all opponent creatures", runAttack = MultiTargetAttack),
-    Spell("Plant therapy", "heals by 2 * earth mana",
+    Spell("Plant therapy",
+      (state : GameState, playerId : PlayerId) => "heals by 2 * earth mana ["+(2 * state.players(playerId).houses(3).mana)+"]",
       effects = effects(Direct -> { env: Env ⇒ env.player.heal(2 * env.getMana(3)) })),
     new Creature("woods hermit", Attack(1), 13, "Increase earth mana growth by 2", effects = effects(OnTurn -> addMana(2, 3))),
-    Spell("Fury", "Deals to opponent the sum of the attacks of the 2 strongest owner creatures", effects = effects(Direct -> fury)),
+    Spell("Fury", (state : GameState, playerId : PlayerId) =>
+      "Deals to opponent the sum of the attacks of the 2 strongest owner creatures["+getFuryAttack(state.players(playerId))+"]",
+      effects = effects(Direct -> fury)),
     new Creature("Huge spider", Attack(4), 21, "Spawn 2 forest spiders around him", effects = effects(Direct -> spider)),
     new Creature("Troll", Attack(6), 26, "Every turn heals himself by 4", effects = effects(OnTurn -> focus(healCreature(4)))),
     Spell("Stone shower", "Deals 25 damage to any creature", effects = effects(Direct -> massDamage(25, isSpell = true))),
@@ -37,8 +40,12 @@ trait EarthHouse {
     import env._
 
     // hack attack at start of transaction!
-    val attack = (player.value.slots.values.map(_.attack)(breakOut): Seq[Int]).sorted(math.Ordering.Int.reverse).take(2).sum
+    val attack = getFuryAttack(player.value)
     env.otherPlayer inflict Damage(attack, env, isSpell = true)
+  }
+
+  def getFuryAttack(p : PlayerState) = {
+    (p.slots.values.map(_.attack)(breakOut): Seq[Int]).sorted(math.Ordering.Int.reverse).take(2).sum
   }
 
   private def spider = { env: Env ⇒

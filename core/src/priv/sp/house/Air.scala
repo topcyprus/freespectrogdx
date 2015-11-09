@@ -21,7 +21,9 @@ trait Air {
         env.player heal math.min(env.getMana(3), 10)
       })),
     new Creature("Lightning fence", Attack(0), 28, "Every turn deals 4 damage to opponent", effects = effects(OnTurn -> focus(damage(4, isAbility = true)))),
-    Spell("Lightnin", "Deals (5 + air power) damage to opponent",
+    Spell("Lightnin",
+      (state : GameState, playerId : PlayerId) =>
+        "Deals (5 + air power)["+(5+state.players(playerId).houses(2).mana)+"] damage to opponent",
       effects = effects(Direct -> { env: Env ⇒ env.otherPlayer inflict Damage(5 + env.getMana(2), env, isSpell = true) })),
     new Creature("Phoenix", Attack(6), 18, "Can reborn if fire mana >= 10", reaction = new PhoenixReaction),
     Spell("Chain lightning", "Deals 9 damage to opponent and his creatures", effects = effects(Direct -> damageCreatures(9, isSpell = true), Direct -> damage(9, isSpell = true))),

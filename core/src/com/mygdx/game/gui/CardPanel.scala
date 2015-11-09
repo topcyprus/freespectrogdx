@@ -35,9 +35,7 @@ class CardPanel(playerId: PlayerId,
         cardButton.visible = true
         cardButton.group.addListener(new ClickListener() with HoverToDesc {
           def descPanel = descriptionPanel
-          def described = cardButton.cardActorsOption collect { case h if cardButton.visible =>
-            h.desc.card
-          }
+          def getDescription = getCardDescription(cardButton)
 
           override def enter(event: InputEvent, x: Float, y: Float, pointer : Int, fromActor : Actor) : Unit = {
             super.enter(event, x, y, pointer, fromActor)
@@ -76,11 +74,8 @@ class CardPanel(playerId: PlayerId,
       cardButtons foreach { cardButton ⇒
         cardButton.visible = true
         cardButton.group.addListener(new ClickListener() with HoverToDesc {
-          def descPanel = descriptionPanel
-
-          def described = cardButton.cardActorsOption collect { case h if cardButton.visible =>
-            h.desc.card
-          }
+          def descPanel      = descriptionPanel
+          def getDescription = getCardDescription(cardButton)
         })
       }
     }
@@ -88,10 +83,8 @@ class CardPanel(playerId: PlayerId,
 
   houseLabels foreach { houseLabel =>
     houseLabel.panel.addListener(new ClickListener() with HoverToDesc {
-
-      def descPanel = descriptionPanel
-
-      def described = Some(houseLabel.house)
+      def descPanel      = descriptionPanel
+      def getDescription = Some(Description.houseToDesc(houseLabel.house))
 
       override def enter(event: InputEvent, x: Float, y: Float, pointer : Int, fromActor : Actor) : Unit = {
         houseLabel.label setColor Color.BLUE
@@ -103,7 +96,7 @@ class CardPanel(playerId: PlayerId,
       }
 
       override def clicked(event: InputEvent, x: Float, y: Float): Unit = {
-        resources.stage addActor new HouseDescription(houseLabel.house, resources)
+        resources.stage addActor new HouseDescription(houseLabel.house, game.state, playerId, resources)
       }
     })
   }
@@ -132,6 +125,11 @@ class CardPanel(playerId: PlayerId,
     }
   }
 
+  def getCardDescription(cardButton: CardButton) = {
+    cardButton.cardActorsOption collect { case h if cardButton.visible =>
+      Description.cardToDesc(game.state, playerId, h.desc.card)
+    }
+  }
 
   def setEnabled(flag: Boolean) {
     cardButtons foreach { btn ⇒

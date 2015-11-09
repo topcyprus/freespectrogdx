@@ -63,24 +63,24 @@ class SlotsUpdate(val player: PlayerUpdate) extends FieldUpdate(Some(player), pl
     slotState.id
   }
 
-  def move(num: Int, dest: Int) {
+  def move(num: Int, dest: Int, destPlayerId : PlayerId = playerId) {
     if (player.value isInSlotRange dest) {
       val slot = slots(num)
       slot.value foreach { s ⇒
-        val slotDest = slots(dest)
+        val slotDest = updater.players(destPlayerId).slots(dest)
         if (slotDest.value.isDefined) {
-          swap(slot, slotDest)
+          swap(slot, slotDest, destPlayerId)
         } else {
-          updateListener.move(num, dest, id)
+          updateListener.move(num, dest, id, destPlayerId)
           val removed = slot remove None
-          privMove(removed, slots(dest))
+          privMove(removed, slotDest)
         }
       }
     }
   }
 
-  private def swap(slot : SlotUpdate, dest : SlotUpdate): Unit = {
-    updateListener.swap(slot.num, dest.num, id)
+  private def swap(slot : SlotUpdate, dest : SlotUpdate, destPlayerId : PlayerId): Unit = {
+    updateListener.swap(slot.num, dest.num, id, destPlayerId)
     val removed = slot remove None
     val removed2 = dest remove None
     privMove(removed, dest)

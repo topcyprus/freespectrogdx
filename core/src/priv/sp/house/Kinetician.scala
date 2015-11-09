@@ -124,8 +124,7 @@ object Kinetician extends ChangeTarget {
             selected inflict Damage(4 * slotState.card.cost, Context(selected.playerId, Some(manipulator), selected.num), isAbility = true)
             val openSlots = selected.slots.getOpenSlots
             val targetSlot = openSlots.find(_.num == slot.num) getOrElse openSlots.head
-            slot.destroy()
-            targetSlot add slotState
+            selected.otherPlayer.slots.move(slot.num, targetSlot.num, selected.playerId)
           }
         }
       }

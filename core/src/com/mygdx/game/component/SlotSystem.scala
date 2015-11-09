@@ -10,7 +10,7 @@ import priv.sp._
 
 class SlotComponent(
  var slotnum : Int,
- val playerId : PlayerId,
+ var playerId : PlayerId,
  val slotCardActors : SlotCardActors,
  val group : Group,
  val game : SpGame,
@@ -23,7 +23,7 @@ class SlotComponent(
     actor
   }
 
-  val direction = if (playerId == game.myPlayerId) 1 else -1
+  def direction = if (playerId == game.myPlayerId) 1 else -1
   def run(): Actor = {
     actor addAction new Run(direction, resources.config.getConfig("card.run"))
     actor

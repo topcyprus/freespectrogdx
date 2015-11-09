@@ -39,7 +39,10 @@ class SlotPanel(playerId: PlayerId, val game: SpGame, descriptionPanel : Descrip
     def listenEvent(slotButton: SlotButton) {
       slotButton.group.addListener(new ClickListener with HoverToDesc {
         def descPanel = descriptionPanel
-        def described = game.state.players(playerId).slots.get(slotButton.num).map(_.card)
+        def getDescription = {
+          val playerState = game.state.players(playerId)
+          playerState.slots.get(slotButton.num).map(s => Description.cardToDesc(game.state, playerId, s.card))
+        }
         override def clicked(event: InputEvent, x: Float, y: Float): Unit = {
           if (slotButton.enabled) {
             commandRecorder addInput new SlotInput(slotButton.num)

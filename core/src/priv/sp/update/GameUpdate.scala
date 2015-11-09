@@ -55,8 +55,8 @@ class GameStateUpdater(initState: GameState, val desc: GameDesc) extends FieldUp
 
 trait UpdateListener {
   def focus(num: Int, playerId: PlayerId, blocking: Boolean = true): Unit
-  def move(num: Int, dest: Int, playerId: PlayerId): Unit
-  def swap(num: Int, dest: Int, playerId: PlayerId): Unit
+  def move(num: Int, dest: Int, playerId: PlayerId, destPlayerId : PlayerId): Unit
+  def swap(num: Int, dest: Int, playerId: PlayerId, destPlayerId : PlayerId): Unit
   def runSlot(num: Int, playerId: PlayerId): Unit
   def summon(num: Int, slot: SlotState, playerId: PlayerId): Unit
   def die(num: Int, playerId: PlayerId): Unit
@@ -67,8 +67,8 @@ trait UpdateListener {
 
 class DefaultUpdateListener extends UpdateListener {
   def focus(num: Int, playerId: PlayerId, blocking: Boolean): Unit = {}
-  def move(num: Int, dest: Int, playerId: PlayerId): Unit = {}
-  def swap(num: Int, dest: Int, playerId: PlayerId): Unit = {}
+  def move(num: Int, dest: Int, playerId: PlayerId, destPlayerId : PlayerId): Unit = {}
+  def swap(num: Int, dest: Int, playerId: PlayerId, destPlayerId : PlayerId): Unit = {}
   def runSlot(num: Int, playerId: PlayerId): Unit = {}
   def summon(num: Int, slot: SlotState, playerId: PlayerId): Unit = {}
   def die(num: Int, playerId: PlayerId): Unit = {}

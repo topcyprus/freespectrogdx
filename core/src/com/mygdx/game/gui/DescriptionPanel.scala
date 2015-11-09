@@ -10,13 +10,12 @@ import priv.sp._
 
 class DescriptionPanel(resources : ScreenResources,
                        color : Color = Color.WHITE,
-                       descWidth : Float = 350,
-                       displayCost : Boolean = false) {
+                       descWidth : Float = 350) {
   val panel = new Table()
   val title = new Label("", resources.skin)
   title setFontScale 1.1f
   val subtitle = new Label("", resources.skin)
-  val description = new Label("", resources.skin)
+  val description = new Label("", resources.skin2)
   description setWrap true
   panel align Align.bottomLeft
   panel.add(title).left
@@ -25,32 +24,35 @@ class DescriptionPanel(resources : ScreenResources,
   panel.add(description).left() width descWidth colspan 2
   List(title, subtitle, description) foreach (_.setColor(color))
 
-  val update : Option[Described] => Unit = {
-    case None =>
-      panel.setVisible(false)
-    case Some(described) =>
-      described match {
-        case c : Card if displayCost => title.setText(described.name + " ("+c.cost+")")
-        case _ => title setText described.name
-      }
-
-      described match {
-        case c: Creature ⇒ subtitle.setText("Life : " + c.life + "  Attack : " + c.attack.base.getOrElse("X"))
-        case _ ⇒ subtitle.setText("")
-      }
-      description.setText(described.description)
-      panel.setVisible(true)
+  val update : Option[(String, String, String)] => Unit = {
+    case None => panel setVisible false
+    case Some((titleText, subtitleText, descriptionText)) =>
+      title setText titleText
+      subtitle setText subtitleText
+      description setText descriptionText
+      panel setVisible true
   }
 }
 
+object Description {
+  def houseToDesc(h : House) = (h.name, "", h.description)
+  def cardToDesc(gameState : GameState, playerId : PlayerId, card : Card) = {
+    val subtitle = card match {
+      case c: Creature ⇒ "Life : " + c.life + "  Attack : " + c.attack.base.getOrElse("X")
+      case _ ⇒ ""
+    }
+    (card.name + " ("+card.cost+")", subtitle, card.description(gameState, playerId))
+  }
+}
 trait HoverToDesc extends ClickListener {
   def descPanel : DescriptionPanel
-  def described : Option[Described]
+
+  def getDescription : Option[(String, String, String)]
 
   override def enter(event: InputEvent, x: Float, y: Float, pointer : Int, fromActor : Actor) : Unit = {
     super.enter(event, x, y, pointer, fromActor)
     if (isOver) {
-      descPanel.update(described)
+      descPanel.update(getDescription)
     }
   }
   override def exit(event: InputEvent, x: Float, y: Float, pointer : Int, fromActor : Actor) : Unit = {

@@ -18,8 +18,4 @@ package object sp {
 
   def inSlotRange(n: Int) = n > -1 && n < 6
 
-  trait Described {
-    def name : String
-    def description : String
-  }
 }

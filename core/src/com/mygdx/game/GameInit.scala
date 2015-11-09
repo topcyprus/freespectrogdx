@@ -129,7 +129,6 @@ class GameInit(screenResources : ScreenResources, gameResources : GameResources)
 
 class UserGameController(game : SpGame, board : Board, commandRecorder : CommandRecorder, resources : ScreenResources)
   extends SpGameController {
-  import resources._
 
   def endGame(msg : String) = {
     resources addEndMessage msg
@@ -142,8 +141,8 @@ class UserGameController(game : SpGame, board : Board, commandRecorder : Command
     board.cardPanels(player).setEnabled(enabled)
   }
 
-  def notifyPlayed(card : Option[Card]) : Unit = {
-    board.historyPanel.update(card)
+  def notifyPlayed(playerId : PlayerId, card : Option[Card]) : Unit = {
+    board.historyPanel.update(card.map(c => Description.cardToDesc(game.state, playerId, c)))
   }
 
   def setPhase(player : PlayerId, phase : Option[String]): Unit = {
@@ -196,35 +195,37 @@ class GameUpdateListener(board : Board, game : SpGame, resources : ScreenResourc
       }
   }
 
-  def move(num: Int, dest: Int, playerId: PlayerId) : Unit = {
+  def move(num: Int, dest: Int, playerId: PlayerId, destPlayerId : PlayerId) : Unit = {
     val slotOption = resources.beforeProcess invoke {
       resources.slotSystem
         .findEntity(num, playerId)
         .map { case (_, slot) =>
-          val target = getCoord(slotPanels(playerId).slots(dest).group)
+          val target = getCoord(slotPanels(destPlayerId).slots(dest).group)
           val move = new MoveToAction()
           move.setPosition(target.x + 15, target.y + 15)
           move setDuration 1
           slot.group addAction move
           slot.slotnum = dest
+          slot.playerId = destPlayerId
           slot
         }
     }
     slotOption foreach { slot => waitAction(slot.group) }
   }
 
-  def swap(num: Int, dest: Int, playerId: PlayerId) : Unit = {
+  def swap(num: Int, dest: Int, playerId: PlayerId, destPlayerId : PlayerId) : Unit = {
     val slotOption = resources.beforeProcess invoke {
       for {
         (_, srcEntity) <- resources.slotSystem.findEntity(num, playerId)
-        (_, destEntity) <- resources.slotSystem.findEntity(dest, playerId)
+        (_, destEntity) <- resources.slotSystem.findEntity(dest, destPlayerId)
       } yield {
         val src = getCoord(slotPanels(playerId).slots(num).group)
-        val target = getCoord(slotPanels(playerId).slots(dest).group)
+        val target = getCoord(slotPanels(destPlayerId).slots(dest).group)
         val move = new MoveToAction()
         move.setPosition(target.x + 15, target.y + 15)
         move setDuration 1
         srcEntity.group addAction move
+        srcEntity.playerId = destPlayerId
         srcEntity.slotnum = dest
 
         val moveDest = new MoveToAction()
@@ -232,6 +233,7 @@ class GameUpdateListener(board : Board, game : SpGame, resources : ScreenResourc
         moveDest setDuration 1
         destEntity.group addAction moveDest
         destEntity.slotnum = num
+        destEntity.playerId = playerId
         srcEntity
       }
     }

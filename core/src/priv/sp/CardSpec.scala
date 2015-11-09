@@ -4,16 +4,62 @@ import collection._
 import java.io._
 import priv.sp.update._
 
+object CardSpec {
+  val runFlag = 1
+  val stunFlag = 2
+  val invincibleFlag = 4
+  val blockedFlag = 8
+  val pausedFlag = 16
+  val cursedFlag = 32
+
+  val onHold = stunFlag + blockedFlag + pausedFlag
+
+  type Phase = Int
+  val Direct = 0
+  val OnTurn = 1
+  val OnEndTurn = 2
+  val OnStart = 3
+  val phases = Array(Direct, OnTurn, OnEndTurn, OnStart)
+
+  type Effect = GameCardEffect.Env ⇒ Unit
+  type PhaseEffect = (CardSpec.Phase, CardSpec.Effect)
+  type Description = (GameState, PlayerId) => String
+  implicit def toDescription(s : String) : Description = (_, _) => s
+
+  def effects(effects: PhaseEffect*) = toEffectMap(effects)
+
+  def toEffectMap(effects: Traversable[PhaseEffect]) = {
+    def effectAt(phase: Phase): Option[Effect] = {
+      val filtereds = effects collect { case (ph, f) if ph == phase ⇒ f }
+      if (filtereds.isEmpty) None
+      else if (filtereds.size == 1) Some(filtereds.head)
+      else Some(new ComposedEffect(filtereds))
+    }
+
+    phases map (effectAt _)
+  }
+  val noEffects = phases map (_ ⇒ Option.empty[Effect])
+
+  class ComposedEffect(effects: Traversable[Effect]) extends Function[GameCardEffect.Env, Unit] {
+    def apply(env: GameCardEffect.Env) = {
+      effects foreach (_(env))
+    }
+  }
+  val defaultReaction = () ⇒ new Reaction
+}
+
+import CardSpec._
+
 object Card {
   val currentId = new java.util.concurrent.atomic.AtomicInteger
 }
 
-sealed abstract class Card extends Externalizable with Described {
+sealed abstract class Card extends Externalizable {
   def name: String
   def image: String
   def inputSpec: Option[CardInputSpec]
-  def effects: Array[Option[CardSpec.Effect]]
-  def description: String
+  def effects: Array[Option[Effect]]
+  def description: Description
 
   var cost = 0
   var id = Card.currentId.incrementAndGet
@@ -47,7 +93,7 @@ class Creature(
     val name: String,
     val attack: AttackSources,
     val life: Int,
-    val description: String = "",
+    val description: Description = "",
     val inputSpec: Option[CardInputSpec] = Some(SelectOwnerSlot),
     var effects: Array[Option[CardSpec.Effect]] = CardSpec.noEffects,
     val mod: Option[Mod] = None,
@@ -68,7 +114,7 @@ class Creature(
 
 case class Spell(
     name: String,
-    description: String = "",
+    description: Description = "",
     inputSpec: Option[CardInputSpec] = None,
     effects: Array[Option[CardSpec.Effect]] = CardSpec.noEffects) extends Card {
   def this() = this(null)
@@ -107,47 +153,6 @@ case object SelectTargetCreature extends CardInputSpec
 
 class SlotInput(val num: Int) extends AnyVal with Serializable
 
-object CardSpec {
-  val runFlag = 1
-  val stunFlag = 2
-  val invincibleFlag = 4
-  val blockedFlag = 8
-  val pausedFlag = 16
-  val cursedFlag = 32
-
-  val onHold = stunFlag + blockedFlag + pausedFlag
-
-  type Phase = Int
-  val Direct = 0
-  val OnTurn = 1
-  val OnEndTurn = 2
-  val OnStart = 3
-  val phases = Array(Direct, OnTurn, OnEndTurn, OnStart)
-
-  type Effect = GameCardEffect.Env ⇒ Unit
-  type PhaseEffect = (CardSpec.Phase, CardSpec.Effect)
-
-  def effects(effects: PhaseEffect*) = toEffectMap(effects)
-
-  def toEffectMap(effects: Traversable[PhaseEffect]) = {
-    def effectAt(phase: Phase): Option[Effect] = {
-      val filtereds = effects collect { case (ph, f) if ph == phase ⇒ f }
-      if (filtereds.isEmpty) None
-      else if (filtereds.size == 1) Some(filtereds.head)
-      else Some(new ComposedEffect(filtereds))
-    }
-
-    phases map (effectAt _)
-  }
-  val noEffects = phases map (_ ⇒ Option.empty[Effect])
-
-  class ComposedEffect(effects: Traversable[Effect]) extends Function[GameCardEffect.Env, Unit] {
-    def apply(env: GameCardEffect.Env) = {
-      effects foreach (_(env))
-    }
-  }
-  val defaultReaction = () ⇒ new Reaction
-}
 
 trait Mod
 case class SpellMod(modify: Int ⇒ Int) extends Mod

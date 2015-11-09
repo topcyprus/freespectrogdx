@@ -15,7 +15,13 @@ object DarkPriest {
   val DarkPriest: House = House("DarkPriest", List(
     new Creature("Ghost", Attack(5), 16, "If killed with spell or creature ability, reborns and switches sides.\nWhen enters the game, heals to owner 1 life for each his creature on the board.", reaction = new GhostReaction, effects = effects(Direct -> ghostHeal)),
     new Creature("Occultist", Attack(4), 20, "When enters the game, summons shadow of priest in opposite slot.", effects = effects(Direct -> occult)),
-    Spell("Black Mass", "Sacrifices target creature and deals 4X damage to all enemy creatures\n(X - number of different elements to which enemy creatures belong).", inputSpec = Some(SelectOwnerCreature), effects = effects(Direct -> blackMass)),
+    Spell("Black Mass", (state : GameState, playerId : PlayerId) =>
+      "Sacrifices target creature and deals 4X damage to all enemy creatures\n" +
+      "(X - number of different elements to which enemy creatures belong). ["+
+        getBlackMassX(state.players(other(playerId)).slots)+ "]"
+      ,
+      inputSpec = Some(SelectOwnerCreature),
+      effects = effects(Direct -> blackMass)),
     new Creature("Energy vampire", Attack(3), 23, "Every turn gives to owner 1 mana for each neighbour\n(element of mana = element of neighbour).", effects = effects(OnTurn -> evampire)),
     new Creature("Black monk", Attack(4), 25, "When receives damage, heals the same amount of life to owner.", reaction = new BlackMonkReaction),
     new Creature("Betrayer", Attack(7), 38, "Can be summoned only on enemy creature which dies.\nEvery turn deals 4 damage to itself, to owner and neighbours.", inputSpec = Some(SelectTargetCreature), effects = effects(OnTurn -> betray)),
@@ -78,9 +84,12 @@ object DarkPriest {
   def blackMass = { env: Env ⇒
     import env._
     val slots = otherPlayer.slots.filleds
-    val nbElems = slots.map { s ⇒ s.get.card.houseId }.distinct.size
-    otherPlayer.slots inflictCreatures Damage(4 * nbElems, env, isSpell = true)
+    val x = getBlackMassX(otherPlayer.slots.value)
+    otherPlayer.slots inflictCreatures Damage(x, env, isSpell = true)
     player.slots(selected).destroy()
+  }
+  def getBlackMassX(slots : PlayerState.SlotsType) = {
+    4 * (slots.values.map { s ⇒ s.card.houseId }(collection.breakOut) : List[Int]).distinct.size
   }
   def occult: Effect = { env: Env ⇒
     import env._

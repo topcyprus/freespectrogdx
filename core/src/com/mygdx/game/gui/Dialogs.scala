@@ -88,14 +88,14 @@ class GameSettings(resources : GameResources, screenResources : ScreenResources)
 
 }
 
-class HouseDescription (house : House, resources : ScreenResources)
+class HouseDescription (house : House, gameState : => GameState, playerId : PlayerId, resources : ScreenResources)
   extends Dialog(house.name, resources.skin) {
 
   val table = new Table()
   val pane = new ScrollPane(table)
 
   if (house.description.nonEmpty){
-    val label = new Label(house.description, resources.skin)
+    val label = new Label(house.description, resources.skin2)
     label.setWrap(true)
     table.add(label).colspan(4).width(750)
     table.row()
@@ -105,9 +105,9 @@ class HouseDescription (house : House, resources : ScreenResources)
   house.allCards foreach { card =>
     val path = CardActors.getPath(card, house)
     val image = new Image(resources.atlas createSprite path)
-    val descriptionPanel = new DescriptionPanel(resources, descWidth = 300, displayCost = true)
+    val descriptionPanel = new DescriptionPanel(resources, descWidth = 300)
 
-    descriptionPanel update Some(card)
+    descriptionPanel update Some(Description.cardToDesc(gameState, playerId, card))
     table.add(image).height(image.getHeight).center()
     table.add(descriptionPanel.panel).growY().top().left().pad(10)
     n += 1

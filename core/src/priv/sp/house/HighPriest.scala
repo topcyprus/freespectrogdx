@@ -20,7 +20,9 @@ import priv.util.FuncDecorators
 object HighPriest {
 
   val apis = new Creature("Apis", Attack(4), 20, "Every turn gives to owner 1 special power and 3 hp for each other apis on the board.", effects = effects(OnTurn -> apisEffect))
-  val sphynx = new Creature("Sphinx", Attack(8), 24, "When dies, leaves puzzle 0/6.\nIf puzzle was destroyed by enemy creature, sphinx reborns with halved hp.\nIf puzzle was destroyed by enemy spell or ability, opponent loses 3 power of highest element.", reaction = new SphinxReaction)
+  val sphynx = new Creature("Sphinx", Attack(8), 24, "When dies, leaves puzzle 0/6.\nIf puzzle was destroyed by enemy creature, sphinx reborns with halved hp.\n" +
+    "If puzzle was destroyed by enemy spell or ability, opponent loses 3 power of highest element.",
+    reaction = new SphinxReaction)
   val puzzle = new Creature("puzzle", Attack(0), 6, "If puzzle was destroyed by enemy creature, sphinx reborns with halved hp.\nIf puzzle was destroyed by enemy spell or ability, opponent loses 3 power of highest element.", reaction = new PuzzleReaction)
   val ouroboros = new Creature("Ouroboros", Attack(6), 38, "At the beginning of owner's turn summons in nearest empty slot serpent of eternity.", effects = effects(OnTurn -> ouro))
   val serpent = new Creature("serpent of eternity", Attack(2), 8, "At the end of opponent's turn serpent dies and heals X hp to owner and Ouroboros (X = its remaining hp).")

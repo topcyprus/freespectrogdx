@@ -20,12 +20,12 @@ When kill opposite creature, get 1/3 mana of his cost round up""",
 Reduce damage to 1.
 When die deals 15 damage to opposite creature.
 (Can't be healed)""", reaction = new DLReaction)
-  val maiko = new Creature("Maiko", Attack(3), 13,
+  val maiko = new Creature("Maiko", Attack(2), 13,
     """Decrease by 1 attack of all creatures on board.
 (Replaced by death letter after summoned)""", effects = effects(Direct -> maikoEffect), reaction = new MaikoReaction)
 
   val SB = House("Snowblood", List(
-    new Creature("Tracker", Attack(4), 14, "When alive, next summoned creature is invincible one turn.", reaction = new TrackerReaction, data = java.lang.Boolean.FALSE, effects = effects(Direct -> initDataFalse)),
+    new Creature("Tracker", Attack(3), 14, "When alive, next summoned creature is invincible one turn.", reaction = new TrackerReaction, data = java.lang.Boolean.FALSE, effects = effects(Direct -> initDataFalse)),
     bounty,
     maiko,
     Spell("Echo",

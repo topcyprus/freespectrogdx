@@ -81,20 +81,7 @@ class GameInit(screenResources : ScreenResources, gameResources : GameResources)
       screenResources.stage,
       new InputAdapter(){
         override def keyDown(k : Int) = {
-          if (k == Input.Keys.F5) {
-            Gdx.app.log("input", "reload resources")
-            screenResources.reload()
-            true
-          } else if (k == Input.Keys.F6) {
-            isDebug = !isDebug
-            Gdx.app.log("input", "set debug " + isDebug)
-            setDebug(board.panel)
-            true
-          } else if (k == Input.Keys.F8) {
-            Gdx.app.log("input", "give mana")
-            spGame.giveMeMana()
-            true
-          } else false
+          handleKey(k)
         }
 
         override def scrolled(amount : Int) = {
@@ -123,6 +110,26 @@ class GameInit(screenResources : ScreenResources, gameResources : GameResources)
       case g : Group => setDebug(g)
       case a : Actor => a.setDebug(isDebug)
     }
+  }
+
+  def handleKey(k : Int) : Boolean= {
+    if (k == Input.Keys.F5) {
+      Gdx.app.log("input", "reload resources")
+      screenResources.reload()
+      true
+    } else if (k == Input.Keys.F6) {
+      isDebug = !isDebug
+      Gdx.app.log("input", "set debug " + isDebug)
+      setDebug(board.panel)
+      true
+    } else if (k == Input.Keys.F8) {
+      Gdx.app.log("input", "give mana")
+      spGame.giveMeMana()
+      true
+    } else if (k == Input.Keys.F7) {
+      println(spGame.state)
+      true
+    } else false
   }
 }
 

@@ -6,20 +6,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup
 import com.mygdx.game._
 import priv.sp._
 
-
 class SlotPanel(playerId: PlayerId, val game: SpGame, descriptionPanel : DescriptionPanel, resources : ScreenResources) {
   val lifeLabel = new LifeLabel(game.names(playerId), game.state.players(playerId).life, resources)
   val dataPanel = new DataPanel(game.state.players(playerId).data, resources)
-  val slots =
-    baseSlotRange.map(num ⇒
-      new SlotButton(
-      num,
-      {
-        val p = game.state.players(playerId)
-        p.slotList contains num
-      }, resources)).toList
+  val slots     = baseSlotRange.map { num ⇒ new SlotButton(num, game.state.players(playerId), resources) }.toList
+  val panel     = new Group
 
-  val panel = new Group
   panel addActor lifeLabel.panel
   lifeLabel.panel setY 50
 

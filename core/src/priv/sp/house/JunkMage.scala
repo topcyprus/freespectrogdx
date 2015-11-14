@@ -27,8 +27,11 @@ class JunkMage {
       inputSpec = Some(SelectOwnerCreature),
       effects = effects(Direct -> poisonFlower)),
     jf,
-    new Creature("Chain controller", Attack(4), 18, "Mirror spawn of adjacent creature of cost <4.\n When adjacent creature of cost <6 die, fill the slot with another weak creature nearby", reaction = new ChainControllerReaction),
-    new Creature("Roaming assassin", Attack(6), 27, "At end of turn, if unblocked, move to the closest next unblocked opponent and deals 5 damage to it", effects = effects(OnEndTurn -> roam)),
+    new Creature("Chain controller", Attack(4), 18, "Mirror spawn of adjacent creature of cost <4.\n " +
+      "When adjacent creature of cost <6 die, fill the slot with another weak creature nearby",
+      reaction = new ChainControllerReaction),
+    new Creature("Roaming assassin", Attack(6), 27, "At end of turn, if unblocked, move to the closest next unblocked opponent and deals 5 damage to it",
+      effects = effects(OnEndTurn -> roam)),
     new Creature("Factory", Attack(4), 29, "Mirror spawn of adjacent creature of cost < 6 (spawn effect applied once), and heals factory by 5", reaction = new FactoryReaction),
     new Creature("Recycling Bot", Attack(8), 29, "When owner creature die, the creature heals 10 life, and heals 2 life to its owner for each creature lost.", reaction = new RecyclingBotReaction),
     trashCyborg), eventListener = Some(new CustomListener(new JunkEventListener)))

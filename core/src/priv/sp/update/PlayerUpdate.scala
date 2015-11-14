@@ -157,7 +157,7 @@ class PlayerUpdate(val id: PlayerId, val updater: GameStateUpdater) extends Fiel
     write(value.copy(effects = value.effects map (x ⇒ (x._1, f(x._2)))))
   }
 
-  def setData(data: AnyRef) = { write(value.copy(data = data)) }
+  var setData = { (data: AnyRef) =>  write(value.copy(data = data)) }
   def updateData[A <: AnyRef](f: A ⇒ A) = { setData(f(value.data.asInstanceOf[A])) }
 
   def addTransition(t: Transition) = {

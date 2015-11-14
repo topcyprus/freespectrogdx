@@ -72,8 +72,6 @@ object HouseSingleton extends Houses
 
 class Houses
     extends Fire with Water with Air with EarthHouse {
-  import CardSpec._
-  import GameCardEffect._
 
   val antimancer = Antimancer
   val colors = Colors
@@ -94,6 +92,7 @@ class Houses
   val sb = new SB
   val shaman = Shaman
   val sower = new Sower
+  val soulBinder = Soulbinder
   val soulReaper = SoulReaper
   val trooper = new Trooper
   val vampire = new Vampire
@@ -107,7 +106,7 @@ class Houses
     highPriest.HighPriest, Kinetician.Kinetician, moutainKing.MoutainKing,
     shaman.Shaman, sower.Sower, vampire.Vampire, wind.Wind)
   val others = List(antimancer.Antimancer, colors.Colors, dreamweaver.Dreamweaver, entomologist.Entomologist,
-    faerieDruid.FaerieDruid, limbo.Limbo, soulReaper.SoulReaper)
+    faerieDruid.FaerieDruid, limbo.Limbo, soulBinder.Soulbinder, soulReaper.SoulReaper)
   val olds = List(dudeMancer.Dude, trooper.Trooper)
   val bs = List(junkMage.Junk, lostChurch.LostChurch, sb.SB, warp.Warp, zenMage.Zen)
   val special = (sinist ++ others).sortBy(_.name) ++ olds ++ bs

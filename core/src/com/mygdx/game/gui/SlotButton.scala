@@ -7,10 +7,12 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.{Actor, Group}
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.mygdx.game.ScreenResources
+import priv.sp.PlayerState
+import priv.sp.house.BoundSouls
 
 
 class SlotButton(val num: Int,
-                 isExisting: ⇒ Boolean,
+                 playerState: ⇒ PlayerState,
                  resources : ScreenResources)  {
 
   val group = new Group()
@@ -26,13 +28,26 @@ class SlotButton(val num: Int,
 
   var enabled = false
 
+  val boundSoul = new Image(resources.atlas findRegion "combat/soul")
+  boundSoul.setPosition(16, 22)
+  group addActor boundSoul
+
   refresh()
 
   def refresh(): Unit = {
     group.addAction(
       BasicAction{
         slotImage setVisible isExisting
+        boundSoul setVisible hasBoundSoul
       })
+  }
+
+  def isExisting = playerState.slotList contains num
+  def hasBoundSoul = {
+    playerState.data match {
+      case BoundSouls(souls) => souls contains num
+      case _ => false
+    }
   }
 
   class EnabledActor extends Actor with Initializable {

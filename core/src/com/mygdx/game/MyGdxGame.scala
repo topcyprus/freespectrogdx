@@ -33,6 +33,7 @@ class MyGdxGame extends Game {
 class GameScreen(game :Game) extends ScreenAdapter {
   val screenResources = new ScreenResources
   val gameResources = new GameResources
+  val defaultInputProcessor = Gdx.input.getInputProcessor
   val repere = new Repere(screenResources)
   var lastE  = Option.empty[Throwable]
   var currentGame = createGame()
@@ -75,6 +76,7 @@ class GameScreen(game :Game) extends ScreenAdapter {
   }
 
   def createGame(): GameInit ={
+    Gdx.input.setInputProcessor(defaultInputProcessor)
     screenResources.engine.getSystems.toArray.foreach(_.setProcessing(false))
     // FIXME should wait here
     screenResources.stage.clear()

@@ -16,6 +16,7 @@ class SlotUpdate(val num: Int, val slots: SlotsUpdate) extends FieldUpdate(Some(
 
   def oppositeSlot = otherPlayer.slots(num)
   def filledAdjacents = adjacentSlots filter (_.value.isDefined)
+  def openAdjacents   = adjacentSlots filter (s => s.value.isEmpty && player.value.isInSlotRange(s.num))
   def oppositeState: Option[SlotState] = otherPlayer.getSlots get num
 
   def get = {

@@ -86,7 +86,12 @@ object Soulbinder {
     }
   }
 
-  @inline def getBoundSouls(p : PlayerState) = p.data.asInstanceOf[BoundSouls]
+  def getBoundSouls(p : PlayerState) = {
+    p.data match {
+      case b : BoundSouls => b
+      case _ => initState
+    }
+  }
 
   def openSlotNoBoundSoul(p: PlayerId, state: GameState): List[Int] = {
     val playerState = state.players(p)
@@ -215,18 +220,18 @@ object Soulbinder {
       }
     }
   }
+
+
+  class SheppardAttack extends AttackStateFunc {
+    def apply(attack: Int, player: PlayerUpdate): Int = {
+      attack + getBoundSouls(player.value).souls.size
+    }
+  }
 }
 
 case class BoundSouls(souls : Set[Int] = Set.empty){
   val asList = souls.toList
 }
-
-class SheppardAttack extends AttackStateFunc {
-  def apply(attack: Int, player: PlayerUpdate): Int = {
-    attack + player.value.data.asInstanceOf[BoundSouls].souls.size
-  }
-}
-
 
 object HideSpecialCreatureMod extends DescMod {
 

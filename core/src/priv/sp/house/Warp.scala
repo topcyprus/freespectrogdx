@@ -55,6 +55,7 @@ object Warp {
     eventListener = Some(OpponentListener({
       case _ : Limbo.LimboEventListener
          | _ : Colors.ColorListener
+         | _ : Soulbinder.SoulListener
          | _ : SoulReaper.SoulReaperListener => new WarpEventListener {}
       case inner => new ProxyEventListener(inner) with WarpEventListener
     })))

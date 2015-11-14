@@ -5,6 +5,8 @@ import priv.sp._
 import priv.util.FieldUpdate
 import CardSpec._
 
+import scala.reflect.ClassTag
+
 class PlayerUpdate(val id: PlayerId, val updater: GameStateUpdater) extends FieldUpdate(Some(updater), updater.state.players(id)) { playerFieldUpdate ⇒
   def pstate = value
   def updateListener = updater.updateListener
@@ -158,7 +160,11 @@ class PlayerUpdate(val id: PlayerId, val updater: GameStateUpdater) extends Fiel
   }
 
   var setData = { (data: AnyRef) =>  write(value.copy(data = data)) }
-  def updateData[A <: AnyRef](f: A ⇒ A) = { setData(f(value.data.asInstanceOf[A])) }
+  def updateData[A <: AnyRef](f: A ⇒ A)(implicit c : ClassTag[A]) = {
+    if (c.runtimeClass.isInstance(value.data)) {
+      setData(f(value.data.asInstanceOf[A]))
+    }
+  }
 
   def addTransition(t: Transition) = {
     write(value.copy(transitions = t :: value.transitions))

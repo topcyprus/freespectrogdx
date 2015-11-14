@@ -10,6 +10,7 @@ import scala.collection._
 object Shaman {
   import CardSpec._
 
+  val initState = WolfState()
   val wolf = new Creature("ghost wolf", AttackSources(Some(2)).add(new WolfAttackBonus), 18, reaction = new WolfReaction, runAttack = new WolfAttack,
     effects = effects(Direct -> wolfSummoned))
   val shadow = new Creature("Wolf shadow", AttackSources(Some(4)).add(new ShadowAttack), 45, "all cards which affect wolf affect wolf shadow as well.\nWhen enters the game, its neighbours attack immediately.",
@@ -33,7 +34,7 @@ object Shaman {
       reaction = new MateReaction,
       effects = effects(Direct -> mate))),
     effects = List(OnStart -> initWolf),
-    data = WolfState(),
+    data = initState,
     eventListener = Some(new CustomListener(new ShamanEventListener)),
     description = "Spirit of ancestors:\nAt the beginning of the game ghost wolf appears in slot next to the most right.")
 
@@ -42,10 +43,10 @@ object Shaman {
   Shaman initCards Houses.basicCostFunc
 
   def getData(p: PlayerUpdate) = {
-    if (p.value.data == null) { // hack for antimancer
-      p.setData(WolfState())
+    p.value.data match {
+      case w : WolfState => w
+      case _ => initState
     }
-    p.value.data.asInstanceOf[WolfState]
   }
 
   def initWolf = { env: Env ⇒

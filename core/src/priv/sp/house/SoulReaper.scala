@@ -182,7 +182,12 @@ object SoulReaper {
     }
   }
 
-  @inline def getData(p : PlayerUpdate) = p.pstate.data.asInstanceOf[SoulReaperData]
+  @inline def getData(p : PlayerUpdate) = {
+    p.pstate.data match {
+      case s : SoulReaperData => s
+      case _ => initData
+    }
+  }
   @inline def getX(p : PlayerUpdate) = getData(p).x
 
   case object Eternal

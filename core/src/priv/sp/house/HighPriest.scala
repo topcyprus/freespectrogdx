@@ -19,6 +19,7 @@ import priv.util.FuncDecorators
  */
 object HighPriest {
 
+  val initState = HPriestData()
   val apis = new Creature("Apis", Attack(4), 20, "Every turn gives to owner 1 special power and 3 hp for each other apis on the board.", effects = effects(OnTurn -> apisEffect))
   val sphynx = new Creature("Sphinx", Attack(8), 24, "When dies, leaves puzzle 0/6.\nIf puzzle was destroyed by enemy creature, sphinx reborns with halved hp.\n" +
     "If puzzle was destroyed by enemy spell or ability, opponent loses 3 power of highest element.",
@@ -55,7 +56,7 @@ object HighPriest {
     dragonOfRa),
     effects = List(OnTurn -> hpTurn, OnStart -> init),
     eventListener = Some(new CustomListener(new HPriestEventListener)),
-    data = HPriestData(),
+    data = initState,
     description = "Divine path:\nDepending on whether total level of owner’s fire and earth,  or water and air creatures is higher, his special draw changes becoming Ra’s or Set’s.")
 
   HighPriest initCards Houses.basicCostFunc
@@ -64,7 +65,10 @@ object HighPriest {
   HighPriest.addAdditionalCards(guardianMummy, serpent, sunStone, puzzle)
 
   def getData(p: PlayerState) = {
-    p.data.asInstanceOf[HPriestData]
+    p.data match {
+      case h : HPriestData => h
+      case _ => initState
+    }
   }
 
   def init = { env: Env ⇒ choosePath(env.player) }

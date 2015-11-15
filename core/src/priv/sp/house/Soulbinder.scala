@@ -144,9 +144,10 @@ object Soulbinder {
 
   def release : Effect = { env : Env =>
     import env._
-    val total = getTotalSouls(env)
+    val x = 3 * getTotalSouls(env)
 
-    player heal (3 * total)
+    player heal x
+    player.slots healCreatures x
     player setData initState
     otherPlayer.value.data match {
       case _ : BoundSouls => otherPlayer setData initState

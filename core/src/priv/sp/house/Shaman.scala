@@ -93,7 +93,7 @@ object Shaman {
     player.slots.findCard(wolf) foreach { s ⇒
       val bonus = AttackAdd(maxAttack)
       s.attack add bonus
-      player addEffect (OnEndTurn -> new RemoveAttack(bonus))
+      player addEffectOnce (OnEndTurn -> new RemoveAttack(bonus))
     }
   }
 
@@ -119,7 +119,7 @@ object Shaman {
     val damage = Damage(7, Context(env.playerId, None), isSpell = true)
     otherPlayer.slots inflictCreatures damage
     env.player.updateData[WolfState](_.copy(furyWolf = player.slots.findCard(wolf).map(_.num)))
-    player addEffect (OnEndTurn -> new RemoveFury)
+    player addEffectOnce (OnEndTurn -> new RemoveFury)
   }
 
   val huntBonus = AttackAdd(2)

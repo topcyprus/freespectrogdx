@@ -133,7 +133,7 @@ class ZenMage {
     final def interceptSubmit(command: Command, updater: GameStateUpdater) = {
       if (command.card.isSpell && command.flag == None) {
         val c = command.copy(flag = Some(DreamCommandFlag), cost = math.max(0, command.cost - 2))
-        updater.players(command.player) addEffect (OnTurn -> new Dream(c))
+        updater.players(command.player) addEffectOnce (OnTurn -> new Dream(c))
         (true, None)
       } else (false, None)
     }
@@ -143,7 +143,7 @@ class ZenMage {
     final def interceptSubmit(command: Command, updater: GameStateUpdater) = {
       if (!command.card.isSpell && command.flag == None) {
         val c = command.copy(flag = Some(DreamCommandFlag), cost = math.max(0, command.cost - 2))
-        updater.players(command.player) addEffect (OnTurn -> new Hatch(c))
+        updater.players(command.player) addEffectOnce (OnTurn -> new Hatch(c))
         (true, Some(Command(command.player, cocoon, command.input, 0)))
       } else (false, None)
     }
@@ -158,7 +158,6 @@ class ZenMage {
       }) {
         env.player submit Some(c)
       }
-      env.player removeEffect (_.isInstanceOf[Hatch])
     }
   }
 
@@ -188,7 +187,6 @@ class ZenMage {
       }) {
         env.player submit Some(c)
       }
-      env.player removeEffect (_.isInstanceOf[Dream])
     }
   }
 

@@ -1,5 +1,7 @@
 package priv.sp.update
 
+import priv.sp.GameCardEffect.oneTimePlayerEffect
+
 import collection._
 import priv.sp._
 import priv.util.FieldUpdate
@@ -151,6 +153,10 @@ class PlayerUpdate(val id: PlayerId, val updater: GameStateUpdater) extends Fiel
     write(value.copy(effects = effect :: value.effects))
   }
 
+  def addEffectOnce(effect: CardSpec.PhaseEffect) = {
+    addEffect(effect._1 -> oneTimePlayerEffect(effect._2))
+  }
+
   def removeEffect(cond: CardSpec.Effect ⇒ Boolean) = {
     write(value.copy(effects = value.effects filter (e ⇒ !cond(e._2))))
   }
@@ -254,18 +260,22 @@ class PlayerUpdate(val id: PlayerId, val updater: GameStateUpdater) extends Fiel
 
     def incrMana(incr: Int = 1) = {
       write(houses map { house ⇒
-        val newmana = house.mana + incr
-        new HouseState(math.max(0, newmana))
+        addMana((house, incr))
       })
       updateElementals()
     }
 
-    def incrMana(amount: Int, houseIndex: Int*) = {
-      write(houseIndex.foldLeft(houses) { (acc, id) ⇒
-        val house = acc(id)
-        acc.updated(id, new HouseState(math.max(0, house.mana + amount)))
-      })
+    def incrMana(amount: Int, houseIndexes: Int*) = {
+      write(
+        (houseIndexes foldLeft houses) { (acc, id) ⇒
+          val house = acc(id)
+          acc.updated(id, addMana((house, amount)))
+        })
       updateElementals()
+    }
+
+    var addMana : Function[(HouseState, Int), HouseState] = { case ((houseState, amount)) =>
+      new HouseState(math.max(0, houseState.mana + amount))
     }
 
     def updateElementals() = {

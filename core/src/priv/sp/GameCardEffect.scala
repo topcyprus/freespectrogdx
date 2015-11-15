@@ -71,6 +71,13 @@ object GameCardEffect {
     }
     env.player.value.slotList foreach spawnCreature
   }
+
+  case class oneTimePlayerEffect(f : Env => Unit) extends Function[Env, Unit] {
+    def apply(env: Env) {
+      f(env)
+      env.player removeEffect (_ == this)
+    }
+  }
 }
 
 case class Ability(card: Card, ability: Card) extends DescMod {

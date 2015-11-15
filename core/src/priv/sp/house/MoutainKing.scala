@@ -208,6 +208,7 @@ class MoutainKing {
     }
   }
 
+  val lowerSpecialCostMod = LowerCostMod(Set(4))
   class MountainReaction extends Reaction {
     final override def onMyRemove(dead: Option[Dead]) {
       if (selected.get.data == Hird) {
@@ -222,8 +223,8 @@ class MoutainKing {
       }
     }
     def setHird(b: Boolean, player: PlayerUpdate) {
-      if (b) player addDescMod LowerSpecialCostMod
-      else player removeDescMod LowerSpecialCostMod
+      if (b) player addDescMod lowerSpecialCostMod
+      else player removeDescMod lowerSpecialCostMod
     }
   }
 
@@ -321,13 +322,6 @@ class MoutainKing {
       }
     }
 
-  }
-}
-
-case object LowerSpecialCostMod extends DescMod {
-  def apply(house: House, cards: Vector[CardDesc]): Vector[CardDesc] = {
-    if (house.houseIndex != 4) cards
-    else cards.map(c ⇒ c.copy(cost = math.max(0, c.cost - 1)))
   }
 }
 

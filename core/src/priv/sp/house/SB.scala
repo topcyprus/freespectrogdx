@@ -278,7 +278,7 @@ class TrackerReaction extends Reaction with OnSummonable {
       slot.value foreach { s => // hack for retaliator who can kill f2 before f2 becoming invincible
         if (!state.data.asInstanceOf[Boolean] && selected != slot) {
           slot toggle invincibleFlag
-          slot.player addEffect (OnTurn -> RemoveInvincible(s.id))
+          slot.player addEffectOnce (OnTurn -> RemoveInvincible(s.id))
           selected setData java.lang.Boolean.TRUE
         }
       }

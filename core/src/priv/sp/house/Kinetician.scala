@@ -101,7 +101,7 @@ object Kinetician extends ChangeTarget {
   def focus = { env : Env =>
     env.player.slots foreach (_.attack add focusBonus)
     changeTarget(env)
-    env.player addEffect (OnEndTurn -> { env : Env =>
+    env.player addEffect (OnEndTurn -> oneTimePlayerEffect { env : Env =>
       env.player.slots foreach (_.attack removeFirstEq focusBonus)
     })
   }

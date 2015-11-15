@@ -20,37 +20,82 @@ import priv.util.FuncDecorators
 object HighPriest {
 
   val initState = HPriestData()
-  val apis = new Creature("Apis", Attack(4), 20, "Every turn gives to owner 1 special power and 3 hp for each other apis on the board.", effects = effects(OnTurn -> apisEffect))
-  val sphynx = new Creature("Sphinx", Attack(8), 24, "When dies, leaves puzzle 0/6.\nIf puzzle was destroyed by enemy creature, sphinx reborns with halved hp.\n" +
+  val apis = new Creature("Apis", Attack(4), 20,
+    "Every turn gives to owner 1 special power and 3 hp for each other apis on the board.",
+    effects = effects(OnTurn -> apisEffect))
+
+  val sphynx = new Creature("Sphinx", Attack(8), 24,
+    "When dies, leaves puzzle 0/6.\n" +
+    "If puzzle was destroyed by enemy creature, sphinx reborns with halved hp.\n" +
     "If puzzle was destroyed by enemy spell or ability, opponent loses 3 power of highest element.",
     reaction = new SphinxReaction)
-  val puzzle = new Creature("puzzle", Attack(0), 6, "If puzzle was destroyed by enemy creature, sphinx reborns with halved hp.\nIf puzzle was destroyed by enemy spell or ability, opponent loses 3 power of highest element.", reaction = new PuzzleReaction)
-  val ouroboros = new Creature("Ouroboros", Attack(6), 38, "At the beginning of owner's turn summons in nearest empty slot serpent of eternity.", effects = effects(OnTurn -> ouro))
-  val serpent = new Creature("serpent of eternity", Attack(2), 8, "At the end of opponent's turn serpent dies and heals X hp to owner and Ouroboros (X = its remaining hp).")
-  val sunStone = new Creature("sun stone", Attack(0), 22, "increases damage from owner spells by 2 and increases Ra's attack by 1 every turn", mod = Some(new SpellMod(x ⇒ x + 2)), effects = effects(OnTurn -> incrRaAttack))
+
+  val puzzle = new Creature("puzzle", Attack(0), 6,
+    "If puzzle was destroyed by enemy creature, sphinx reborns with halved hp.\n" +
+    "If puzzle was destroyed by enemy spell or ability, opponent loses 3 power of highest element.",
+    reaction = new PuzzleReaction)
+
+  val ouroboros = new Creature("Ouroboros", Attack(6), 38,
+    "At the beginning of owner's turn summons in nearest empty slot serpent of eternity.",
+    effects = effects(OnTurn -> ouro))
+
+  val serpent = new Creature("serpent of eternity", Attack(2), 8,
+    "At the end of opponent's turn serpent dies and heals X hp to owner and Ouroboros (X = its remaining hp).")
+
+  val sunStone = new Creature("sun stone", Attack(0), 22,
+    "increases damage from owner spells by 2 and increases Ra's attack by 1 every turn",
+    mod = Some(new SpellMod(x ⇒ x + 2)),
+    effects = effects(OnTurn -> incrRaAttack))
+
   val guardianMummy = new Creature("guardian mummy", Attack(4), 20)
-  val dragonOfRa = new Creature("Winged dragon of Ra", Attack(6), 45, "When enters the game, summons sun stone in nearest empty slot.", effects = effects(Direct -> ra))
-  val babi = new Creature("Babi", Attack(6), 23, "When opponent's power grows, deals the same damage to opposite creature.", reaction = new BabiReaction)
-  val amit = new Creature("Ammit", Attack(9), 39, "When any creature dies, deals to its owner damage equal to his power of that element and gives 1 special power to owner.", reaction = new AmitReaction)
+
+  val dragonOfRa = new Creature("Winged dragon of Ra", Attack(6), 45,
+    "When enters the game, summons sun stone in nearest empty slot.",
+    effects = effects(Direct -> ra))
+
+  val babi = new Creature("Babi", Attack(6), 23,
+    "When opponent's power grows, deals the same damage to opposite creature.",
+    reaction = new BabiReaction)
+
+  val amit = new Creature("Ammit", Attack(9), 39,
+    "When any creature dies, deals to its owner damage equal to his power of that element and gives 1 special power to owner.",
+    reaction = new AmitReaction)
 
   val hpSet = List[Card](
-    new Creature("Ancient crocodile", Attack(8), 15, "when attacks, skips next turn (digestion).", runAttack = new CrocodileAttack),
-    new Creature("Serpopard", Attack(4), 18, "When owner summons special creature, moves in nearest unblocked slot and doubles attack for 1 turn.", reaction = new SerpoReaction),
-    new Creature("Anubite", Attack(5), 20, "When kills creature, summon in nearest empty slot guarding mummy.", runAttack = new AnubiteAttack),
+    new Creature("Ancient crocodile", Attack(8), 15, "when attacks, skips next turn (digestion).",
+      runAttack = new CrocodileAttack),
+    new Creature("Serpopard", Attack(4), 18,
+      "When owner summons special creature, moves in nearest unblocked slot and doubles attack for 1 turn.",
+      reaction = new SerpoReaction),
+    new Creature("Anubite", Attack(5), 20,
+      "When kills creature, summon in nearest empty slot guarding mummy.",
+      runAttack = new AnubiteAttack),
     babi,
     Spell("Curse of chaos", "Deals to target creature and its neighbors damage equal to their total attack.",
       inputSpec = Some(SelectTargetCreature),
       effects = effects(Direct -> curse)),
-    Spell("Simooom", "Reduces attack of all enemy creatures to 1.\nThey restore 3 attack per turn since next turn.", effects = effects(Direct -> simoom)),
+    Spell("Simooom", "Reduces attack of all enemy creatures to 1.\n" +
+      "They restore 3 attack per turn since next turn.",
+      effects = effects(Direct -> simoom)),
     amit,
-    new Creature("Apep", Attack(5), 42, "Attacks all enemies.\nEvery turn decreases elemental powers of both players by 1.", effects = effects(OnTurn -> apep, OnEndTurn -> apepOpp), runAttack = MultiTargetAttack))
+    new Creature("Apep", Attack(5), 42, "Attacks all enemies.\n" +
+      "Every turn decreases elemental powers of both players by 1.",
+      effects = effects(OnTurn -> apep, OnEndTurn -> apepOpp),
+      runAttack = MultiTargetAttack))
 
   val HighPriest = House("High Priest", List(
-    new Creature("Sacred scarab", Attack(3), 15, "decreases non-magical damage received by it by 2X\nX = number of its neighbors.", reaction = new ScarabReaction),
-    new Creature("Sun priest", Attack(3), 16, "When attacks, deals to all enemy creatures damage equal to owner's lowest power.", runAttack = new SunPriestAttack),
+    new Creature("Sacred scarab", Attack(3), 15,
+      "decreases non-magical damage received by it by 2X\n" +
+      "X = number of its neighbors.",
+      reaction = new ScarabReaction),
+    new Creature("Sun priest", Attack(3), 16, "When attacks, deals to all enemy creatures damage equal to owner's lowest power.",
+      runAttack = new SunPriestAttack),
     apis,
-    new Creature("Bennu", Attack(5), 21, "If killed by enemy card, attacks opposite slot with tripled attack before death.", reaction = new BennuReaction),
-    Spell("Eye of wajet", "heals to owner and his creatures 1 hp for each revealed enemy card and deals the same damage to all enemies.", effects = effects(Direct -> wajet)),
+    new Creature("Bennu", Attack(5), 21, "If killed by enemy card, attacks opposite slot with tripled attack before death.",
+      reaction = new BennuReaction),
+    Spell("Eye of wajet",
+      "heals to owner and his creatures 1 hp for each revealed enemy card and deals the same damage to all enemies.",
+      effects = effects(Direct -> wajet)),
     sphynx,
     ouroboros,
     dragonOfRa),

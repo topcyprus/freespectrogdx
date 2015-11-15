@@ -93,72 +93,72 @@ class SpGame(val server: GameServer, resources: GameResources) {
   }
 
 
-   private def submit(commandOption: Option[Command], playerId: PlayerId) = {
-     println(playerId + " submit " + commandOption)
-     controller.disableSlots()
-     persist(updater.lift(_.players(playerId).submit(commandOption)))
-     controller.notifyPlayed(playerId, commandOption.map(_.card))
-     endOr {
-       refresh()
+  private def submit(commandOption: Option[Command], playerId: PlayerId) = {
+    println(playerId + " submit " + commandOption)
+    controller.disableSlots()
+    persist(updater.lift(_.players(playerId).submit(commandOption)))
+    controller.notifyPlayed(playerId, commandOption.map(_.card))
+    endOr {
+      refresh()
 
-       if (state.players(playerId).transitions.isEmpty) {
-         playerIds.foreach(p => controller.setCardEnabled(p, false))
-         controller.setPhase(playerId, None)
-         run(playerId)
-       } else {
-         val t = persist(updater.lift { u ⇒
-           u.players(playerId).popTransition.get
-         })
-         endOr {
-           t match {
-             case WaitPlayer(p, name) ⇒
-               if (p != playerId) playerIds.foreach(p => controller.setCardEnabled(p, false))
-               controller.setPhase(p, Some(name))
-               waitPlayer(p)
-           }
-         }
-       }
-     }
-   }
+      if (state.players(playerId).transitions.isEmpty) {
+        playerIds.foreach(p => controller.setCardEnabled(p, false))
+        controller.setPhase(playerId, None)
+        run(playerId)
+      } else {
+        val t = persist(updater.lift { u ⇒
+          u.players(playerId).popTransition.get
+        })
+        endOr {
+          t match {
+            case WaitPlayer(p, name) ⇒
+              if (p != playerId) playerIds.foreach(p => controller.setCardEnabled(p, false))
+              controller.setPhase(p, Some(name))
+              waitPlayer(p)
+          }
+        }
+      }
+    }
+  }
 
-   private def endOr(f: ⇒ Unit) {
-     updater.ended match {
-       case Some(player) ⇒
-         refresh()
-         endGame(player)
-       case _ ⇒ f
-     }
-   }
+  private def endOr(f: ⇒ Unit) {
+    updater.ended match {
+      case Some(player) ⇒
+        refresh()
+        endGame(player)
+      case _ ⇒ f
+    }
+  }
 
-   private def run(playerId: PlayerId) {
-     persist(updater.lift { u ⇒
-       val p = u.players(playerId)
+  private def run(playerId: PlayerId) {
+    persist(updater.lift { u ⇒
+      val p = u.players(playerId)
 
-       endOr {
-         println("run" + playerId)
-         p.runSlots()
-         persistUpdater()
-         refresh()
-         endOr {
-           p applyEffects CardSpec.OnEndTurn
-           p.slots.toggleRun()
-           persistUpdater()
-           endOr {
-             val otherPlayer = p.otherPlayer
-             otherPlayer.prepareNextTurn()
-             otherPlayer applyEffects CardSpec.OnTurn
-             persistUpdater()
-             refresh(silent = true)
-             endOr {
-               waitPlayer(otherPlayer.id)
-             }
-           }
-         }
-       }
-     })
-   }
+      endOr {
+        println("run" + playerId)
+        p.runSlots()
+        persistUpdater()
+        refresh()
+        endOr {
+          p applyEffects CardSpec.OnEndTurn
+          p.slots.toggleRun()
+          persistUpdater()
+          endOr {
+            val otherPlayer = p.otherPlayer
+            otherPlayer.prepareNextTurn()
+            otherPlayer applyEffects CardSpec.OnTurn
+            persistUpdater()
+            refresh(silent = true)
+            endOr {
+              waitPlayer(otherPlayer.id)
+            }
+          }
+        }
+      }
+    })
+  }
 
-   private def refresh(silent: Boolean = false) = {
-      controller.refresh(silent)
-   }
+  private def refresh(silent: Boolean = false) = {
+    controller.refresh(silent)
+  }
 }

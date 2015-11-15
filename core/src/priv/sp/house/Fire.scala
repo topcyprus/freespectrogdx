@@ -8,21 +8,36 @@ trait Fire {
   import GameCardEffect._
 
   val Fire = House("fire", List(
-    new Creature("Goblin", Attack(4), 16, "Every turn deals 2 damage to owner adjacent cards", effects = effects(OnTurn -> goblinBerserker)),
-    new Creature("Wall of flame", Attack(0), 5, "Deals 5 damage to opponent creatures when summoned", effects = effects(Direct -> damageCreatures(5, isAbility = true))),
-    new Creature("Fire monk", Attack(3), 13, "Every turn increase fire mana growth by 1", effects = effects(OnTurn -> addMana(1, 0))),
-    new Creature("Drake", Attack(4), 18, "Attack the turn he is summoned", status = runFlag),
-    new Creature("Orc chieftain", Attack(3), 16, "Increase attack of adjacent card by 2", reaction = new OrcSlotReaction),
-    Spell("Flame wave", "Deals 9 damage to opponent creatures", effects = effects(Direct -> damageCreatures(9, isSpell = true))),
-    new Creature("Bull Commander", Attack(6), 20, "Increase attack of owner card by 1", reaction = new BullSlotReaction),
-    new Creature("Blargl", Attack(8), 26, "Deals 4 damage to every creature when summoned", effects = effects(Direct -> massDamage(4, isAbility = true, immuneSelf = true))),
-    Spell("Inferno", "Deals 18 damage to target and 10 to other opponent creatures", inputSpec = Some(SelectTargetCreature), effects = effects(Direct -> inferno)),
-    new Creature("Fire Elemental", AttackSources().add(ManaAttack(0)), 36, "Fire Elemental deals 3 damage to opponent creatures when summoned", effects = effects(Direct -> damageCreatures(3, isAbility = true), Direct -> focus(damage(3, isAbility = true)), OnTurn -> addMana(1, 0))),
+    new Creature("Goblin", Attack(4), 16, "Every turn deals 2 damage to owner adjacent cards",
+      effects = effects(OnTurn -> goblinBerserker)),
+    new Creature("Wall of flame", Attack(0), 5, "Deals 5 damage to opponent creatures when summoned",
+      effects = effects(Direct -> damageCreatures(5, isAbility = true))),
+    new Creature("Fire monk", Attack(3), 13, "Every turn increase fire mana growth by 1",
+      effects = effects(OnTurn -> addMana(1, 0))),
+    new Creature("Drake", Attack(4), 18, "Attack the turn he is summoned",
+      status = runFlag),
+    new Creature("Orc chieftain", Attack(3), 16, "Increase attack of adjacent card by 2",
+      reaction = new OrcSlotReaction),
+    Spell("Flame wave", "Deals 9 damage to opponent creatures",
+      effects = effects(Direct -> damageCreatures(9, isSpell = true))),
+    new Creature("Bull Commander", Attack(6), 20, "Increase attack of owner card by 1",
+      reaction = new BullSlotReaction),
+    new Creature("Blargl", Attack(8), 26, "Deals 4 damage to every creature when summoned",
+      effects = effects(Direct -> massDamage(4, isAbility = true, immuneSelf = true))),
+    Spell("Inferno", "Deals 18 damage to target and 10 to other opponent creatures",
+      inputSpec = Some(SelectTargetCreature), effects = effects(Direct -> inferno)),
+    new Creature("Fire Elemental", AttackSources().add(ManaAttack(0)), 36,
+      "Fire Elemental deals 3 damage to opponent creatures when summoned",
+      effects = effects(
+        Direct -> damageCreatures(3, isAbility = true),
+        Direct -> focus(damage(3, isAbility = true)),
+        OnTurn -> addMana(1, 0))),
     Spell("Apocalypse",
       (state : GameState, playerId : PlayerId) =>
         "Damage any creature and opponent by 8 + fire mana ["+(8 + state.players(playerId).houses(0).mana)+"]",
       effects = effects(Direct -> armageddon)),
-    new Creature("Dragon", Attack(9), 41, "Increase spell damage by 50%", mod = Some(new SpellMod(x ⇒ math.ceil(x * 1.5).intValue)))), houseIndex = 0)
+    new Creature("Dragon", Attack(9), 41, "Increase spell damage by 50%",
+      mod = Some(new SpellMod(x ⇒ math.ceil(x * 1.5).intValue)))), houseIndex = 0)
 
   private def goblinBerserker = { env: Env ⇒
     val damage = Damage(2, env, isAbility = true)
@@ -60,38 +75,8 @@ private class OrcSlotReaction extends AttackBonusReaction {
   def getBonus(selected: Int) = OrcAttackBonus(selected)
 }
 
-private class BullSlotReaction extends AttackBonusReaction {
+class BullSlotReaction extends AttackBonusReaction {
   final def cond(selected: Int, num: Int) = selected != num
   def getBonus(selected: Int) = BullAttackBonus(selected)
 }
 
-private abstract class AttackBonusReaction extends Reaction {
-  def cond(selected: Int, num: Int): Boolean
-  def getBonus(selected: Int): AttackSource
-
-  final override def onAdd(slot: SlotUpdate) = {
-    val bonus = getBonus(selected.num)
-    if (selected.num == slot.num) {
-      slot.slots foreach { s ⇒
-        if (cond(s.num, slot.num)) s.attack add bonus
-      }
-    } else if (cond(selected.num, slot.num)) {
-      slot.attack add bonus
-    }
-  }
-
-  final override def onRemove(slot: SlotUpdate): Unit = {
-    if (selected.num != slot.num && cond(selected.num, slot.num)) {
-      slot.attack removeFirst getBonus(selected.num)
-    }
-  }
-
-  final override def onMyRemove(dead: Option[Dead]) = {
-    val bonus = getBonus(selected.num)
-    selected.slots foreach { slot ⇒
-      if (cond(slot.num, selected.num)) {
-        slot.attack removeFirst bonus
-      }
-    }
-  }
-}

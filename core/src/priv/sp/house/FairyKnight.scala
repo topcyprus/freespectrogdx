@@ -31,8 +31,10 @@ when any player uses fire card, deals 6 damage to random enemy creature.""", rea
     likho,
     new Creature("Sirin", Attack(4), 23, "halves attack of opposite creature and its neighbours while alive.", effects = effects(Direct -> sirin), reaction = new SirinReaction),
     new Creature("Alkonost", Attack(6), 31,
-      """every turn blocks 6 random enemy cards.
-Cannot block cards which have already been blocked previous turn""", effects = effects(Direct -> alko, OnTurn -> alko), reaction = new AlkoReaction),
+      "every turn blocks 6 random enemy cards. " +
+        "Cannot block cards which have already been blocked previous turn",
+      effects = effects(Direct -> alko, OnTurn -> alko),
+      reaction = new AlkoReaction),
     new Creature("Firebird", Attack(8), 32, "invulnerable while next to friendly fire creature.", reaction = new FirebirdReaction),
     gory),
     eventListener = Some(new CustomListener(new FKEventListener)))

@@ -48,7 +48,7 @@ class Vampire {
       if (card.cost < 10) {
         val slot = player.slots(selected)
         slot toggle CardSpec.invincibleFlag
-        player addEffect (OnTurn -> RemoveInvincible(slot.get.id))
+        player addEffectOnce (OnTurn -> RemoveInvincible(slot.get.id))
       }
     }
   }

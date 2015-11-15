@@ -91,7 +91,7 @@ object MasterOfWind {
     player.slots foreach { s ⇒
       s write s.value.map(_.copy(target = Nil))
     }
-    player addEffect (OnEndTurn -> { env: Env ⇒
+    player addEffectOnce (OnEndTurn -> { env: Env ⇒
       env.player.slots foreach { s ⇒
         s write s.value.map(_.copy(target = List(s.num)))
       }

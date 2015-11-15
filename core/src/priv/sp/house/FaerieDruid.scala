@@ -57,7 +57,7 @@ object FaerieDruid {
   def fire = { env : Env =>
     import env._
     val d = Damage(5, env, isSpell = true)
-    player.otherPlayer.slots foreach { s =>
+    otherPlayer.slots foreach { s =>
       if (player.slots.slots(s.num).value.isDefined) s inflict d else s.stun()
     }
   }
@@ -81,7 +81,7 @@ object FaerieDruid {
         s.attack add bonus
       }
     }
-    player addEffect (OnEndTurn -> new RemoveAttack(bonus))
+    player addEffectOnce (OnEndTurn -> new RemoveAttack(bonus))
   }
 
   class NightwingReaction extends Reaction {
@@ -114,7 +114,7 @@ object FaerieDruid {
       if (c.card.houseIndex == 4) {
         val bonus = AttackAdd(2)
         selected.attack add bonus
-        selected.player addEffect (OnEndTurn -> new RemoveAttack(bonus))
+        selected.player addEffectOnce (OnEndTurn -> new RemoveAttack(bonus))
       }
     }
   }

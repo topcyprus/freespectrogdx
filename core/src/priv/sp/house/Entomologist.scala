@@ -62,7 +62,7 @@ object Entomologist extends ChangeTarget {
     import env._
     val s = getTargetSelectedSlot()
     s toggle CardSpec.cursedFlag
-    player addEffect (OnEndTurn -> Locust(s.get.id))
+    player addEffectOnce (OnEndTurn -> Locust(s.get.id))
   }
 
   def ant = { env: Env ⇒

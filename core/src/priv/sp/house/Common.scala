@@ -14,7 +14,6 @@ case class SetAttack(x: Int) extends AttackFunc { def apply(attack: Int) = x }
 class RemoveAttack(attack: AttackSource) extends Function[Env, Unit] {
   def apply(env: Env) {
     env.player.slots foreach (_.attack.removeFirstEq(attack))
-    env.player removeEffect (_ == this)
   }
 }
 
@@ -23,7 +22,6 @@ case class RemoveInvincible(slotId: Int) extends Function[Env, Unit] {
     env.player.slots.slots.find(s ⇒ s.value.isDefined && s.get.id == slotId) foreach { s ⇒
       s.toggleOff(CardSpec.invincibleFlag)
     }
-    env.player removeEffect (_ == this)
   }
 }
 
@@ -34,6 +32,13 @@ trait UniqueAttack
 case class UnMod(mod: DescMod) extends Function[Env, Unit] {
   def apply(env: Env) {
     env.player removeDescMod mod
+  }
+}
+
+case class LowerCostMod(indexes : Set[Int]) extends DescMod {
+  def apply(house: House, cards: Vector[CardDesc]): Vector[CardDesc] = {
+    if (indexes.contains(house.houseIndex)) cards.map(c ⇒ c.copy(cost = math.max(0, c.cost - 1)))
+    else cards
   }
 }
 
@@ -60,6 +65,15 @@ case object HideSpellMod extends DescMod {
   }
 }
 
+object HideCreatureMod extends DescMod {
+  def apply(house: House, cards: Vector[CardDesc]): Vector[CardDesc] = {
+    cards.map { c ⇒
+      if (!c.card.isSpell) c.copy(enabled = false)
+      else c
+    }
+  }
+}
+
 case class AttackFactor(fact: Float) extends AttackFunc {
   def apply(attack: Int): Int = math.ceil(attack * fact).toInt
 }
@@ -67,6 +81,37 @@ case class AttackFactor(fact: Float) extends AttackFunc {
 case object SkipTurn extends DescMod {
   def apply(house: House, cards: Vector[CardDesc]): Vector[CardDesc] = {
     cards.map(c ⇒ c.copy(enabled = false))
+  }
+}
+
+abstract class AttackBonusReaction extends Reaction {
+  def cond(selected: Int, num: Int): Boolean
+  def getBonus(selected: Int): AttackSource
+
+  final override def onAdd(slot: SlotUpdate) = {
+    val bonus = getBonus(selected.num)
+    if (selected.num == slot.num) {
+      slot.slots foreach { s ⇒
+        if (cond(s.num, slot.num)) s.attack add bonus
+      }
+    } else if (cond(selected.num, slot.num)) {
+      slot.attack add bonus
+    }
+  }
+
+  final override def onRemove(slot: SlotUpdate): Unit = {
+    if (selected.num != slot.num && cond(selected.num, slot.num)) {
+      slot.attack removeFirst getBonus(selected.num)
+    }
+  }
+
+  final override def onMyRemove(dead: Option[Dead]) = {
+    val bonus = getBonus(selected.num)
+    selected.slots foreach { slot ⇒
+      if (cond(slot.num, selected.num)) {
+        slot.attack removeFirst bonus
+      }
+    }
   }
 }
 
@@ -217,7 +262,7 @@ trait ChangeTarget {
     player.slots foreach { s ⇒
       s.write(s.value.map(_.copy(target = List(selected))))
     }
-    player addEffect (OnEndTurn -> new RecoverTarget)
+    player addEffectOnce (OnEndTurn -> new RecoverTarget)
   }
 
   class RecoverTarget extends Function[Env, Unit] {
@@ -225,7 +270,6 @@ trait ChangeTarget {
       if (getTargeting(env.player).target.isDefined) {
         recoverTarget(env.player)
       }
-      env.player removeEffect (_ == this)
     }
   }
 

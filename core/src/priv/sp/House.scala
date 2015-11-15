@@ -90,6 +90,7 @@ class Houses
   val lostChurch = LostChurch
   val moutainKing = new MoutainKing
   val sb = new SB
+  val seasons = Seasons
   val shaman = Shaman
   val sower = new Sower
   val soulBinder = Soulbinder
@@ -106,7 +107,7 @@ class Houses
     highPriest.HighPriest, Kinetician.Kinetician, moutainKing.MoutainKing,
     shaman.Shaman, sower.Sower, vampire.Vampire, wind.Wind)
   val others = List(antimancer.Antimancer, colors.Colors, dreamweaver.Dreamweaver, entomologist.Entomologist,
-    faerieDruid.FaerieDruid, limbo.Limbo, soulBinder.Soulbinder, soulReaper.SoulReaper)
+    faerieDruid.FaerieDruid, limbo.Limbo, seasons.Seasons, soulBinder.Soulbinder, soulReaper.SoulReaper)
   val olds = List(dudeMancer.Dude, trooper.Trooper)
   val bs = List(junkMage.Junk, lostChurch.LostChurch, sb.SB, warp.Warp, zenMage.Zen)
   val special = (sinist ++ others).sortBy(_.name) ++ olds ++ bs

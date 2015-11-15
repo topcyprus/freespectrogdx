@@ -45,7 +45,7 @@ class Sower {
     getOwnerSelectedSlot().destroy()
     val factor = AttackFactor(2f)
     player.slots foreach (_.attack.add(factor))
-    player addEffect (OnEndTurn -> new RemoveAttack(factor))
+    player addEffectOnce (OnEndTurn -> new RemoveAttack(factor))
   }
 
   private def pollinate: Effect = { env: Env ⇒

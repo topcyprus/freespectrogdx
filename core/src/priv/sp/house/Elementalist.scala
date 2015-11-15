@@ -48,12 +48,12 @@ class Elementalist {
     player addDescMod IncrSylphCostMod
     player addDescMod HideBasicMod
     player addTransition WaitPlayer(env.playerId, sPhase)
-    player addEffect (OnEndTurn -> UnMod(HideBasicMod))
+    player addEffectOnce (OnEndTurn -> UnMod(HideBasicMod))
   }
 
   def freeze = { env: Env ⇒
     env.otherPlayer addDescMod SkipTurn
-    env.otherPlayer addEffect (OnEndTurn -> new Unfreeze(true))
+    env.otherPlayer addEffectOnce (OnEndTurn -> new Unfreeze(true))
   }
 
   // horror!
@@ -63,10 +63,10 @@ class Elementalist {
       player removeDescMod SkipTurn
       player removeEffect (_.isInstanceOf[Unfreeze])
       player addDescMod HideSpecialMod
-      player addEffect (OnEndTurn -> UnMod(HideSpecialMod))
+      player addEffectOnce (OnEndTurn -> UnMod(HideSpecialMod))
       if (chain) {
         otherPlayer addDescMod SkipTurn
-        otherPlayer addEffect (OnEndTurn -> new Unfreeze(false))
+        otherPlayer addEffectOnce (OnEndTurn -> new Unfreeze(false))
       }
     }
   }

@@ -153,9 +153,9 @@ object FaerieDruid {
     final override def init(p: PlayerUpdate) {
       super.init(p)
       p.otherPlayer.slots.slots foreach { slot ⇒
-        slot.add = (FuncDecorators observe slot.add) after { _ ⇒ onEnemyAdd(slot) }
+        slot.add = (FuncDecorators decorate slot.add) after { _ ⇒ onEnemyAdd(slot) }
       }
-      p.submitCommand = (FuncDecorators observe p.submitCommand) after { c ⇒
+      p.submitCommand = (FuncDecorators decorate p.submitCommand) after { c ⇒
         player.slots foreach { s ⇒
           s.get.reaction match {
             case r: RingReaction ⇒ r onSubmit c

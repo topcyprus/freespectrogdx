@@ -198,7 +198,7 @@ object Soulbinder {
 
     override def init(p: PlayerUpdate) {
       super.init(p)
-      p.setData = (FuncDecorators observe p.setData) after { data =>
+      p.setData = (FuncDecorators decorate p.setData) after { data =>
         p.slots foreach { s =>
           if (s.value.exists(_.card == soulSheppard)) {
             s.attack.setDirty()
@@ -212,7 +212,7 @@ object Soulbinder {
         }
       }
       p.slots.slots foreach { s =>
-        s.add = (FuncDecorators observe s.add) after { _ =>
+        s.add = (FuncDecorators decorate s.add) after { _ =>
           val souls = p.value.data.asInstanceOf[BoundSouls].souls
           if (souls contains s.num) {
             p.updateData[BoundSouls](d => d.copy(d.souls - s.num))

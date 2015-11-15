@@ -218,7 +218,7 @@ when any player uses fire card, deals 6 damage to random enemy creature.""", rea
     override def init(p: PlayerUpdate) {
       super.init(p)
       p.otherPlayer.slots.slots foreach { slot ⇒
-        slot.add = (FuncDecorators observe slot.add) after { _ ⇒
+        slot.add = (FuncDecorators decorate slot.add) after { _ ⇒
           player.slots foreach { s ⇒
             s.get.reaction match {
               case r: OnOppSlotUpdate ⇒ r onOppAdd slot
@@ -226,7 +226,7 @@ when any player uses fire card, deals 6 damage to random enemy creature.""", rea
             }
           }
         }
-        slot.remove = (FuncDecorators observe slot.remove) before { _ ⇒
+        slot.remove = (FuncDecorators decorate slot.remove) before { _ ⇒
           player.slots foreach { s ⇒
             s.get.reaction match {
               case r: OnOppSlotUpdate ⇒ r onOppRemove slot

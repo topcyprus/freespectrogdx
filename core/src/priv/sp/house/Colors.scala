@@ -187,7 +187,7 @@ object Colors {
       p.slots.slots foreach { slot ⇒
         slot.protect modifyResult (d ⇒ protect(slot, d))
       }
-      p.submitCommand = (FuncDecorators observe p.submitCommand)
+      p.submitCommand = (FuncDecorators decorate p.submitCommand)
         .before { _ => p.setData(ColorData(p.pstate.houses(4).mana)) }
         .after { c =>
         if (c.card.houseIndex == 4) {
@@ -207,7 +207,7 @@ object Colors {
           }
         }
       }
-      p.slots.onDead = (FuncDecorators observe p.slots.onDead) after { dead ⇒
+      p.slots.onDead = (FuncDecorators decorate p.slots.onDead) after { dead ⇒
         if (dead.card.houseIndex == 4) {
           player removeDescMod HideCardMod(dead.card)
         }

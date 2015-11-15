@@ -268,7 +268,7 @@ object Shaman {
     }
     override def init(p: PlayerUpdate) {
       super.init(p)
-      p.otherPlayer.slots.onDead = (FuncDecorators observe p.otherPlayer.slots.onDead) after reactDead
+      p.otherPlayer.slots.onDead = (FuncDecorators decorate p.otherPlayer.slots.onDead) after reactDead
       val slots = p.slots.slots // ! empty includeds
       slots.foreach { s ⇒
         s.attackUpdate.update after { _ ⇒
@@ -282,7 +282,7 @@ object Shaman {
       p.slots.slots.foreach { slot ⇒
         slot.protect.modifyResult(d ⇒ protect(slot, d))
       }
-      p.submitCommand = (FuncDecorators observe p.submitCommand)  after { c ⇒
+      p.submitCommand = (FuncDecorators decorate p.submitCommand)  after { c ⇒
         c.input foreach { input ⇒
           getData(p).enhanceds.get(c.card.id) foreach { bonus ⇒
             val slot = p.slots(input.num)

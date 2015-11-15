@@ -254,9 +254,9 @@ if earth heal 2 life to owner""", effects = effects(Direct -> amaterasu), reacti
     override def init(p: PlayerUpdate): Unit = {
       super.init(p)
       p.otherPlayer.slots.slots foreach { slot ⇒
-        slot.add = (FuncDecorators observe slot.add) after { _ ⇒ onEnemyAdd(slot) }
+        slot.add = (FuncDecorators decorate slot.add) after { _ ⇒ onEnemyAdd(slot) }
       }
-      p.submitCommand = (FuncDecorators observe p.submitCommand) after { c ⇒
+      p.submitCommand = (FuncDecorators decorate p.submitCommand) after { c ⇒
         c.card match {
           case creature: Creature ⇒
             c.input foreach { i ⇒ onSummon(player.slots(i.num)) }

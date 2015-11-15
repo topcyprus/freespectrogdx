@@ -136,7 +136,7 @@ abstract class FieldUpdate[A](parent: Option[FieldUpdate[_]], getValue: ⇒ A) {
   var dirty = 0
   var value = getValue
   var valuedirty = 0 // if dirty is set by children value is out of sync
-  val update = new ObservableFunc1(setValue(_: A))
+  val update = new FuncDecorator1(setValue(_: A))
 
   def initNewUpdate(value: A): this.type = {
     write(value)
@@ -184,13 +184,6 @@ abstract class FieldUpdate[A](parent: Option[FieldUpdate[_]], getValue: ⇒ A) {
 
 object FuncDecorators {
 
-  def observe[A, B](f : A => B) : ObservableFunc1[A, B] = {
-    f match {
-      case o : ObservableFunc1[A, B] => o
-      case _ => new ObservableFunc1[A, B](f)
-    }
-  }
-
   def decorate[A](f : () => A) : FuncDecorator0[A] = {
     f match {
       case o : FuncDecorator0[A] => o
@@ -206,10 +199,25 @@ object FuncDecorators {
   }
 }
 
-class ObservableFunc1[A, B](f: A ⇒ B) extends Function[A, B] {
+class FuncDecorator1[A, B](f: A ⇒ B) extends Function[A, B] {
   private var inner = f
 
   def apply(x: A) = inner(x)
+
+  def update(f : (A => B) => (A => B)) =  {
+    val old = inner
+    inner = f(old)
+    this
+  }
+
+
+  def modifyResult(g: B ⇒ B) = {
+    val old = inner
+    inner = { x: A ⇒
+      g(old(x))
+    }
+    this
+  }
 
   def after(g: A ⇒ Unit) = {
     val old = inner
@@ -236,27 +244,6 @@ class ObservableFunc1[A, B](f: A ⇒ B) extends Function[A, B] {
     inner = { x: A ⇒
       g(x)
       old(x)
-    }
-    this
-  }
-}
-
-class FuncDecorator1[A, B](f: A ⇒ B) extends Function[A, B] {
-  private var inner = f
-
-  def apply(x: A) = inner(x)
-
-  def update(f : (A => B) => (A => B)) =  {
-    val old = inner
-    inner = f(old)
-    this
-  }
-
-
-  def modifyResult(g: B ⇒ B) = {
-    val old = inner
-    inner = { x: A ⇒
-      g(old(x))
     }
     this
   }

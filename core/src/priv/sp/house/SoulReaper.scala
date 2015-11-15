@@ -161,8 +161,8 @@ object SoulReaper {
 
     override def init(p: PlayerUpdate) {
       super.init(p)
-      p.slots.onDead = (FuncDecorators observe p.slots.onDead) after (dead => reactDead(p.id, dead))
-      p.otherPlayer.slots.onDead = (FuncDecorators observe p.otherPlayer.slots.onDead) after (dead => reactDead(p.id, dead))
+      p.slots.onDead = (FuncDecorators decorate p.slots.onDead) after (dead => reactDead(p.id, dead))
+      p.otherPlayer.slots.onDead = (FuncDecorators decorate p.otherPlayer.slots.onDead) after (dead => reactDead(p.id, dead))
       p.slots.slots foreach { slot =>
         slot.delayedDestroy = (FuncDecorators decorate slot.delayedDestroy) update { f =>
           { d: Damage =>

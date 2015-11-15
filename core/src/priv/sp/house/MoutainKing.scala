@@ -299,12 +299,12 @@ class MoutainKing {
 
     override def init(p: PlayerUpdate) {
       super.init(p)
-      p.slots.onDead = (FuncDecorators observe p.slots.onDead) after (onDeath _)
+      p.slots.onDead = (FuncDecorators decorate p.slots.onDead) after (onDeath _)
       p.slots.slots foreach { slot ⇒
-        slot.add = (FuncDecorators observe slot.add) after (_ ⇒ onAdd(slot))
+        slot.add = (FuncDecorators decorate slot.add) after (_ ⇒ onAdd(slot))
         slot.protect modifyResult (d ⇒ protect(slot, d))
       }
-      p.onPlayerDamage = (FuncDecorators observe p.onPlayerDamage) after { d: Damage =>
+      p.onPlayerDamage = (FuncDecorators decorate p.onPlayerDamage) after { d: Damage =>
         onPlayerDamage(d)
       }
     }

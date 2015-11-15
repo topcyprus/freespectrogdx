@@ -139,7 +139,7 @@ object MasterOfWind {
 
     override def init(p: PlayerUpdate) {
       super.init(p)
-      p.slots.slots foreach (slot ⇒ slot.add = (FuncDecorators observe slot.add) after(_ ⇒ onAdd(slot)))
+      p.slots.slots foreach (slot ⇒ slot.add = (FuncDecorators decorate slot.add) after(_ ⇒ onAdd(slot)))
     }
   }
 }

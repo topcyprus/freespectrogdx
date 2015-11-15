@@ -161,7 +161,7 @@ When enters the game, stuns all enemy creatures.""",
     }
     override def init(p: PlayerUpdate) {
       super.init(p)
-      p.otherPlayer.submitCommand = (FuncDecorators observe p.otherPlayer.submitCommand) after { c ⇒
+      p.otherPlayer.submitCommand = (FuncDecorators decorate p.otherPlayer.submitCommand) after { c ⇒
         player.slots foreach { s ⇒
           s.get.reaction match {
             case r: LakeReaction ⇒ r.onCommand(c)

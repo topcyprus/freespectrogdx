@@ -364,7 +364,7 @@ object HighPriest {
           }
         }
       }
-      p.otherPlayer.submitCommand = (FuncDecorators observe p.otherPlayer.submitCommand) after(onOppSubmit _)
+      p.otherPlayer.submitCommand = (FuncDecorators decorate p.otherPlayer.submitCommand) after(onOppSubmit _)
     }
   }
 }

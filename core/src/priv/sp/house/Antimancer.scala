@@ -147,7 +147,7 @@ object Antimancer {
 
     final override def init(p: PlayerUpdate) {
       super.init(p)
-      p.otherPlayer.submitCommand = (FuncDecorators observe p.otherPlayer.submitCommand) after { c ⇒
+      p.otherPlayer.submitCommand = (FuncDecorators decorate p.otherPlayer.submitCommand) after { c ⇒
         player.slots foreach { s ⇒
           s.get.reaction match {
             case r: MirrorPriestReaction ⇒ r onSubmit c
@@ -155,7 +155,7 @@ object Antimancer {
           }
         }
       }
-      p.otherPlayer.onPlayerDamage = (FuncDecorators observe p.otherPlayer.onPlayerDamage) after { d: Damage =>
+      p.otherPlayer.onPlayerDamage = (FuncDecorators decorate p.otherPlayer.onPlayerDamage) after { d: Damage =>
         onPlayerDamage(d)
       }
     }

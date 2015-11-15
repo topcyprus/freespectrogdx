@@ -110,7 +110,7 @@ class Vampire {
     override def init(p: PlayerUpdate) {
       super.init(p)
       p.otherPlayer.slots.slots foreach { slot =>
-        slot.onDamage = (FuncDecorators observe slot.onDamage) after { case (slotState, d) =>
+        slot.onDamage = (FuncDecorators decorate slot.onDamage) after { case (slotState, d) =>
           onDamaged(slotState.card, d, slot)
         }
       }

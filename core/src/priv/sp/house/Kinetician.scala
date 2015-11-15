@@ -138,7 +138,7 @@ object Kinetician extends ChangeTarget {
 
     override def init(p: PlayerUpdate) {
       super.init(p)
-      p.otherPlayer.submitCommand = (FuncDecorators observe p.otherPlayer.submitCommand) after2 { (command, slotIdOption) =>
+      p.otherPlayer.submitCommand = (FuncDecorators decorate p.otherPlayer.submitCommand) after2 { (command, slotIdOption) =>
         player.slots.foreach { slot =>
           slot.get.reaction match {
             case manip : ManipulatorReaction => manip afterSubmit slotIdOption
@@ -146,7 +146,7 @@ object Kinetician extends ChangeTarget {
           }
         }
       }
-      p.submitCommand = (FuncDecorators observe p.submitCommand) after { command =>
+      p.submitCommand = (FuncDecorators decorate p.submitCommand) after { command =>
         if (player.pstate.desc.descMods.nonEmpty) {
           player.removeDescMod(HalveCardCost(command.card))
         }

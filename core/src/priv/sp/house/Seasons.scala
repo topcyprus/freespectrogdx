@@ -10,7 +10,7 @@ object Seasons {
 
   val initData = SeasonData(midnight = true)
   val defaultData = SeasonData()
-  val lowerBasic = LowerCostMod(Set(0, 1, 2, 3))
+  val lowerBasic = LowerHighCostMod(Set(0, 1, 2, 3))
 
   val nectarBloom = new Creature("Nectarbloom", Attack(2), 10,
     "Nectarbloom regenerates 2 life each turn.",
@@ -137,7 +137,7 @@ object Seasons {
     import env._
     otherPlayer inflict Damage(otherPlayer.slots.getOpenSlots.size, env, isSpell = true)
     player.updateData[SeasonData](_.copy(tripleDamage = true))
-    otherPlayer addEffectOnce (OnEndTurn -> RecoverTripeDamage)
+    player addEffectOnce (OnEndTurn -> RecoverTripeDamage)
   }
 
   object RecoverTripeDamage extends Function[Env, Unit] {
@@ -152,8 +152,8 @@ object Seasons {
     import env._
 
     player.updateData[SeasonData](_.copy(summer = true))
-    player addTransition WaitPlayer(playerId, phase1)
     player addTransition WaitPlayer(playerId, phase2)
+    player addTransition WaitPlayer(playerId, phase1)
 
     player addEffectOnce (OnEndTurn -> { env : Env =>
       env.player removeDescMod HideSpellMod
@@ -194,7 +194,7 @@ object Seasons {
 
   class GaeaReaction extends Reaction {
     override def inflict(damage: Damage) {
-      if (!damage.isEffect) { super.inflict(damage) }
+      if (!damage.isSpell) { super.inflict(damage) }
     }
   }
 
@@ -219,13 +219,37 @@ object Seasons {
     val plentitudeCards = Set[Card](cornucopia, gaea)
     val wintryCards     = Set[Card](behemoth, aurora)
 
+    def refreshGaea() {
+      if (player.getSlots.values.exists(s ⇒ s.card == gaea)) {
+        player.slots.filleds.find(s ⇒ s.get.card == gaea) foreach { s ⇒
+          s.attack.setDirty()
+        }
+      }
+    }
+
+    def checkSlotChange(slot: SlotUpdate, f: Function[Option[SlotState], Unit]) = { s : Option[SlotState] =>
+      val old = slot.value.size
+      f(s)
+      if (s.size != old) {
+        refreshGaea()
+      }
+    }
+
     override def init(p: PlayerUpdate): Unit = {
       super.init(p)
       p addDescMod lowerBasic
       p.slots.slots foreach { slot ⇒
         slot.protect modifyResult (d ⇒ protect(slot, d))
+        slot.update.update { f =>
+          checkSlotChange(slot, f)
+        }
       }
-      p.submitCommand = (FuncDecorators observe p.submitCommand) after { c =>
+      p.otherPlayer.slots.slots foreach { slot =>
+        slot.update.update { f =>
+          checkSlotChange(slot, f)
+        }
+      }
+      p.submitCommand = (FuncDecorators decorate p.submitCommand) after { c =>
         if (c.card.houseIndex == 4) {
           p addDescMod Destroyed(c.card)
           if (regrowthCards.contains(c.card)) {
@@ -248,17 +272,18 @@ object Seasons {
         } else d
       }
       p.otherPlayer.slots.slots foreach { slot ⇒
-        slot.protect modifyResult (d ⇒ oppDamage(p, slot, d))
+        slot.protect modifyResult (d ⇒ oppDamage(player, slot, d))
       }
       p.otherPlayer.houses.addMana = (FuncDecorators decorate p.otherPlayer.houses.addMana) update { f =>
-        player.slots.foldl(f) { (acc, slot) =>
-          slot.get.reaction match {
-            case r : BehemothReaction =>
-            { case (houseState, incr) =>
-              r.freezeMana(houseState, incr)
-            }
-            case _ => f
-          }
+        { case arg @ (houseState, incr) =>
+          if (incr > 0) {
+            (player.slots.foldl(f) { (acc, slot) =>
+              slot.get.reaction match {
+                case r : BehemothReaction => { case (houseState, incr) => r.freezeMana(houseState, incr) }
+                case _ => acc
+              }
+            })(arg)
+          } else f(arg)
         }
       }
     }
@@ -272,8 +297,22 @@ object Seasons {
   }
 
   class GaiaAttack extends AttackStateFunc {
+    // can't use player slots as the slots are not yet flushed when calculating the attack
     def apply(attack: Int, player: PlayerUpdate): Int = {
-      attack + player.pstate.slots.size + player.otherPlayer.pstate.slots.size
+      attack +
+        player.slots.slots.count(_.value.isDefined) +
+        player.otherPlayer.slots.slots.count(_.value.isDefined)
+    }
+  }
+
+  case class LowerHighCostMod(indexes : Set[Int]) extends DescMod {
+    def apply(house: House, cards: Vector[CardDesc]): Vector[CardDesc] = {
+      if (indexes.contains(house.houseIndex)) {
+        cards.lastOption match {
+          case Some(c) => cards.take(cards.size - 1) :+ c.copy(cost = math.max(0, c.cost - 1))
+          case None => cards
+        }
+      } else cards
     }
   }
 }

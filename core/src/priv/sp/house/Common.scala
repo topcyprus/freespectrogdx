@@ -130,7 +130,7 @@ trait OwnerDeathEventListener extends HouseEventListener {
   }
   override def init(p: PlayerUpdate) {
     super.init(p)
-    p.slots.onDead = (FuncDecorators observe p.slots.onDead) after { dead ⇒ reactDead(dead) }
+    p.slots.onDead = (FuncDecorators decorate p.slots.onDead) after { dead ⇒ reactDead(dead) }
   }
 }
 
@@ -147,8 +147,8 @@ trait AnyDeathEventListener extends HouseEventListener {
   }
   override def init(p: PlayerUpdate) {
     super.init(p)
-    p.slots.onDead = (FuncDecorators observe p.slots.onDead) after reactDead
-    p.otherPlayer.slots.onDead = (FuncDecorators observe p.otherPlayer.slots.onDead) after reactDead
+    p.slots.onDead = (FuncDecorators decorate p.slots.onDead) after reactDead
+    p.otherPlayer.slots.onDead = (FuncDecorators decorate p.otherPlayer.slots.onDead) after reactDead
   }
 }
 
@@ -163,7 +163,7 @@ trait OppDeathEventListener extends HouseEventListener {
   }
   override def init(p: PlayerUpdate) {
     super.init(p)
-    p.otherPlayer.slots.onDead = (FuncDecorators observe p.otherPlayer.slots.onDead) after reactDead
+    p.otherPlayer.slots.onDead = (FuncDecorators decorate p.otherPlayer.slots.onDead) after reactDead
   }
 }
 
@@ -291,7 +291,7 @@ trait ChangeTarget {
     }
     override def init(p: PlayerUpdate) {
       super.init(p)
-      p.otherPlayer.slots.onDead = (FuncDecorators observe p.otherPlayer.slots.onDead) after reactDead
+      p.otherPlayer.slots.onDead = (FuncDecorators decorate p.otherPlayer.slots.onDead) after reactDead
     }
   }
 

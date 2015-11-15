@@ -213,7 +213,7 @@ object Limbo {
           }
         }
       }
-      p.slots.onDead = (FuncDecorators observe p.slots.onDead) after { dead ⇒
+      p.slots.onDead = (FuncDecorators decorate p.slots.onDead) after { dead ⇒
         player.slots foreach { slot =>
           if (slot.get.card == wraith) {
             slot.attack.setDirty()

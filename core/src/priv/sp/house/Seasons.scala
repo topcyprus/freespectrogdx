@@ -38,7 +38,7 @@ object Seasons {
       "Passive: Plentitude: The cost of your most expensive Fire, Water, Air, and Earth cards is reduced by 1.",
     effects  = effects(Direct -> cornucopiaEffect),
     reaction = new CornucopiaReaction)
-  val gaea = new Creature("Gaea’s Avatar", AttackSources().add(new GaiaAttack), 60,
+  val gaea = new Creature("Gaea s Avatar", AttackSources().add(new GaiaAttack), 60,
     "Attack is equal to number of creatures on the board. " +
       "Gaea's Avatar is unaffected by all spells but takes 1 damage each turn for each empty slot on the board.\n" +
       "Passive: Plentitude: The cost of your most expensive Fire, Water, Air, and Earth cards is reduced by 1.",
@@ -69,6 +69,8 @@ object Seasons {
     effects = List(
       OnTurn -> new Regrowth,
       OnTurn -> new Wintry),
+    description = "“Passing of Seasons”: Each of the Warden’s special cards grants him a small Passive Effect that remains active from the beginning of the game until the card is played.\n" +
+      "“Exhaustion”: The Warden’s special cards may only be used once apiece during the match.",
     eventListener = Some(new CustomListener(new SeasonListener)))
 
   Seasons.initCards(Houses.basicCostFunc)

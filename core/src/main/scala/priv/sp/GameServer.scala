@@ -34,7 +34,7 @@ class Local(resources: GameResources) extends GameServer {
   private val shuffle = new CardShuffle(resources.sp.houses)
   val startingPlayer = playerIds(scala.util.Random.nextInt(2))
   println("starting player:" + startingPlayer)
-  private val List((p1Desc, p1State), (p2Desc, p2State)) = shuffle.get(resources.resolveChoices, startingPlayer)
+  private val List((p1Desc, p1State), (p2Desc, p2State)) = shuffle.get(resources.resolveChoices(), startingPlayer)
 
   def initState = GameState(List(PlayerState.init(p1State, p1Desc), PlayerState.init(p2State, p2Desc)))
   val desc = GameDesc(Vector(p1Desc, p2Desc))

@@ -7,8 +7,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.{Group, Actor}
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import collection.JavaConverters._
-import com.badlogic.gdx.{InputMultiplexer, Input, InputAdapter, Gdx}
 import com.mygdx.game.gui._
 import priv.sp._
 import priv.sp.update.UpdateListener
@@ -50,69 +48,17 @@ class GameInit(val screenResources : ScreenResources,
   cardPanels foreach (_.init(commandRecorder))
   background setBackground session.state.players(session.server.startingPlayer).desc.get.houses(4).house
 
-  userMenu.skipButton.addListener(onClick {
+  userMenu.skipButton addListener onClick {
     println("skip")
     if (session.updater.ended.isEmpty && commandRecorder.cont.isDefined) {
       commandRecorder.skip()
     }
-  })
+  }
 
-  var isDebug = false
-  Gdx.input.setInputProcessor(
-    new InputMultiplexer(Gdx.input.getInputProcessor,
-      screenResources.stage,
-      new InputAdapter(){
-        override def keyDown(k : Int) = {
-          handleKey(k)
-        }
-
-        override def scrolled(amount : Int) = {
-          scroll(-30 * amount)
-          true
-        }
-
-        private var y = 0
-        private var h = 768
-        private def scroll(delta : Int) = {
-          val newy = y + delta
-          val dy =
-            if (newy<0) -y
-            else if (newy > 2 *h) (2*h -y)
-            else delta
-          y = y + dy
-          screenResources.stage.getCamera.translate(0, dy, 0)
-        }
-      }))
 
   gameResources.gameExecutor submit runnable(session.start())
 
-  def setDebug(group : Group) : Unit = {
-    group setDebug isDebug
-    group.getChildren.asScala foreach {
-      case g : Group => setDebug(g)
-      case a : Actor => a.setDebug(isDebug)
-    }
-  }
 
-  def handleKey(k : Int) : Boolean= {
-    if (k == Input.Keys.F5) {
-      Gdx.app.log("input", "reload resources")
-      screenResources.reload()
-      true
-    } else if (k == Input.Keys.F6) {
-      isDebug = !isDebug
-      Gdx.app.log("input", "set debug " + isDebug)
-      setDebug(board.panel)
-      true
-    } else if (k == Input.Keys.F8) {
-      Gdx.app.log("input", "give mana")
-      session.giveMeMana()
-      true
-    } else if (k == Input.Keys.F7) {
-      println(session.state)
-      true
-    } else false
-  }
 }
 
 
@@ -127,11 +73,11 @@ class UserGameController(game : GameSession, board : Board, commandRecorder : Co
     board.slotPanels.foreach(_.disable())
   }
   def setCardEnabled(player : PlayerId, enabled : Boolean) : Unit = {
-    board.cardPanels(player).setEnabled(enabled)
+    board.cardPanels(player) setEnabled enabled
   }
 
   def notifyPlayed(playerId : PlayerId, card : Option[Card]) : Unit = {
-    board.historyPanel.update(card.map(c => Description.cardToDesc(game.state, playerId, c)))
+    board.historyPanel update card.map(c => Description.cardToDesc(game.state, playerId, c))
   }
 
   def setPhase(player : PlayerId, phase : Option[String]): Unit = {

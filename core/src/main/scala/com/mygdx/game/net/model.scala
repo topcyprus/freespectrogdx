@@ -4,6 +4,7 @@ object MessageType extends Enumeration {
   val Welcome, Name, RequestDuel, RequestFailed, NewGame, Proxy, ExitDuel, ListPlayers = Value
 }
 
+
 object Header {
   val currentId = new java.util.concurrent.atomic.AtomicInteger
 
@@ -18,4 +19,10 @@ case class Header(messageType : MessageType.Value, length : Int = 0, id : Int = 
   def toStr = messageType.id + ";" + length + ";" + id + ";" + answerId
 }
 case class Message(header : Header, body : Option[Array[Byte]] = None)
-case class NetPlayer(id : Int, name : String)
+
+case class ChatMessage(s : String)
+
+case class ProxyAsk(msg : Any, id : Int = Header.currentId.incrementAndGet())
+case class ProxyAnswer(id: Int, msg : Any)
+class AskOpponentInfo
+case class OpponentInfo(name : String, houses : List[Int])

@@ -6,17 +6,18 @@ import priv.util._
 import priv.util.Utils._
 object GameSeed {
 
-  def create(resources : GameResources) = {
+  def create(resources : GameResources, name : String, oppName : String, oppHouses : List[Int]) = {
     val seed = System.currentTimeMillis
     val shuffle = new CardShuffle(resources.sp.houses)
-    val List((p1Desc, p1State), (p2Desc, p2State)) = shuffle.get(resources.resolveChoices, owner)
+    val choices = List(resources.playerChoices.head, oppHouses map resources.sp.houses.getHouseById)
+    val List((p1Desc, p1State), (p2Desc, p2State)) = shuffle.get(resources resolveChoices choices, owner)
     val state = GameState(List(PlayerState.init(p1State, p1Desc), PlayerState.init(p2State, p2Desc)))
 
-    GameSeed(seed, GameDesc(Vector(p1Desc, p2Desc)), state)
+    GameSeed(seed, GameDesc(Vector(p1Desc, p2Desc)), state, name, oppName)
   }
 }
 
-case class GameSeed(seed : Long, desc : GameDesc, gameState : GameState )
+case class GameSeed(seed : Long, desc : GameDesc, gameState : GameState, name : String, oppName : String )
 
 
 class RemoteOpponent(

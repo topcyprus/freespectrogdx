@@ -2,6 +2,7 @@ package com.mygdx.game.gui
 
 import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup
+import com.badlogic.gdx.utils.Align
 import com.mygdx.game._
 import com.mygdx.game.net.NetPanel
 

@@ -4,13 +4,15 @@ import java.io._
 import java.net._
 import java.util.Base64
 
-import priv.util.Log
-
 import collection._
 import scala.concurrent.Promise
+import scala.util.{Failure, Success}
 import priv.util.Utils.thread
 import com.mygdx.game.{RemoteGameScreenContext, Screens}
 import priv.sp._
+import priv.util.Log
+
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class NetClient(host : String, port : Int, user : String,
                 screens : Screens,
@@ -23,7 +25,7 @@ class NetClient(host : String, port : Int, user : String,
   val out     = socket.getOutputStream()
   val in      = socket.getInputStream()
   val pout    = new PrintWriter(out, true)
-  val pending = mutable.HashMap.empty[Int, Promise[Message]]
+  val pending = mutable.HashMap.empty[Int, Promise[Any]]
   val messageQueue = new java.util.concurrent.LinkedBlockingQueue[Any]
   val log     = new Log(this)
   def kryo    = GameKryoInstantiator.kryo
@@ -56,14 +58,21 @@ class NetClient(host : String, port : Int, user : String,
           setPlayerList(new String(bytes).split(";").toList.map(p => new String(Base64.getDecoder() decode p)))
         }
       case MessageType.NewGame =>
-        // a new game has been requested
-        val seed = GameSeed.create(gameResources)
-        // send the seed to the opponent
-        proxyMessage(seed)
-        screenResources.beforeProcess.invoke {
-          gameScreen.select()
-          val opp = new RemoteOpponent(gameResources, this, "remote", opponent, owner, seed)
-          new RemoteGameScreenContext(gameScreen, opp)
+        // ask opponent name and house preferences
+        val prom = proxyAsk(new AskOpponentInfo)
+        prom.future.onComplete {
+          case Failure(t) => logMsg(t.getMessage) ; t.printStackTrace()
+          case Success(OpponentInfo(oppName, oppHouses)) =>
+            // a new game has been requested
+            val seed = GameSeed.create(gameResources, user, oppName, oppHouses)
+            // send the seed to the opponent
+            proxyMessage(seed)
+            screenResources.beforeProcess.invoke {
+              gameScreen.select()
+              val opp = new RemoteOpponent(gameResources, this, oppName, opponent, owner, seed)
+              new RemoteGameScreenContext(gameScreen, opp)
+            }
+          case msg => log.debug("unknown msg " + msg)
         }
       case MessageType.ExitDuel =>
         screenResources.beforeProcess.invoke {
@@ -76,9 +85,19 @@ class NetClient(host : String, port : Int, user : String,
             case seed : GameSeed =>
               screenResources.beforeProcess.invoke {
                 gameScreen.select()
-                val opp = new RemoteOpponent(gameResources, this, "remote", owner, owner, seed)
+                val opp = new RemoteOpponent(gameResources, this, seed.name, owner, owner, seed)
                 new RemoteGameScreenContext(gameScreen, opp)
               }
+            case ChatMessage(chatMsg) => logMsg(chatMsg)
+            case ProxyAsk(msg, id) =>
+                msg match {
+                  case _ : AskOpponentInfo =>
+                    proxyMessage(ProxyAnswer(id,
+                      OpponentInfo(user, gameResources.playerChoices(owner).map(_.houseId))))
+                  case _ => log.debug("unknown msg " + msg)
+                }
+            case ProxyAnswer(answerId, msg) =>
+              pending(answerId).success(msg)
             case _ =>
               log.debug("message " + pMessage)
               messageQueue put pMessage
@@ -97,9 +116,19 @@ class NetClient(host : String, port : Int, user : String,
     out.flush()
   }
 
-  def proxyMessage(m : Any) = {
+  def proxify(m : Any) : Message = {
     val bytes : Array[Byte] = kryo.toBytesWithClass(m)
-    send(Message(Header(MessageType.Proxy), Some(bytes)))
+    Message(Header(MessageType.Proxy), Some(bytes))
+  }
+
+  def proxyMessage(m : Any) = send(proxify(m))
+
+  def proxyAsk(m : Any) : Promise[Any] = {
+    val msg = ProxyAsk(m)
+    send(proxify(msg))
+    val prom = Promise[Any]()
+    pending.put(msg.id, prom : Promise[Any])
+    prom
   }
 
   def getMessage() : Option[Message] = {

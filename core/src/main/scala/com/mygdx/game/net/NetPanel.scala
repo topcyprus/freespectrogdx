@@ -1,5 +1,7 @@
 package com.mygdx.game.net
 
+import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener
+import com.badlogic.gdx.scenes.scene2d.{Event, EventListener}
 import com.badlogic.gdx.scenes.scene2d.ui.{List => _, _}
 import com.mygdx.game._
 import com.mygdx.game.gui.ButtonPanel
@@ -11,9 +13,10 @@ class NetPanel(
   import screenResources.skin
 
   val name = new TextField(System.getProperty("user.name"), skin)
-  val host = new TextField("localhost", skin)
+  val host = new TextField("172.99.78.51", skin)
   val port = new TextField("12345", skin)
   val logs = new TextArea("", skin)
+  val chat = new TextField("" , skin)
   val nbRows = 30
   logs setPrefRows nbRows
   val playerList = new TextArea("", skin)
@@ -24,7 +27,8 @@ class NetPanel(
     name,
     gui.row(host, port),
     buttons.panel,
-    gui.row(logs, playerList))
+    gui.row(logs, playerList),
+    chat)
 
   buttons.connectButton addListener onClick {
     screenResources.clientOption foreach { client => client.release()  }
@@ -45,6 +49,17 @@ class NetPanel(
     screenResources.clientOption foreach { client =>
       logText("Searching...")
       client send Message(Header(MessageType.RequestDuel))
+    }
+  }
+
+  chat setTextFieldListener new TextFieldListener {
+    override def keyTyped(textField: TextField, c: Char) : Unit = {
+      if (c == '\r' || c == '\n') {
+        screenResources.clientOption foreach { client =>
+          client proxyMessage ChatMessage(chat.getText)
+          chat setText ""
+        }
+      }
     }
   }
 

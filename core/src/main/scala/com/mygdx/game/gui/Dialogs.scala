@@ -24,7 +24,7 @@ object Dialogs {
   }
 }
 
-class GameSettings(resources : GameResources, screenResources : ScreenResources) extends Dialog("game settings", screenResources.skin) { self =>
+class GameSettings(resources : GameResources, screenResources : ScreenResources) extends Dialog("game settings", screenResources.skin2) { self =>
   import Dialogs.createBtn
   
   class PlayerChoice(id: PlayerId) {
@@ -34,7 +34,7 @@ class GameSettings(resources : GameResources, screenResources : ScreenResources)
     var n = 0
     val choiceCheckBoxes : Map[String, CheckBox] = specials.map(_.name)
       .map { choice =>
-        val checkbox = new CheckBox(choice, screenResources.skin)
+        val checkbox = new CheckBox(choice, screenResources.skin2)
         table add checkbox
         n += 1
         if (n % 2 == 0) table.row()

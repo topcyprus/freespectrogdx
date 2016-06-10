@@ -1,8 +1,11 @@
 package com.mygdx.game
 
+import collection.JavaConverters._
+import com.badlogic.gdx.scenes.scene2d.{Actor, Group}
+
 import scala.util.control.NonFatal
 import com.badlogic.gdx.graphics.GL20
-import com.badlogic.gdx.{Game, Gdx, ScreenAdapter}
+import com.badlogic.gdx._
 import com.mygdx.game.actor.Repere
 import com.mygdx.game.gui.{GameSettings, StartBoard}
 import priv.sp.GameResources
@@ -40,6 +43,56 @@ class Screens(val game : Game) {
     }
   }
 
+  var isDebug = false
+  def initInput(group : Group, scrollScreen : Boolean = false)(handleKey : Int => Boolean) = {
+    Gdx.input.setInputProcessor(
+      new InputMultiplexer(Gdx.input.getInputProcessor,
+        gameScreen.screens.screenResources.stage,
+        new InputAdapter(){
+          override def keyDown(k : Int) = {
+            if (k == Input.Keys.F5) {
+              Gdx.app.log("input", "reload resources")
+              gameScreen.screens.screenResources.reload()
+              true
+            } else if (k == Input.Keys.F6) {
+              isDebug = !isDebug
+              Gdx.app.log("input", "set debug " + isDebug)
+              setDebug(group)
+              true
+            } else {
+              handleKey(k)
+            }
+          }
+
+          override def scrolled(amount : Int) = {
+            if (scrollScreen) {
+              scroll(-30 * amount)
+            }
+            true
+          }
+
+          private var y = 0
+          private val h = 768
+          private def scroll(delta : Int) = {
+            val newy = y + delta
+            val dy =
+              if (newy<0) -y
+              else if (newy > 2 *h) 2 * h -y
+              else delta
+            y = y + dy
+            gameScreen.screens.screenResources.stage.getCamera.translate(0, dy, 0)
+          }
+        }))
+  }
+
+  def setDebug(group : Group) : Unit = {
+    group setDebug isDebug
+    group.getChildren.asScala foreach {
+      case g : Group => setDebug(g)
+      case a : Actor => a.setDebug(isDebug)
+    }
+  }
+
   def dispose(): Unit = {
     screenResources.dispose()
     gameResources.dispose()
@@ -50,11 +103,11 @@ class StartScreen(screens : Screens) extends ScreenAdapter {
   import screens._
   val startBoard = new StartBoard(screens)
 
-  startBoard.buttonPanel.newButton addListener onClick {
+  startBoard.newGameButton addListener onClick {
     gameScreen.select()
     new LocalGameScreenContext(gameScreen)
   }
-  startBoard.buttonPanel.settingsButton addListener onClick {
+  startBoard.settingsButton addListener onClick {
     screenResources.stage addActor new GameSettings(gameResources, screenResources)
   }
 
@@ -62,6 +115,7 @@ class StartScreen(screens : Screens) extends ScreenAdapter {
     screenResources.clear()
     screenResources.stage addActor startBoard.panel
     game setScreen this
+    initInput(startBoard.panel) { _ => false }
   }
 
   override def render (delta : Float): Unit = screens.render(delta)

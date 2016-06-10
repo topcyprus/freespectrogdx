@@ -1,36 +1,41 @@
 package com.mygdx.game.net
 
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener
-import com.badlogic.gdx.scenes.scene2d.{Event, EventListener}
 import com.badlogic.gdx.scenes.scene2d.ui.{List => _, _}
 import com.mygdx.game._
-import com.mygdx.game.gui.ButtonPanel
+import com.mygdx.game.gui._
 
 class NetPanel(
-  screens : Screens) {
+  screens : Screens, buttons : ButtonPanel) {
 
   import screens._
-  import screenResources.skin
+  import screenResources.{skin2 => skin}
 
   val name = new TextField(System.getProperty("user.name"), skin)
-  val host = new TextField("172.99.78.51", skin)
+  val host = new TextField("localhost", skin)
   val port = new TextField("12345", skin)
   val logs = new TextArea("", skin)
   val chat = new TextField("" , skin)
-  val nbRows = 30
+  val nbRows = 20
   logs setPrefRows nbRows
+
   val playerList = new TextArea("", skin)
   playerList setPrefRows nbRows
 
-  val buttons = new ButtonPanel(screenResources)
-  val panel = gui.column(
-    name,
-    gui.row(host, port),
-    buttons.panel,
-    gui.row(logs, playerList),
-    chat)
+  val table = new Table
+  table.add(name).colspan(2).left()
+  table.row()
+  table.add(row(host, port)).colspan(2).left()
+  table.row()
+  table.add(logs).fillX().expandX()
+  table.add(playerList)
+  table.row()
+  table.add(chat).colspan(2).fillX()
 
-  buttons.connectButton addListener onClick {
+  val panel = table
+  table.pad(5).bottom().pack()
+
+  buttons.ConnectButton addListener onClick {
     screenResources.clientOption foreach { client => client.release()  }
     try {
       val client = new NetClient(
@@ -45,7 +50,7 @@ class NetPanel(
     }
   }
 
-  buttons.searchButton addListener onClick {
+  buttons.getButton("Random opponent") addListener onClick {
     screenResources.clientOption foreach { client =>
       logText("Searching...")
       client send Message(Header(MessageType.RequestDuel))
@@ -56,14 +61,21 @@ class NetPanel(
     override def keyTyped(textField: TextField, c: Char) : Unit = {
       if (c == '\r' || c == '\n') {
         screenResources.clientOption foreach { client =>
-          client proxyMessage ChatMessage(chat.getText)
+          client proxyMessage ChatMessage(client.user + ": " + chat.getText)
           chat setText ""
         }
       }
     }
   }
 
-  def setPlayerList(players : List[String]) = playerList setText players.mkString("\n")
+  def setPlayerList(players : List[PlayerInfo]) = {
+    playerList setText players.map{ p =>
+      p.status match {
+        case PlayerStatus.Duelling => p.name + "(" + p.status + ")"
+        case _ => p.name
+      }
+    }.mkString("\n")
+  }
 
   def logText(s : String) = {
     logs.appendText(s + "\n")

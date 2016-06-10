@@ -1,9 +1,10 @@
 package com.mygdx.game.net
 
+import java.util.Base64
+
 object MessageType extends Enumeration {
   val Welcome, Name, RequestDuel, RequestFailed, NewGame, Proxy, ExitDuel, ListPlayers = Value
 }
-
 
 object Header {
   val currentId = new java.util.concurrent.atomic.AtomicInteger
@@ -26,3 +27,15 @@ case class ProxyAsk(msg : Any, id : Int = Header.currentId.incrementAndGet())
 case class ProxyAnswer(id: Int, msg : Any)
 class AskOpponentInfo
 case class OpponentInfo(name : String, houses : List[Int])
+
+
+object PlayerStatus extends Enumeration {
+  val OnHold, Duelling = Value
+}
+object PlayerInfo {
+  def decode(p : String) = {
+    val name :: status :: _ = p.split(":").toList
+    PlayerInfo(new String(Base64.getDecoder() decode name), PlayerStatus(status.toInt))
+  }
+}
+case class PlayerInfo(name : String, status : PlayerStatus.Value)

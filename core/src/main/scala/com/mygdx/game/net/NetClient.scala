@@ -14,10 +14,10 @@ import priv.util.Log
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class NetClient(host : String, port : Int, user : String,
+class NetClient(host : String, port : Int, val user : String,
                 screens : Screens,
                 logMsg : String => Unit,
-                setPlayerList : List[String] => Unit) {
+                setPlayerList : List[PlayerInfo] => Unit) {
 
   import screens._
 
@@ -55,7 +55,7 @@ class NetClient(host : String, port : Int, user : String,
         send(Message(Header(MessageType.Name), Some(user.getBytes)))
       case MessageType.ListPlayers =>
         message.body foreach { bytes =>
-          setPlayerList(new String(bytes).split(";").toList.map(p => new String(Base64.getDecoder() decode p)))
+          setPlayerList(new String(bytes).split(";").toList.map(PlayerInfo.decode))
         }
       case MessageType.NewGame =>
         // ask opponent name and house preferences

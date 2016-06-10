@@ -24,7 +24,7 @@ class GameInit(val screenResources : ScreenResources,
   val session          = new GameSession(server, gameResources)
   val descriptionPanel = new DescriptionPanel(screenResources)
   val historyPanel     = new DescriptionPanel(screenResources, Color.GRAY)
-  val userMenu         = new ButtonPanel(screenResources)
+  val userMenu         = new ButtonPanel(screenResources.skin)
   val selectedEffect   = new SelectedEffectActor(screenResources)
   val hoveredActor     = new HoveredActor(screenResources)
   val slotPanels = playerIds map { playerId =>

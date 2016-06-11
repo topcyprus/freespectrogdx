@@ -43,7 +43,7 @@ class LocalGameScreenContext(val gameScreen: GameScreen) extends GameScreenConte
     gameInit.userMenu.newButton addListener onClick {
       currentGame = createGame()
     }
-    gameInit.userMenu.surrenderButton addListener onClick {
+    gameInit.userMenu.quitButton addListener onClick {
       releaseLocks(currentGame)
       gameScreen.returnToStart()
     }

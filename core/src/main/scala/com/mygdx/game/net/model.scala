@@ -34,8 +34,15 @@ object PlayerStatus extends Enumeration {
 }
 object PlayerInfo {
   def decode(p : String) = {
-    val name :: status :: _ = p.split(":").toList
-    PlayerInfo(new String(Base64.getDecoder() decode name), PlayerStatus(status.toInt))
+    val name :: status :: id :: _ = p.split(":").toList
+    PlayerInfo(new String(Base64.getDecoder() decode name), id, PlayerStatus(status.toInt))
   }
 }
-case class PlayerInfo(name : String, status : PlayerStatus.Value)
+case class PlayerInfo(name : String, id : String, status : PlayerStatus.Value) {
+  override def toString() = {
+    status match {
+      case PlayerStatus.Duelling => name + "(" + status + ")"
+      case _ => name
+    }
+  }
+}

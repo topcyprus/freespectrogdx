@@ -17,6 +17,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 class NetClient(host : String, port : Int, val user : String,
                 screens : Screens,
                 logMsg : String => Unit,
+                logDuelRequest : String => Unit,
                 setPlayerList : List[PlayerInfo] => Unit) {
 
   import screens._
@@ -77,6 +78,10 @@ class NetClient(host : String, port : Int, val user : String,
       case MessageType.ExitDuel =>
         screenResources.beforeProcess.invoke {
           gameScreen.returnToStart()
+        }
+      case MessageType.RequestDuel =>
+        message.body foreach { bytes =>
+          logDuelRequest(new String(bytes))
         }
       case MessageType.Proxy =>
         message.body foreach { bytes =>

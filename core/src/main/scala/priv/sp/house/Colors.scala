@@ -74,7 +74,8 @@ object Colors {
 
     final override def onAdd(slot: SlotUpdate) = {
       if (selected.num == slot.num) {
-        selected.player addDescMod IncrSpecialCostMod(getData(selected))
+        // slot data is not set yet !!
+        selected.player addDescMod IncrSpecialCostMod(getData(slot.player))
       }
     }
 
@@ -166,7 +167,7 @@ object Colors {
       val x = getData(dead.slot)
       selected.focus()
       selected.player.getHouses.zipWithIndex.sortBy(_._1.mana).takeRight(2) foreach { case (_, idx) =>
-        selected.player.houses.incrMana(1, idx)
+        selected.player.houses.incrMana(x, idx)
       }
     }
   }

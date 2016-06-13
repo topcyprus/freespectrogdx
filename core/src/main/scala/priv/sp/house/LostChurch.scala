@@ -3,19 +3,14 @@ package priv.sp.house
 import priv.sp._
 import priv.sp.update._
 
-/**
- * Introduced bullshit:
- * prisoner -> random not managed by AI
- * todo astral escape make prisoner attack directly opponent
- */
 object LostChurch {
   import CardSpec._
   import GameCardEffect._
 
   val liberatorLife = 15
 
-  val prisoner = new Creature("Prisoner", Attack(2), 10, "When dying loose 1 mana of the two highest basic houses and earn 1 special mana.", reaction = new PrisonerReaction)
-  val enragedPrisoner = new Creature("Enraged Prisoner", Attack(7), 35, "Immune to spell & ability when liberator is alive.", reaction = new PrisonerReaction, status = runFlag)
+  val prisoner = new Creature("Prisoner", Attack(2), 10, "When dying loose 1 mana of the two highest basic houses and earn 1 special mana.", reaction = new PrisonerReaction, runAttack = new PrisonerAttack)
+  val enragedPrisoner = new Creature("Enraged Prisoner", Attack(7), 35, "Immune to spell & ability when liberator is alive.", reaction = new PrisonerReaction, status = runFlag, runAttack = new PrisonerAttack)
   val windOfOppression = Spell("wind of oppression", "Stun scarecrow's opposite creature and its neighbours. Deals 4 damage to them", effects = effects(Direct -> oppress))
   val darkMonk = new Creature("Dark monk", Attack(2), 13, "Decrease opponent fire mana by 2 and increase cost of them by 1 when alive.",
     effects = effects(Direct -> guardFire), reaction = new DarkMonkReaction)
@@ -23,7 +18,7 @@ object LostChurch {
     effects = effects(OnTurn -> addMana(1, 4)), reaction = new PreacherReaction)
   val falseProphet: Creature = new Creature("false prophet", Attack(4), 18, "Until his death, normal cards cost 1 more mana.\nGive 2 mana to each basic house.\nTake one mana back when dying",
     reaction = new FalseProphetReaction, effects = effects(Direct -> prophetize))
-  val astralEscape = new Creature("Astral escape", Attack(4), 30, "Damage done to prisoner is redirected to Astral escape", reaction = new AstralEscapeReaction)
+  val astralEscape = new Creature("Astral escape", Attack(4), 30, "Damage done to prisoner is redirected to Astral escape. Prisoner attack directly the opponent", reaction = new AstralEscapeReaction)
   val scarecrow: Creature = new Creature("Scarecrow", Attack(8), 25,
     """Stuns&Deals 4 damage to opposite creature
 Can switch with prisoner to nearest empty slot""",
@@ -211,21 +206,6 @@ Can switch with prisoner to nearest empty slot""",
     }
   }
 
-  class AstralEscapeReaction extends Reaction {
-    final override def onProtect(d: DamageEvent) = {
-      import d._
-      var res = d.damage
-      if (target.isDefined) {
-        val slot = player.slots(d.target.get)
-        if (slot.get.card == prisoner || slot.get.card == enragedPrisoner) {
-          selected inflict d.damage
-          res = d.damage.copy(amount = 0)
-        }
-      }
-      res
-    }
-  }
-
   class LiberatorReaction extends Reaction {
     final override def onMyDeath(dead: Dead) = {
       (dead.player.slots findCard enragedPrisoner) foreach { slot ⇒
@@ -277,7 +257,41 @@ Can switch with prisoner to nearest empty slot""",
       }
     }
   }
+
+  class AstralEscapeReaction extends Reaction {
+    final override def onProtect(d: DamageEvent) = {
+      import d._
+      var res = d.damage
+      if (target.isDefined) {
+        val slot = player.slots(d.target.get)
+        if (slot.get.card == prisoner || slot.get.card == enragedPrisoner) {
+          selected inflict d.damage
+          res = d.damage.copy(amount = 0)
+        }
+      }
+      res
+    }
+  }
+
+  class PrisonerAttack extends RunAttack {
+
+    def apply(target: List[Int], d: Damage, player: PlayerUpdate) {
+      val num = target.head
+      val otherPlayer = player.otherPlayer
+      val slot = otherPlayer.slots(num)
+      val escaped = player.slots.filleds.exists(_.get.reaction.isInstanceOf[AstralEscapeReaction])
+      if (slot.value.isDefined) {
+        slot inflict d
+        if (escaped) {
+          otherPlayer inflict d
+        }
+      } else {
+        otherPlayer inflict d
+      }
+    }
+  }
 }
+
 
 class DarkMonkReaction extends Reaction {
   final override def onAdd(slot: SlotUpdate) = {

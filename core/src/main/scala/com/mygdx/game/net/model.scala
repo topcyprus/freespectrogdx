@@ -26,7 +26,7 @@ case class ChatMessage(s : String)
 case class ProxyAsk(msg : Any, id : Int = Header.currentId.incrementAndGet())
 case class ProxyAnswer(id: Int, msg : Any)
 class AskOpponentInfo
-case class OpponentInfo(name : String, houses : List[Int])
+case class OpponentInfo(name : String, houses : List[Int], checksum : String)
 
 
 object PlayerStatus extends Enumeration {

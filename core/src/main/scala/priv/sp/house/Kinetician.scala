@@ -16,11 +16,11 @@ object Kinetician extends ChangeTarget {
 
   val Kinetician = House("Kinetician", List(
 
-    new Creature("Magerunner", Attack(4), 12,
+    new Creature("Magerunner", Attack(4), 10,
       "when summoned, switches places with friendly creature which has highest attack",
       effects = effects(Direct -> mage)),
 
-    new Creature("Tricker", Attack(4), 15,
+    new Creature("Tricker", Attack(4), 10,
       "every turn moves to nearest unblocked slot",
       effects = effects(OnTurn -> trick)),
 

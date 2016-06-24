@@ -10,7 +10,7 @@ object LostChurch {
   val liberatorLife = 15
 
   val prisoner = new Creature("Prisoner", Attack(2), 10, "When dying loose 1 mana of the two highest basic houses and earn 1 special mana.", reaction = new PrisonerReaction, runAttack = new PrisonerAttack)
-  val enragedPrisoner = new Creature("Enraged Prisoner", Attack(7), 35, "Immune to spell & ability when liberator is alive.", reaction = new PrisonerReaction, status = runFlag, runAttack = new PrisonerAttack)
+  val enragedPrisoner = new Creature("Enraged Prisoner", Attack(6), 35, "Immune to spell & ability when liberator is alive.", reaction = new PrisonerReaction, status = runFlag, runAttack = new PrisonerAttack)
   val windOfOppression = Spell("wind of oppression", "Stun scarecrow's opposite creature and its neighbours. Deals 4 damage to them", effects = effects(Direct -> oppress))
   val darkMonk = new Creature("Dark monk", Attack(2), 13, "Decrease opponent fire mana by 2 and increase cost of them by 1 when alive.",
     effects = effects(Direct -> guardFire), reaction = new DarkMonkReaction)
@@ -19,7 +19,7 @@ object LostChurch {
   val falseProphet: Creature = new Creature("false prophet", Attack(4), 18, "Until his death, normal cards cost 1 more mana.\nGive 2 mana to each basic house.\nTake one mana back when dying",
     reaction = new FalseProphetReaction, effects = effects(Direct -> prophetize))
   val astralEscape = new Creature("Astral escape", Attack(4), 30, "Damage done to prisoner is redirected to Astral escape. Prisoner attack directly the opponent", reaction = new AstralEscapeReaction)
-  val scarecrow: Creature = new Creature("Scarecrow", Attack(8), 25,
+  val scarecrow: Creature = new Creature("Scarecrow", Attack(7), 25,
     """Stuns&Deals 4 damage to opposite creature
 Can switch with prisoner to nearest empty slot""",
     effects = effects(Direct -> scare), inputSpec = Some(SelectOwner(openOrPrisoner)), reaction = new ScarecrowReaction)
@@ -280,13 +280,14 @@ Can switch with prisoner to nearest empty slot""",
       val otherPlayer = player.otherPlayer
       val slot = otherPlayer.slots(num)
       val escaped = player.slots.filleds.exists(_.get.reaction.isInstanceOf[AstralEscapeReaction])
-      if (slot.value.isDefined) {
-        slot inflict d
-        if (escaped) {
+      if (escaped) {
+        otherPlayer inflict d
+      } else {
+        if (slot.value.isDefined) {
+          slot inflict d
+        } else {
           otherPlayer inflict d
         }
-      } else {
-        otherPlayer inflict d
       }
     }
   }

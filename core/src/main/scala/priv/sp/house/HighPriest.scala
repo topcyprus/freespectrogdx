@@ -20,11 +20,11 @@ import priv.util.FuncDecorators
 object HighPriest {
 
   val initState = HPriestData()
-  val apis = new Creature("Apis", Attack(4), 20,
+  val apis = new Creature("Apis", Attack(4), 25,
     "Every turn gives to owner 1 special power and 3 hp for each other apis on the board.",
     effects = effects(OnTurn -> apisEffect))
 
-  val sphynx = new Creature("Sphinx", Attack(8), 24,
+  val sphynx = new Creature("Sphinx", Attack(7), 24,
     "When dies, leaves puzzle 0/6.\n" +
     "If puzzle was destroyed by enemy creature, sphinx reborns with halved hp.\n" +
     "If puzzle was destroyed by enemy spell or ability, opponent loses 3 power of highest element.",
@@ -53,7 +53,7 @@ object HighPriest {
     "When enters the game, summons sun stone in nearest empty slot.",
     effects = effects(Direct -> ra))
 
-  val babi = new Creature("Babi", Attack(6), 23,
+  val babi = new Creature("Babi", Attack(5), 21,
     "When opponent's power grows, deals the same damage to opposite creature.",
     reaction = new BabiReaction)
 
@@ -74,7 +74,7 @@ object HighPriest {
     Spell("Curse of chaos", "Deals to target creature and its neighbors damage equal to their total attack.",
       inputSpec = Some(SelectTargetCreature),
       effects = effects(Direct -> curse)),
-    Spell("Simooom", "Reduces attack of all enemy creatures to 1.\n" +
+    Spell("Simooom", "Reduces attack of all enemy creatures to 2.\n" +
       "They restore 3 attack per turn since next turn.",
       effects = effects(Direct -> simoom)),
     amit,
@@ -84,11 +84,11 @@ object HighPriest {
       runAttack = MultiTargetAttack))
 
   val HighPriest = House("High Priest", List(
-    new Creature("Sacred scarab", Attack(3), 15,
+    new Creature("Sacred scarab", Attack(3), 11,
       "decreases non-magical damage received by it by 2X\n" +
       "X = number of its neighbors.",
       reaction = new ScarabReaction),
-    new Creature("Sun priest", Attack(3), 16, "When attacks, deals to all enemy creatures damage equal to owner's lowest power.",
+    new Creature("Sun priest", Attack(2), 16, "When attacks, deals to all enemy creatures damage equal to owner's lowest power.",
       runAttack = new SunPriestAttack),
     apis,
     new Creature("Bennu", Attack(5), 21, "If killed by enemy card, attacks opposite slot with tripled attack before death.",
@@ -200,7 +200,7 @@ object HighPriest {
     var maxAttack = 0
     otherPlayer.slots foreach { slot ⇒
       val att = slot.get.attack
-      if (att > 1) {
+      if (att > 2) {
         if (att > maxAttack) {
           maxAttack = att
         }
@@ -318,7 +318,7 @@ object HighPriest {
   case class SimAttackReduction(numTurn: Int) extends AttackStateFunc {
     def apply(attack: Int, player: PlayerUpdate): Int = {
       val curr = getData(player.updater.value.players(other(player.id))).numTurn
-      1 + math.min((curr - numTurn) * 3, attack - 1)
+      2 + math.min((curr - numTurn) * 3, attack - 2)
     }
   }
 

@@ -82,7 +82,7 @@ class Dreamweaver {
 
   class EtherealReaction extends NightmareReaction {
     override def selfProtect(d: Damage) = {
-      if (d.isEffect) d.copy(amount = 0) else d
+      if (d.isEffect && d.context.playerId != selected.playerId) d.copy(amount = 0) else d
     }
   }
 

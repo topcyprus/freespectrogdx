@@ -15,7 +15,7 @@ class Elementalist {
     Spell("Deep freeze", "Both players skip 1 turn and cannot use special cards in their next turn.",
       effects = effects(Direct -> freeze)),
 
-    new Creature("Salamander", Attack(6), 17, "If owner fire power is higher than opponent fire power, " +
+    new Creature("Salamander", Attack(6), 14, "If owner fire power is higher than opponent fire power, " +
       "deals to opponent 4 damage at the beginning of the turn.", effects = effects(OnTurn -> salamand)),
 
     Spell("Avalanche", (state : GameState, playerId : PlayerId) =>

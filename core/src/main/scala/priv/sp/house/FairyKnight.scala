@@ -10,9 +10,9 @@ import scala.util._
 
 class FairyKnight {
 
-  val vodyanoy = new Creature("Vodyanoy", Attack(4), 12)
+  val vodyanoy = new Creature("Vodyanoy", Attack(4), 11)
   val rusalka = new Creature("Rusalka", Attack(6), 19, "when kills creature, opponent loses its card.", reaction = new RusalkaReaction)
-  val likho = new Creature("Likho", Attack(6), 22,
+  val likho = new Creature("Likho", Attack(6), 21 ,
     """when dies, reduces hp of creature which killed it to 10
 (kills if it has less than 10 hp).
 If killed by spell or ability, gives to owner 2 random power.""", reaction = new LikhoReaction)
@@ -26,10 +26,10 @@ when any player uses fire card, deals 6 damage to random enemy creature.""", rea
 
   val Fairy = House("Fairy knight", List(
     new Creature("Lesovik", Attack(4), 14, "blocks card of opposite creature, while alive.", effects = effects(Direct -> lesovik), reaction = new LesovikReaction),
-    new Creature("Kikimora", Attack(3), 15, "when enters the game, summons vodyanoy 4/12 in random slot.", effects = effects(Direct -> kiki)),
+    new Creature("Kikimora", Attack(3), 13, "when enters the game, summons vodyanoy 4/11 in random slot.", effects = effects(Direct -> kiki)),
     rusalka,
     likho,
-    new Creature("Sirin", Attack(4), 23, "halves attack of opposite creature and its neighbours while alive.", effects = effects(Direct -> sirin), reaction = new SirinReaction),
+    new Creature("Sirin", Attack(4), 23, "halves attack of opposite creature and its neighbours while alive, attack rounds up.", effects = effects(Direct -> sirin), reaction = new SirinReaction),
     new Creature("Alkonost", Attack(6), 31,
       "every turn blocks 6 random enemy cards. " +
         "Cannot block cards which have already been blocked previous turn",

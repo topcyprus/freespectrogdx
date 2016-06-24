@@ -8,7 +8,7 @@ object DarkPriest {
   import GameCardEffect._
 
   val restlessSoul = new Creature("restless soul", Attack(3), 11, "If dies, reborns at the end of opponent turn and gives 2 special mana to dark priest.", reaction = new RestlessReaction)
-  val shadowPriest = new Creature("shadow of priest", Attack(3), 11, "Every turn heals 1 life to dark priest and all his creatures.", effects = effects(OnTurn -> shadowHeal))
+  val shadowPriest = new Creature("shadow of priest", Attack(3), 13, "Every turn heals 1 life to dark priest and all his creatures.", effects = effects(OnTurn -> shadowHeal))
   val heretic = new Creature("heretic", Attack(6), 20, "")
   val blackAngel = new Creature("black angel", Attack(8), 25, "When kills creature, completely heals itself", runAttack = new BlackAngelAttack)
 

@@ -30,7 +30,7 @@ object Shaman {
       reaction = new HunterReaction,
       effects = effects(Direct -> hunt)),
     shadow,
-    new Creature("Phantom mate", Attack(5), 29, "when enters the game, permanently decreases cost of wolf cards by 1.\nEvery turn wolf additionally attacks slot opposite to mate.",
+    new Creature("Phantom mate", Attack(5), 29, "when enters the game, permanently decreases cost of wolf cards by 1 and deals 8 damage to opponent.\nEvery turn wolf additionally attacks slot opposite to mate.",
       reaction = new MateReaction,
       effects = effects(Direct -> mate))),
     effects = List(OnStart -> initWolf),
@@ -137,6 +137,7 @@ object Shaman {
   }
 
   def mate = { env: Env ⇒
+    env.otherPlayer inflict Damage(8, env, isAbility = true)
     env.player.updateData[WolfState](x ⇒ x.copy(mates = x.mates + env.selected))
     env.player addDescMod DecrSpecialCostMod
   }

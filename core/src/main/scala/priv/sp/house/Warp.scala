@@ -38,7 +38,7 @@ object Warp {
       reaction = new SchizoReaction),
 
     new Creature("Ram", Attack(6), 26,
-      "Opposite creature is destroyed and opponent get his mana back -2.\n" +
+      "When summoned, opposite creature is destroyed and opponent get his mana back -2.\n" +
         "(Cost of the creature -2)",
       effects = effects(Direct -> ram)),
 

@@ -22,7 +22,7 @@ class Vampire {
       inputSpec = Some(SelectOwnerSlot),
       effects = effects(Direct -> darkFlock)),
     new Creature("Noctule", Attack(5), 17, "When deals damage to opponent, heals owner the same amount of life.", runAttack = new NoctuleAttack),
-    new Creature("Ghoul", Attack(4), 20, "If opposite creature has less than 11 life, kills it at one blow.", runAttack = new GhoulAttack),
+    new Creature("Ghoul", Attack(4), 22, "If opposite creature has less than 11 life, kills it at one blow.", runAttack = new GhoulAttack),
     acolyte,
     Spell("Blood ties", "destroys owner's creature and permanently increases attack of its neighbors by its attack (doesn't affect creatures with mass attack and creatures of level > 9)",
       inputSpec = Some(SelectOwnerCreature),

@@ -258,9 +258,9 @@ class PlayerUpdate(val id: PlayerId, val updater: GameStateUpdater) extends Fiel
   class HousesUpdate extends FieldUpdate(Some(playerFieldUpdate), pstate.houses) {
     def houses = value
 
-    def incrMana(incr: Int = 1) = {
+    def incrMana() = {
       write(houses map { house ⇒
-        addMana((house, incr))
+        addMana((house, house.growth))
       })
       updateElementals()
     }
@@ -274,8 +274,20 @@ class PlayerUpdate(val id: PlayerId, val updater: GameStateUpdater) extends Fiel
       updateElementals()
     }
 
+    def incrGrowth(amount: Int, houseIndexes: Int*) = {
+      write(
+        (houseIndexes foldLeft houses) { (acc, id) ⇒
+          val house = acc(id)
+          acc.updated(id, addGrowth(house, amount))
+        })
+    }
+
     var addMana : Function[(HouseState, Int), HouseState] = { case ((houseState, amount)) =>
-      new HouseState(math.max(0, houseState.mana + amount))
+      houseState.copy(mana = math.max(0, houseState.mana + amount))
+    }
+
+    def addGrowth(houseState : HouseState, amount : Int) : HouseState = {
+      houseState.copy(growth = math.max(0, houseState.growth + amount))
     }
 
     def updateElementals() = {

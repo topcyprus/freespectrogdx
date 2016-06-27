@@ -84,7 +84,7 @@ class Houses
   val kinetician = Kinetician
   val limbo  = Limbo
   val lostChurch = LostChurch
-  val moutainKing = new MoutainKing
+  val moutainKing = new MountainKing
   val sb = new SB
   val seasons = Seasons
   val shaman = Shaman
@@ -100,7 +100,7 @@ class Houses
 
   val base = List(Fire, Water, Air, Earth)
   val sinist = List(darkPriest.DarkPriest, darksider.Darksider, element.Elementalist, fairy.Fairy,
-    highPriest.HighPriest, Kinetician.Kinetician, moutainKing.MoutainKing,
+    highPriest.HighPriest, Kinetician.Kinetician, moutainKing.MountainKing,
     shaman.Shaman, sower.Sower, vampire.Vampire, wind.Wind)
   val others = List(antimancer.Antimancer, colors.Colors, dreamweaver.Dreamweaver, entomologist.Entomologist,
     faerieDruid.FaerieDruid, limbo.Limbo, seasons.Seasons, soulBinder.Soulbinder, soulReaper.SoulReaper)

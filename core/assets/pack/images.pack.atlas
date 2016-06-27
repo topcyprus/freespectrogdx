@@ -27,15 +27,64 @@ thin
   index: -1
 
 images.pack2.png
-size: 512,512
+size: 256,256
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-particles/explode
+cards/mountainking/Armour-clad Dwarf
+  rotate: false
+  xy: 2, 166
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+cards/mountainking/Ballista
+  rotate: false
+  xy: 2, 84
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+cards/mountainking/Berserker
+  rotate: false
+  xy: 84, 166
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+cards/mountainking/Dwarven crossbowman
   rotate: false
   xy: 2, 2
-  size: 256, 256
-  orig: 256, 256
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+cards/mountainking/Dwarven shieldman
+  rotate: false
+  xy: 84, 84
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+cards/mountainking/Dwarven soldier
+  rotate: false
+  xy: 166, 166
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+cards/mountainking/Mountain king
+  rotate: false
+  xy: 84, 2
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+cards/mountainking/Runesmith
+  rotate: false
+  xy: 166, 84
+  size: 80, 80
+  orig: 80, 80
   offset: 0, 0
   index: -1
 
@@ -523,68 +572,6 @@ cards/dudes/Two P
   index: -1
 
 images.pack10.png
-size: 256,256
-format: RGBA8888
-filter: Nearest,Nearest
-repeat: none
-cards/moutainking/Armour-clad Dwarf
-  rotate: false
-  xy: 2, 166
-  size: 80, 80
-  orig: 80, 80
-  offset: 0, 0
-  index: -1
-cards/moutainking/Ballista
-  rotate: false
-  xy: 2, 84
-  size: 80, 80
-  orig: 80, 80
-  offset: 0, 0
-  index: -1
-cards/moutainking/Berserker
-  rotate: false
-  xy: 84, 166
-  size: 80, 80
-  orig: 80, 80
-  offset: 0, 0
-  index: -1
-cards/moutainking/Dwarven crossbowman
-  rotate: false
-  xy: 2, 2
-  size: 80, 80
-  orig: 80, 80
-  offset: 0, 0
-  index: -1
-cards/moutainking/Dwarven shieldman
-  rotate: false
-  xy: 84, 84
-  size: 80, 80
-  orig: 80, 80
-  offset: 0, 0
-  index: -1
-cards/moutainking/Dwarven soldier
-  rotate: false
-  xy: 166, 166
-  size: 80, 80
-  orig: 80, 80
-  offset: 0, 0
-  index: -1
-cards/moutainking/Moutain king
-  rotate: false
-  xy: 84, 2
-  size: 80, 80
-  orig: 80, 80
-  offset: 0, 0
-  index: -1
-cards/moutainking/Runesmith
-  rotate: false
-  xy: 166, 84
-  size: 80, 80
-  orig: 80, 80
-  offset: 0, 0
-  index: -1
-
-images.pack11.png
 size: 1024,256
 format: RGBA8888
 filter: Nearest,Nearest
@@ -730,7 +717,7 @@ cards/highpriest/sun stone
   offset: 0, 0
   index: -1
 
-images.pack12.png
+images.pack11.png
 size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
@@ -799,7 +786,7 @@ cards/antimancer/Voodoo Doll
   offset: 0, 0
   index: -1
 
-images.pack13.png
+images.pack12.png
 size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
@@ -868,7 +855,7 @@ cards/seasons/The Great Aurora
   offset: 0, 0
   index: -1
 
-images.pack14.png
+images.pack13.png
 size: 512,256
 format: RGBA8888
 filter: Nearest,Nearest
@@ -958,7 +945,7 @@ cards/disciples/wind of oppression
   offset: 0, 0
   index: -1
 
-images.pack15.png
+images.pack14.png
 size: 256,256
 format: RGBA8888
 filter: Nearest,Nearest
@@ -1020,7 +1007,7 @@ cards/darksider/Wolf spider
   offset: 0, 0
   index: -1
 
-images.pack16.png
+images.pack15.png
 size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
@@ -1082,7 +1069,7 @@ cards/soulbinder/Tethered Soul
   offset: 0, 0
   index: -1
 
-images.pack17.png
+images.pack16.png
 size: 1024,512
 format: RGBA8888
 filter: Nearest,Nearest
@@ -1431,7 +1418,7 @@ cards/base/woods hermit
   offset: 0, 0
   index: -1
 
-images.pack18.png
+images.pack17.png
 size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
@@ -1521,7 +1508,7 @@ cards/darkpriest/shadow of priest
   offset: 0, 0
   index: -1
 
-images.pack19.png
+images.pack18.png
 size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
@@ -1583,7 +1570,7 @@ cards/wind/Winged Warrior
   offset: 0, 0
   index: -1
 
-images.pack20.png
+images.pack19.png
 size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
@@ -1652,7 +1639,7 @@ cards/faeriedruid/Unicorn
   offset: 0, 0
   index: -1
 
-images.pack21.png
+images.pack20.png
 size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
@@ -1721,7 +1708,7 @@ cards/zen/Zen Fighter
   offset: 0, 0
   index: -1
 
-images.pack22.png
+images.pack21.png
 size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
@@ -1783,7 +1770,7 @@ cards/kinetician/Warp reality
   offset: 0, 0
   index: -1
 
-images.pack23.png
+images.pack22.png
 size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
@@ -1845,7 +1832,7 @@ cards/dreamweaver/Spiritual Guide
   offset: 0, 0
   index: -1
 
-images.pack24.png
+images.pack23.png
 size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
@@ -1907,7 +1894,7 @@ cards/sower/Tangling
   offset: 0, 0
   index: -1
 
-images.pack25.png
+images.pack24.png
 size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
@@ -1976,7 +1963,7 @@ cards/snowblood/War guide
   offset: 0, 0
   index: -1
 
-images.pack26.png
+images.pack25.png
 size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
@@ -2045,7 +2032,7 @@ cards/warp/Warp Queen
   offset: 0, 0
   index: -1
 
-images.pack27.png
+images.pack26.png
 size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
@@ -2114,7 +2101,7 @@ cards/troopers/Wraith
   offset: 0, 0
   index: -1
 
-images.pack28.png
+images.pack27.png
 size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
@@ -2176,7 +2163,7 @@ cards/limbo/Tower of sins
   offset: 0, 0
   index: -1
 
-images.pack29.png
+images.pack28.png
 size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
@@ -2238,7 +2225,7 @@ cards/soulreaper/Tribute
   offset: 0, 0
   index: -1
 
-images.pack30.png
+images.pack29.png
 size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
@@ -2307,7 +2294,7 @@ cards/vampires/Nosferatu
   offset: 0, 0
   index: -1
 
-images.pack31.png
+images.pack30.png
 size: 1024,512
 format: RGBA8888
 filter: Nearest,Nearest

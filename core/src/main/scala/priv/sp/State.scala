@@ -34,7 +34,7 @@ case class PlayerState(
 
   def isInSlotRange(n: Int) = slotList.contains(n)
 }
-class HouseState(val mana: Int) extends AnyVal with Serializable
+case class HouseState(mana: Int, growth : Int = 1)
 
 object SlotState {
   @inline def addLife(slot: SlotState, amount: Int) = {

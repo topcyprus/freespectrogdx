@@ -35,4 +35,23 @@ package object house {
         if (f(s.card)) i :: acc else acc
     }
   }
+
+  object ManaGrowthReaction{
+    def apply(amount: Int, houseIndexes: Int*): ManaGrowthReaction = new ManaGrowthReaction(amount, true, houseIndexes)
+  }
+  object OppManaGrowthReaction{
+    def apply(amount: Int, houseIndexes: Int*): ManaGrowthReaction = new ManaGrowthReaction(amount, false, houseIndexes)
+  }
+  class ManaGrowthReaction(amount : Int, owner : Boolean, houseIndexes : Seq[Int]) extends Reaction {
+    def p = if (owner) selected.player else selected.otherPlayer
+    override def onAdd(slot: SlotUpdate): Unit = {
+      if (slot.num == selected.num) {
+        p.houses.incrGrowth(amount, houseIndexes : _ *)
+      }
+    }
+    override def onMyRemove(dead: Option[Dead]): Unit = {
+      p.houses.incrGrowth(- amount, houseIndexes : _ *)
+    }
+  }
+
 }

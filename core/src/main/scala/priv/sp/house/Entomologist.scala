@@ -3,6 +3,7 @@ package priv.sp.house
 import priv.sp._
 import priv.sp.update._
 import GameCardEffect._
+import priv.util.FuncDecorators
 
 object Entomologist extends ChangeTarget {
   import CardSpec._
@@ -20,9 +21,13 @@ object Entomologist extends ChangeTarget {
     giantAnt,
     assassinWasp,
     new Creature("Insect Hive", Attack(2), 30, "At the end of each owner's turn Insect Hive summons a 4/10 Insect Warrior* into a random owner's slot.", effects = effects(OnEndTurn -> hive)),
-    new Creature("Red Mantis", Attack(7), 47, "When summoned, Red Mantis reduces all opponent's powers by 1.\nRed Mantis lowers by 1 the growth of opponent's power of it's opposite creature's power type.\nWhen Red Mantis dies it deals 5 damage to it's opposite creature.", effects = effects(Direct -> { env: Env ⇒
+    new Creature("Red Mantis", Attack(7), 47, "When summoned, Red Mantis reduces all opponent's powers by 1." +
+      "\nRed Mantis lowers by 1 the growth of opponent's power of it's opposite creature's power type." +
+      "\nWhen Red Mantis dies it deals 5 damage to it's opposite creature.", effects = effects(Direct -> { env: Env ⇒
       env.otherPlayer.houses.incrMana(-1, 0, 1, 2, 3, 4)
-    }, OnTurn -> mantis), reaction = new MantisReaction)), data = Targeting(), eventListener = Some(new CustomListener(new EntoEventListener)))
+    }), reaction = new MantisReaction)),
+    data = Targeting(),
+    eventListener = Some(new CustomListener(new EntoEventListener)))
 
   Entomologist.initCards(Houses.basicCostFunc)
 
@@ -138,24 +143,79 @@ object Entomologist extends ChangeTarget {
     }
   }
 
-  def mantis: Effect = { env: Env ⇒
-    import env._
-    val slot = getOwnerSelectedSlot()
-    slot.oppositeSlot.value foreach { s ⇒
-      env.otherPlayer.houses.incrMana(-1, s.card.houseIndex)
-    }
-  }
-
   class MantisReaction extends Reaction {
+    override def onAdd(slot: SlotUpdate) : Unit = {
+      if (slot.num == selected.num) {
+        selected.oppositeSlot.value foreach { s =>
+          bridle(s.card)
+        }
+      }
+    }
+    override def onMyRemove(dead: Option[Dead]): Unit = {
+      unbridle()
+    }
+    def onOppAdd(s : SlotState, num : Int) : Unit = {
+      if (num == selected.num) {
+        unbridle()
+        bridle(s.card)
+      }
+    }
+
+    def onOppRemove(deadOpt : Option[Dead], num : Int) : Unit = {
+      if (num == selected.num) {
+        unbridle()
+      }
+    }
+
+    def bridle(oppCard : Card) : Unit = {
+      selected.otherPlayer.houses.incrGrowth(-1, oppCard.houseIndex)
+      selected setData oppCard
+    }
+
+    def unbridle() : Unit = {
+      selected.value flatMap (s => Option(s.data)) foreach { data =>
+        val card = data.asInstanceOf[Card]
+        selected.otherPlayer.houses.incrGrowth(1, card.houseIndex)
+        selected.setData(null)
+      }
+    }
+
     override def onMyDeath(dead: Dead) {
       selected.oppositeSlot inflict Damage(5, Context(selected.playerId, Some(dead.slot.card), dead.num), isAbility = true)
+      unbridle()
     }
   }
 
   def getTargeting(player : PlayerUpdate) : Targeting = player.value.data.asInstanceOf[Targeting]
   def setTarget(player : PlayerUpdate, target : Option[Int] ) : Unit = player.updateData[Targeting](x ⇒ x.copy(target = target))
 
-  class EntoEventListener extends ChangeTargetListener
+  class EntoEventListener extends ChangeTargetListener with OppDeathEventListener {
+    override def init(p: PlayerUpdate) {
+      super.init(p)
+      p.otherPlayer.slots.slots foreach { s =>
+        s.add = (FuncDecorators decorate s.add) after (slotState => reactOppnentAdd(slotState, s.num))
+        s.remove = (FuncDecorators decorate s.remove) after (deadOpt => reactOppnentRemove(deadOpt, s.num))
+      }
+    }
+
+    def reactOppnentAdd(slotState : SlotState, num : Int) = {
+      player.slots.filleds foreach { s ⇒
+        s.value.get.reaction match {
+          case r : MantisReaction => r.onOppAdd(slotState, num)
+          case _ =>
+        }
+      }
+    }
+
+    def reactOppnentRemove(deadOpt : Option[Dead], num : Int) = {
+      player.slots.filleds foreach { s ⇒
+        s.value.get.reaction match {
+          case r : MantisReaction => r.onOppRemove(deadOpt, num)
+          case _ =>
+        }
+      }
+    }
+  }
 }
 
 case class Locust(id: Int) extends Function[Env, Unit] {

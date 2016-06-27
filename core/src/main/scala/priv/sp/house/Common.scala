@@ -282,7 +282,7 @@ trait ChangeTarget {
 
   trait ChangeTargetListener extends HouseEventListener{
 
-    def reactDead(dead: Dead) {
+    def changeTargetReactDead(dead: Dead) {
       getTargeting(player).target foreach { id ⇒
         if (id == dead.slot.id) {
           recoverTarget(player)
@@ -291,7 +291,7 @@ trait ChangeTarget {
     }
     override def init(p: PlayerUpdate) {
       super.init(p)
-      p.otherPlayer.slots.onDead = (FuncDecorators decorate p.otherPlayer.slots.onDead) after reactDead
+      p.otherPlayer.slots.onDead = (FuncDecorators decorate p.otherPlayer.slots.onDead) after changeTargetReactDead
     }
   }
 

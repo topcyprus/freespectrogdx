@@ -13,7 +13,7 @@ trait Fire {
     new Creature("Wall of flame", Attack(0), 5, "Deals 5 damage to opponent creatures when summoned",
       effects = effects(Direct -> damageCreatures(5, isAbility = true))),
     new Creature("Fire monk", Attack(3), 13, "Every turn increase fire mana growth by 1",
-      effects = effects(OnTurn -> addMana(1, 0))),
+      reaction = ManaGrowthReaction(1, 0)),
     new Creature("Drake", Attack(4), 18, "Attack the turn he is summoned",
       status = runFlag),
     new Creature("Orc chieftain", Attack(3), 16, "Increase attack of adjacent card by 2",

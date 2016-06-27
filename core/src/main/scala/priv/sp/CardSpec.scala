@@ -184,7 +184,9 @@ trait Actions {
 object Reaction {
   val falseNone = (false, None)
 }
+
 class Reaction extends Actions {
+  // when a creature is added on same side
   def onAdd(slot: SlotUpdate) {}
   def onRemove(slot: SlotUpdate) {}
 

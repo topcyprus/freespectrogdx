@@ -9,7 +9,7 @@ class GameResources {
   var ended        = false
 
   val base = sp.houses.others ++ sp.houses.sinist
-  val baseEnemy = base ++ sp.houses.bs
+  val baseEnemy = base
   var playerChoices: List[List[House]] = List(base, baseEnemy)
   def resolveChoices(choices : List[List[House]] = playerChoices) = choices map { o ⇒
     val l = if (o.isEmpty) sp.houses.special else o

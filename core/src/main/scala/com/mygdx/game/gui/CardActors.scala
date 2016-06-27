@@ -163,7 +163,7 @@ class SlotCardActors(val cardGroup : Group, card : Creature, cardActors : CardAc
     else if ( s has CardSpec.cursedFlag )      Some(cornerImageOf("death"))
     else if ( s.data == Limbo.LimboState)      Some(imageOf("limbo"))
     else if ( s.data == SoulReaper.Eternal)    Some(cornerImageOf("eternalrage"))
-    else if ( s.card.houseId == game.sp.houses.moutainKing.MoutainKing.houseId && s.data == Hird) Some(cornerImageOf("hird"))
+    else if ( s.card.houseId == game.sp.houses.moutainKing.MountainKing.houseId && s.data == Hird) Some(cornerImageOf("hird"))
     else None
   }
 

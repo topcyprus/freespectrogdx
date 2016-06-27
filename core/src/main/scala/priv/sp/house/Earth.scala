@@ -16,7 +16,7 @@ trait EarthHouse {
     Spell("Plant therapy",
       (state : GameState, playerId : PlayerId) => "heals by 2 * earth mana ["+(2 * state.players(playerId).houses(3).mana)+"]",
       effects = effects(Direct -> { env: Env ⇒ env.player.heal(2 * env.getMana(3)) })),
-    new Creature("woods hermit", Attack(1), 13, "Increase earth mana growth by 2", effects = effects(OnTurn -> addMana(2, 3))),
+    new Creature("woods hermit", Attack(1), 13, "Increase earth mana growth by 2", reaction = ManaGrowthReaction(2, 3)),
     Spell("Fury", (state : GameState, playerId : PlayerId) =>
       "Deals to opponent the sum of the attacks of the 2 strongest owner creatures["+getFuryAttack(state.players(playerId))+"]",
       effects = effects(Direct -> fury)),

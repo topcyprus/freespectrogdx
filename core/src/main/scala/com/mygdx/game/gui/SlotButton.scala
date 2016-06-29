@@ -9,7 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.mygdx.game.ScreenResources
 import priv.sp.PlayerState
 import priv.sp.house.BoundSouls
-
+import priv.util.GuiUtils._
 
 class SlotButton(val num: Int,
                  playerState: ⇒ PlayerState,

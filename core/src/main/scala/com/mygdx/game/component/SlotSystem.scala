@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.{Group, Actor}
 import com.mygdx.game.ScreenResources
 import com.mygdx.game.gui.{SlotCardActors, Board, Run, Focus}
 import priv.sp._
+import priv.util.GuiUtils._
 
 class SlotComponent(
   var slotnum : Int,
@@ -70,7 +71,7 @@ class SlotSystem(batch : Batch) extends BaseSystem {
       (findEntity(slotnum, playerId), p.slots get slotnum) match {
         case (None, Some(slotState)) =>
           println("add missing " + slotnum + " to " + playerId)
-          val source = com.mygdx.game.gui.getCoord(board.slotPanels(playerId).slots(slotnum).group).add(15, 15)
+          val source = getCoord(board.slotPanels(playerId).slots(slotnum).group).add(15, 15)
           val (entity, _) = SlotCardActors.createEntity(slotnum, playerId, slotState, game, resources, source)
           resources.engine addEntity entity
         case (Some((entity, _)), None) =>

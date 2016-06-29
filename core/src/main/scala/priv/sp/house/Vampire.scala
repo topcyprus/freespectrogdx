@@ -14,7 +14,7 @@ class Vampire {
 
 
   val acolyte = new Creature("Acolyte", Attack(3), 21,
-    "When enemy creature receives more than 8 damage, gives owner 1 mana of the same element.",
+    "When an enemy creature receives more than 5 damage, additionally deals 4 damage to him.",
     reaction = new AcolyteReaction)
 
   val Vampire: House = House("Vampires", List(
@@ -96,12 +96,21 @@ class Vampire {
     }
   }
 
+  class AcolyteReaction extends Reaction {
+    def onDamaged(slot : SlotUpdate, d: Damage) = {
+      if (slot.value.isDefined && d.amount > 5) {
+        slot inflict Damage(4, Context(selected.playerId, Some(acolyte), selected.num), isAbility = true)
+        true
+      } else false
+    }
+  }
+
   class VampireEventListener extends HouseEventListener with AnyDeathEventListener {
     // broadcast enemy damage
     def onDamaged(card: Creature, d: Damage, slot: SlotUpdate) {
       player.slots foreach { s ⇒
         s.get.reaction match {
-          case r : AcolyteReaction if r.onDamaged(player, card, d) => s.focus(blocking = false)
+          case r : AcolyteReaction if r.onDamaged(slot, d) => s.focus(blocking = false)
           case _ =>
         }
       }
@@ -157,14 +166,6 @@ class NosferatuReaction extends Reaction {
   }
 }
 
-class AcolyteReaction extends Reaction {
-  def onDamaged(player : PlayerUpdate, card: Creature, d: Damage) = {
-    if (d.amount > 8) {
-      player.houses.incrMana(1, card.houseIndex)
-      true
-    } else false
-  }
-}
 
 class AristoAttack extends RunAttack {
   def apply(target: List[Int], d: Damage, player: PlayerUpdate) {

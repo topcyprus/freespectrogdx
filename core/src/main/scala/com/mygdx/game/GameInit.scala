@@ -12,7 +12,7 @@ import priv.sp._
 import priv.sp.update.UpdateListener
 import priv.util.{RichLock, TVar}
 import priv.util.Utils._
-
+import priv.util.GuiUtils._
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 

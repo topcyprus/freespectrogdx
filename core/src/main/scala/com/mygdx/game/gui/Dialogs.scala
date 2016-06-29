@@ -3,8 +3,9 @@ package com.mygdx.game.gui
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.scenes.scene2d.ui.{List => _, _}
 import com.badlogic.gdx.utils.Scaling
-import com.mygdx.game.{onClick, ScreenResources}
+import com.mygdx.game.ScreenResources
 import priv.sp._
+import priv.util.GuiUtils._
 
 object Dialogs {
   def center(dialog : Dialog) : Unit = {
@@ -42,7 +43,7 @@ class GameSettings(resources : GameResources, screenResources : ScreenResources)
       }.toMap
     table.row()
 
-    val group = column(com.mygdx.game.gui.row(
+    val group = column(priv.util.GuiUtils.row(
       createBtn("all", self) { choiceCheckBoxes foreach (_._2.setChecked(true)) },
       createBtn("clear", self) { choiceCheckBoxes foreach (_._2.setChecked(false)) },
       createBtn("sinist", self) { select(resources.sp.houses.sinist) },

@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.{Image, VerticalGroup}
 import com.badlogic.gdx.utils.Align
 import com.mygdx.game.ScreenResources
 import priv.sp._
+import priv.util.GuiUtils._
 
 import scala.util.Random
 

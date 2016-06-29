@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.{Actor, Group}
 import com.mygdx.game.ScreenResources
 import priv.sp._
+import priv.util.GuiUtils._
 
 case class CardButtonActors(desc : CardDesc, houseState : HouseState, cardActors : CardActors) {
   cardActors.costLabel.setText(desc.cost.toString)

@@ -2,6 +2,7 @@ package com.mygdx.game.gui
 
 import com.mygdx.game._
 import com.mygdx.game.net.NetPanel
+import priv.util.GuiUtils._
 
 class StartBoard(screens : Screens) {
 

@@ -9,6 +9,7 @@ import com.mygdx.game.ScreenResources
 import com.mygdx.game.component.{DamageEntity, DamageComponent}
 import priv.sp.House
 import priv.sp.house.SoulReaperData
+import priv.util.GuiUtils._
 
 class LifeLabel(name: String, getLife : => Int, resources : ScreenResources) {
   val panel = new VerticalGroup()

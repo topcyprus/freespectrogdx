@@ -6,15 +6,14 @@ import com.badlogic.gdx.scenes.scene2d.{Actor, Group}
 import scala.util.control.NonFatal
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx._
-import com.mygdx.game.actor.Repere
 import com.mygdx.game.gui.{GameSettings, StartBoard}
 import priv.sp.GameResources
+import priv.util.GuiUtils._
 
 // common resources of the screens
 class Screens(val game : Game) {
   val screenResources       = new ScreenResources
   val gameResources         = new GameResources
-  val repere                = new Repere(screenResources)
   var lastE                 = Option.empty[Throwable]
   val startScreen           = new StartScreen(this)
   val gameScreen            = new GameScreen(this)
@@ -134,7 +133,6 @@ class GameScreen(val screens : Screens) extends ScreenAdapter {
     screenResources.engine.getSystems.toArray.foreach(_.setProcessing(false))
     // FIXME should wait here
     screenResources.clear()
-    screenResources.stage addActor repere
     val res = f
     screenResources.engine.getSystems.toArray.foreach(_.setProcessing(true))
     res

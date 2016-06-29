@@ -7,6 +7,9 @@ class Elementalist {
   import CardSpec._
   import GameCardEffect._
 
+  val stoneGolem = new Creature("Stone golem", AttackSources(Some(7), Vector(StoneGolemAttackSource)), 30, "+4 attack when blocked.\nReceives no damage from spells and creatures abilities when unblocked.",
+    reaction = new SGReaction)
+
   val Elementalist = House("Elementalist", List(
 
     new Creature("Sylph", Attack(5), 15, "When enters the game, allows to play additional special card.\n+1 cost for each sylph on the board.",
@@ -26,18 +29,18 @@ class Elementalist {
     Spell("Incineration", "Destroys strongest enemy and weakest friendly creatures (calculated by health) both on board and in deck.",
       effects = effects(Direct -> incinerate)),
 
-    new Creature("ArchPhoenix", Attack(9), 20, "Fire cards heal him instead of dealing damage.",
-      reaction = new ArchPhoenixReaction),
+    new Creature("ArchPhoenix", Attack(9), 20, "Heals to itself X hp (X = owner fire power) every turn.",
+      effects = effects(OnTurn -> archPhoenixHeal)),
 
-    new Creature("Stone golem", Attack(7), 30, "Regenerates 4 life when blocked.\nReceives no damage from spells and creatures abilities when unblocked.",
-      reaction = new SGReaction, effects = effects(OnTurn -> stoneGole)),
+    stoneGolem,
 
     Spell("Frost lightning", (state : GameState, playerId : PlayerId) =>
       "Deals X damage to opponent\n(X = difference between his lowest power and owner highest power) [" +
         getFrostLightX(state.players(playerId).houses, state.players(other(playerId)).houses) +
       "] and permanently blocks target slot.",
       inputSpec = Some(SelectTargetSlot),
-      effects = effects(Direct -> frostLight))))
+      effects = effects(Direct -> frostLight))),
+    eventListener = Some(new CustomListener(new ElementalistEventListener)))
 
   val sylph = Elementalist.cards(0)
   Elementalist.initCards(Houses.basicCostFunc)
@@ -98,10 +101,12 @@ class Elementalist {
     (otherPlayer.slots reduce highestLife) foreach destroy
   }
 
-  def stoneGole = { env: Env ⇒
+  def archPhoenixHeal = { env : Env =>
     import env._
-    if (otherPlayer.getSlots.isDefinedAt(selected)) {
-      player.slots(selected) heal 4
+    val fireMana = player.houses.houses(0).mana
+    if (fireMana > 0) {
+      getOwnerSelectedSlot() heal fireMana
+      focus()
     }
   }
 
@@ -137,17 +142,6 @@ class Elementalist {
     }
   }
 
-  class ArchPhoenixReaction extends Reaction {
-    override def selfProtect(d: Damage) = {
-      d.context.card match {
-        case Some(c) if c.houseIndex == 0 ⇒
-          selected heal d.amount
-          d.copy(amount = 0)
-        case _ ⇒ d
-      }
-    }
-  }
-
   case object IncrSylphCostMod extends DescMod {
     def apply(house: House, cards: Vector[CardDesc]): Vector[CardDesc] = {
       if (house.houseIndex < 4) cards
@@ -156,6 +150,32 @@ class Elementalist {
           c.copy(cost = c.cost + 1)
         } else c
       }
+    }
+  }
+
+
+  case object StoneGolemAttackSource extends AttackSlotStateFunc {
+    def apply(attack: Int, slot: SlotUpdate) = {
+      if (slot.otherPlayer.getSlots isDefinedAt slot.num) {
+        attack + 4
+      } else {
+        attack
+      }
+    }
+  }
+
+  class ElementalistEventListener extends HouseEventListener  {
+    def refreshStoneGolem() {
+      if (player.getSlots.values exists (_.card == stoneGolem)) {
+        player.slots.filleds.withFilter(_.get.card == stoneGolem) foreach { s ⇒
+          s.attack.setDirty()
+        }
+      }
+    }
+
+    override def init(p: PlayerUpdate) {
+      super.init(p)
+      p.otherPlayer.slots.update after { _ ⇒ refreshStoneGolem() }
     }
   }
 }

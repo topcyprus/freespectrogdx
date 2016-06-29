@@ -19,7 +19,7 @@ import com.typesafe.config.ConfigFactory
 import scala.concurrent.Promise
 import scala.util.control.NonFatal
 
-class ScreenResources {
+class ScreenResources extends GraphicResourceBase {
 
   var config   = loadConfig()
   val stage    = new Stage()
@@ -94,7 +94,6 @@ class ScreenResources {
     clientOption = None
   }
 
-  def loadConfig() = ConfigFactory.parseReader(Gdx.files.internal("application.conf").reader())
   def configure(actor : Actor, name : String) = {
     if (config hasPath name) {
       val c = config getConfig name
@@ -132,17 +131,6 @@ class ScreenResources {
     font
   }
 }
-
-class EffectResources(val shaders: Shaders, resources: ScreenResources) {
-
-  //val ripple   = shaders.getOrElseUpdate("ripple", _ ⇒ new RippleShader)
-  val grey     = shaders get "grey"
-  //val test     = shaders get "test"
-  val repere   = shaders get "repere"
-  val selected = shaders.getOrElseUpdate("sel", _ ⇒ new SelectedShader("sel", resources.config.getConfig("card.selection")))
-  val particles = new MyParticleEffects(resources.atlas)
-}
-
 
 class BeforeProcess {
   @volatile private var task = Option.empty[() => Unit]

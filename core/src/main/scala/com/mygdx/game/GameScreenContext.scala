@@ -4,6 +4,7 @@ import com.badlogic.gdx.{Gdx, Input}
 import com.mygdx.game.net.RemoteOpponent
 import priv.sp.Local
 import priv.util.Utils._
+import priv.util.GuiUtils._
 
 trait GameScreenContext {
   def gameScreen : GameScreen

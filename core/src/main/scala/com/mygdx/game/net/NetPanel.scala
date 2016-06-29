@@ -4,6 +4,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener
 import com.badlogic.gdx.scenes.scene2d.ui.{List => UiList, _}
 import com.mygdx.game._
 import com.mygdx.game.gui._
+import priv.util.GuiUtils._
 
 class NetPanel(
   screens : Screens, buttons : ButtonPanel) {

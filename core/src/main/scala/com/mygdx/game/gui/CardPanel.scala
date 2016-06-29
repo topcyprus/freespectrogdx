@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.mygdx.game._
 import priv.sp._
+import priv.util.GuiUtils._
 
 class CardPanel(playerId: PlayerId,
                 game: GameSession,

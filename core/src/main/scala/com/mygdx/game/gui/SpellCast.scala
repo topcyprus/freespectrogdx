@@ -8,7 +8,7 @@ import com.mygdx.game.ScreenResources
 import com.mygdx.game.component._
 import com.mygdx.game.effects.{SoundEntity, BlackMass, Lightning}
 import priv.sp._
-
+import priv.util.GuiUtils._
 import scala.concurrent.Future
 
 class SpellCast(board: Board, game : GameSession, resources : ScreenResources) {

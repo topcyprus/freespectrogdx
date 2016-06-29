@@ -5,6 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.{InputEvent, Group}
 import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup
 import com.mygdx.game._
 import priv.sp._
+import priv.util.GuiUtils._
 
 class SlotPanel(playerId: PlayerId, val game: GameSession, descriptionPanel : DescriptionPanel, resources : ScreenResources) {
   val lifeLabel = new LifeLabel(game.names(playerId), game.state.players(playerId).life, resources)

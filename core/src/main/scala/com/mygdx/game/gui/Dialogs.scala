@@ -33,7 +33,7 @@ class GameSettings(resources : GameResources, screenResources : ScreenResources)
 
     val specials = resources.sp.houses.special
     var n = 0
-    val choiceCheckBoxes : Map[String, CheckBox] = specials.map(_.name)
+    val choiceCheckBoxes : Map[String, CheckBox] = specials.map(_.label)
       .map { choice =>
         val checkbox = new CheckBox(choice, screenResources.skin2)
         table add checkbox
@@ -51,17 +51,17 @@ class GameSettings(resources : GameResources, screenResources : ScreenResources)
       createBtn("bs", self) { select(resources.sp.houses.bs) }),
       table)
 
-    resources.playerChoices(id) foreach (h => choiceCheckBoxes(h.name).setChecked(true))
+    resources.playerChoices(id) foreach (h => choiceCheckBoxes(h.label).setChecked(true))
     updateResources()
 
     def updateResources() : Unit = {
       val selecteds = choiceCheckBoxes.collect { case (choice, checkbox) if checkbox.isChecked => choice }.toSet
-      resources.playerChoices = resources.playerChoices.updated(id, specials.filter(x ⇒ selecteds.contains(x.name)))
+      resources.playerChoices = resources.playerChoices.updated(id, specials.filter(x ⇒ selecteds.contains(x.label)))
     }
 
     def select(houses: List[House]) : Unit = {
       houses.foreach { h ⇒
-        choiceCheckBoxes(h.name).setChecked(true)
+        choiceCheckBoxes(h.label).setChecked(true)
       }
     }
 
@@ -92,7 +92,7 @@ class GameSettings(resources : GameResources, screenResources : ScreenResources)
 }
 
 class HouseDescription (house : House, gameState : => GameState, playerId : PlayerId, resources : ScreenResources)
-  extends Dialog(house.name, resources.skin) {
+  extends Dialog(house.label, resources.skin) {
 
   val table = new Table()
   val pane = new ScrollPane(table)

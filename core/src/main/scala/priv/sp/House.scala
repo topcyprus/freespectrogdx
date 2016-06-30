@@ -9,7 +9,7 @@ object House {
 }
 // eventListener & data is only used for special houses
 case class House(
-    name: String,
+    key: String,
     cards: List[Card],
     houseIndex: Int = 4,
     effects: List[CardSpec.PhaseEffect] = Nil,
@@ -18,6 +18,8 @@ case class House(
     description : String = "") {
   def this() = this(null, Nil)
 
+  val name = I18n.default(key)
+  val label = I18n(key)
   var houseId = House.currentId.incrementAndGet()
 
   def costs = cards.map(_.cost)

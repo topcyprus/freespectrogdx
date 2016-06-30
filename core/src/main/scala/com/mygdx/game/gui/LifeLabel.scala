@@ -36,7 +36,7 @@ class LifeLabel(name: String, getLife : => Int, resources : ScreenResources) {
 
 
 class HouseLabel(getMana : => Int, val house: House, resources : ScreenResources, flip: Boolean = false) {
-  val label = new Label(house.name + " ", resources.skin)
+  val label = new Label(house.label + " ", resources.skin)
   val direction = if (flip) -1 else 1
   val manaDamageable = DamagableInt(getMana, resources, if (flip) -1 else 1)
   val panel = new Group()

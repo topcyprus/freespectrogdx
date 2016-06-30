@@ -56,6 +56,7 @@ object Card {
 
 sealed abstract class Card  {
   def name: String
+  def label : String
   def image: String
   def inputSpec: Option[CardInputSpec]
   def effects: Array[Option[Effect]]
@@ -86,7 +87,7 @@ sealed abstract class Card  {
 }
 
 class Creature(
-    val name: String,
+    val key: String,
     val attack: AttackSources,
     val life: Int,
     val description: Description = "",
@@ -99,6 +100,9 @@ class Creature(
     val isAltar: Boolean = false,
     val status: Int = 0) extends Card {
 
+  val name = I18n.default(key)
+  val label = I18n(key)
+
   def this() = this(null, AttackSources(), 0)
 
   def newReaction = reaction
@@ -109,10 +113,14 @@ class Creature(
 }
 
 case class Spell(
-    name: String,
+    key: String,
     description: Description = "",
     inputSpec: Option[CardInputSpec] = None,
     effects: Array[Option[CardSpec.Effect]] = CardSpec.noEffects) extends Card {
+
+  val name = I18n.default(key)
+  val label = I18n(key)
+
   def this() = this(null)
   def image = name + ".tga"
 }

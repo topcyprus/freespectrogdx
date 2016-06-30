@@ -7,7 +7,7 @@ trait Air {
   import GameCardEffect._
 
   val Air = House("air", List(
-    new Creature("Faerie novice", Attack(4), 11, "Increase spell damage by 1", mod = Some(new SpellMod(x ⇒ x + 1))),
+    new Creature("air.0.name", Attack(4), 11, I18n("air.0.description"), mod = Some(new SpellMod(x ⇒ x + 1))),
     new Creature("Griffin", Attack(3), 15, "If Air mana >= 5 deals 5 damage to opponent when summoned",
       effects = effects(Direct -> { env: Env ⇒
         if (env.getMana(2) > 4) env.otherPlayer inflict Damage(5, env)

@@ -35,13 +35,13 @@ class DescriptionPanel(resources : ScreenResources,
 }
 
 object Description {
-  def houseToDesc(h : House) = (h.name, "", h.description)
+  def houseToDesc(h : House) = (h.label, "", h.description)
   def cardToDesc(gameState : GameState, playerId : PlayerId, card : Card) = {
     val subtitle = card match {
       case c: Creature ⇒ "Life : " + c.life + "  Attack : " + c.attack.base.getOrElse("X")
       case _ ⇒ ""
     }
-    (card.name + " ("+card.cost+")", subtitle, card.description(gameState, playerId))
+    (card.label + " ("+card.cost+")", subtitle, card.description(gameState, playerId))
   }
 }
 trait HoverToDesc extends ClickListener {

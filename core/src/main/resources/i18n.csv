@@ -1,0 +1,9 @@
+air.0.name;Faerie novice
+air.0.description;Increase spell damage by 1
+
+darkpriest;Dark Priest;Темный жрец
+darkpriest.0.name;Ghost;Привидение
+darkpriest.0.description;If killed with spell or creature ability, reborns and switches sides.\nWhen enters the game, heals to owner 1 life for each his creature on the board.;если умирает от магии или способности существа, возрождается и переходит на сторону другого игрока. При входе в игру лечит хозяину 1 хп за каждое его существо на поле
+
+darkpriest.1.name;Occultist;Оккультист
+darkpriest.1.description;When enters the game, summons shadow of priest in opposite slot.;при входе в игру призывает в противостоящий слот тень священника 3/20, которая каждый ход лечит темному священнику и его существам 1 жизни.

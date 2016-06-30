@@ -12,9 +12,9 @@ object DarkPriest {
   val heretic = new Creature("heretic", Attack(6), 20, "")
   val blackAngel = new Creature("black angel", Attack(8), 25, "When kills creature, completely heals itself", runAttack = new BlackAngelAttack)
 
-  val DarkPriest: House = House("DarkPriest", List(
-    new Creature("Ghost", Attack(5), 16, "If killed with spell or creature ability, reborns and switches sides.\nWhen enters the game, heals to owner 1 life for each his creature on the board.", reaction = new GhostReaction, effects = effects(Direct -> ghostHeal)),
-    new Creature("Occultist", Attack(4), 20, "When enters the game, summons shadow of priest in opposite slot.", effects = effects(Direct -> occult)),
+  val DarkPriest: House = House("darkpriest", List(
+    new Creature("darkpriest.0.name", Attack(5), 16, I18n("darkpriest.0.description"), reaction = new GhostReaction, effects = effects(Direct -> ghostHeal)),
+    new Creature("darkpriest.1.name", Attack(4), 20, I18n("darkpriest.1.description"), effects = effects(Direct -> occult)),
     Spell("Black Mass", (state : GameState, playerId : PlayerId) =>
       "Sacrifices target creature and deals 4X damage to all enemy creatures\n" +
       "(X - number of different elements to which enemy creatures belong). ["+

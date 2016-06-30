@@ -15,6 +15,7 @@ import com.badlogic.gdx.Gdx
 import com.mygdx.game.effects._
 import com.mygdx.game.net.NetClient
 import com.typesafe.config.ConfigFactory
+import priv.sp.I18n
 
 import scala.concurrent.Promise
 import scala.util.control.NonFatal
@@ -26,8 +27,8 @@ class ScreenResources extends GraphicResourceBase {
   val batch    = stage.getBatch
   val renderer = new ShapeRenderer()
   val atlas    = new TextureAtlas(Gdx.files.internal("pack/images.pack.atlas"))
-  var skin     = loadSkin("font")
-  var skin2    = loadSkin("font2")
+  var skin     = if (I18n.isRussian) loadSkin("font3") else loadSkin("font")
+  var skin2    = if (I18n.isRussian) loadSkin("font3") else loadSkin("font2")
   val engine   = new Engine()
   val renderSystem   = new RenderSystem(batch, stage.getCamera)
   val scriptSystem   = new ScriptSystem()
@@ -123,6 +124,12 @@ class ScreenResources extends GraphicResourceBase {
     val c = config getConfig fontKey
     val generator = new FreeTypeFontGenerator(Gdx.files.internal(c getString "name"))
     val parameter = new FreeTypeFontParameter()
+    val fontChars = if (I18n.isRussian) {
+      "абвгдежзийклмнопрстуфхцчшщъыьэюяabcdefghijklmnopqrstuvwxyzАБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789][_!$%#@|\\/?-+=()*&.;:,{}\"´`'<>"
+    } else {
+      FreeTypeFontGenerator.DEFAULT_CHARS
+    }
+    parameter.characters    = fontChars
     parameter.size          = c getInt "size"
     parameter.shadowOffsetX = c getInt "shadowOffsetX"
     parameter.shadowOffsetY = c getInt "shadowOffsetY"
@@ -130,6 +137,7 @@ class ScreenResources extends GraphicResourceBase {
     generator.dispose()
     font
   }
+
 }
 
 class BeforeProcess {

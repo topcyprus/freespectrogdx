@@ -21,7 +21,7 @@ import scala.util.control.NonFatal
 
 class ScreenResources extends GraphicResourceBase {
 
-  var config   = loadConfig()
+  var config   = ConfigFactory.load()
   val stage    = new Stage()
   val batch    = stage.getBatch
   val renderer = new ShapeRenderer()

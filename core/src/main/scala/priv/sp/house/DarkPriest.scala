@@ -7,26 +7,23 @@ object DarkPriest {
   import CardSpec._
   import GameCardEffect._
 
-  val restlessSoul = new Creature("restless soul", Attack(3), 11, "If dies, reborns at the end of opponent turn and gives 2 special mana to dark priest.", reaction = new RestlessReaction)
+  val restlessSoul = new Creature("darkpriest.restless.name", Attack(3), 11, I18n(""), reaction = new RestlessReaction)
   val shadowPriest = new Creature("shadow of priest", Attack(3), 13, "Every turn heals 1 life to dark priest and all his creatures.", effects = effects(OnTurn -> shadowHeal))
   val heretic = new Creature("heretic", Attack(6), 20, "")
   val blackAngel = new Creature("black angel", Attack(8), 25, "When kills creature, completely heals itself", runAttack = new BlackAngelAttack)
 
   val DarkPriest: House = House("darkpriest", List(
-    new Creature("darkpriest.0.name", Attack(5), 16, I18n("darkpriest.0.description"), reaction = new GhostReaction, effects = effects(Direct -> ghostHeal)),
-    new Creature("darkpriest.1.name", Attack(4), 20, I18n("darkpriest.1.description"), effects = effects(Direct -> occult)),
-    Spell("Black Mass", (state : GameState, playerId : PlayerId) =>
-      "Sacrifices target creature and deals 4X damage to all enemy creatures\n" +
-      "(X - number of different elements to which enemy creatures belong). ["+
-        getBlackMassX(state.players(other(playerId)).slots)+ "]"
-      ,
+    new Creature("darkpriest.ghost.name", Attack(5), 16, I18n("darkpriest.ghost.description"), reaction = new GhostReaction, effects = effects(Direct -> ghostHeal)),
+    new Creature("darkpriest.occultist.name", Attack(4), 20, I18n("darkpriest.occultist.description"), effects = effects(Direct -> occult)),
+    Spell("darkpriest.blackmass.name", (state : GameState, playerId : PlayerId) =>
+      I18n("darkpriest.blackmass.description") +" ["+ getBlackMassX(state.players(other(playerId)).slots)+ "]",
       inputSpec = Some(SelectOwnerCreature),
       effects = effects(Direct -> blackMass)),
-    new Creature("Energy vampire", Attack(3), 23, "Every turn gives to owner 1 mana for each neighbour\n(element of mana = element of neighbour).", effects = effects(OnTurn -> evampire)),
-    new Creature("Black monk", Attack(4), 25, "When receives damage, heals the same amount of life to owner.", reaction = new BlackMonkReaction),
-    new Creature("Betrayer", Attack(7), 38, "Can be summoned only on enemy creature which dies.\nEvery turn deals 4 damage to itself, to owner and neighbours.", inputSpec = Some(SelectTargetCreature), effects = effects(OnTurn -> betray)),
-    new Creature("Dark hydra", Attack(1), 32, "When attacks, damages opponent and all his creatures.\nAfter attack permanently increases its attack by 1 and heals X life to owner\n(X = attack power)", runAttack = new DarkHydraAttack),
-    new Creature("Missionary", Attack(3), 36, "When enters the game, weakest friendly creature and weakest enemy creature of the same element lose half of current health.\nWhen owner summons elemental creature, turns it into heretic\nWhen owner summons special creature, turns itself into black angel", effects = effects(Direct -> missionar), reaction = new MissionaryReaction)),
+    new Creature("darkpriest.energyvampire.name", Attack(3), 23, I18n("darkpriest.energyvampire.description"), effects = effects(OnTurn -> evampire)),
+    new Creature("darkpriest.blackmonk.name", Attack(4), 25, I18n("darkpriest.blackmonk.description"), reaction = new BlackMonkReaction),
+    new Creature("darkpriest.betrayer.name", Attack(7), 38, I18n("darkpriest.betrayer.description"), inputSpec = Some(SelectTargetCreature), effects = effects(OnTurn -> betray)),
+    new Creature("darkpriest.darkhydra.name", Attack(1), 32, I18n("darkpriest.darkhydra.description"), runAttack = new DarkHydraAttack),
+    new Creature("darkpriest.missionary.name", Attack(3), 36, I18n("darkpriest.missionary.description"), effects = effects(Direct -> missionar), reaction = new MissionaryReaction)),
     effects = List(OnStart -> initRestless))
 
   val ghost = DarkPriest.cards(0).asCreature

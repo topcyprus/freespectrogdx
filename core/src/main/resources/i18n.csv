@@ -1,9 +1,40 @@
-air.0.name;Faerie novice
-air.0.description;Increase spell damage by 1
+air.fairy.name;Faerie novice
+air.fairy.description;Increase spell damage by 1
 
 darkpriest;Dark Priest;Темный жрец
-darkpriest.0.name;Ghost;Привидение
-darkpriest.0.description;If killed with spell or creature ability, reborns and switches sides.\nWhen enters the game, heals to owner 1 life for each his creature on the board.;если умирает от магии или способности существа, возрождается и переходит на сторону другого игрока. При входе в игру лечит хозяину 1 хп за каждое его существо на поле
+darkpriest.ghost.name;Ghost;Привидение
+darkpriest.ghost.description;If killed with spell or creature ability, reborns and switches sides.\nWhen enters the game, heals to owner 1 life for each his creature on the board.;если умирает от магии или способности существа, возрождается и переходит на сторону другого игрока. При входе в игру лечит хозяину 1 хп за каждое его существо на поле
+darkpriest.occultist.name;Occultist;Оккультист
+darkpriest.occultist.description;When enters the game, summons shadow of priest in opposite slot.;при входе в игру призывает в противостоящий слот тень священника 3/20, которая каждый ход лечит темному священнику и его существам 1 жизни.
+darkpriest.blackmass.name;Black Mass;Черная месса
+darkpriest.blackmass.description;Sacrifices target creature and deals 4X damage to all enemy creatures\n(X - number of different elements to which enemy creatures belong).;жертвует указанным существом и наносит существам противника 4X урона (X – кол-во разных стихий, которые представлены на поле существами противника)
+darkpriest.energyvampire.name;Energy vampire;Энергетический вампир
+darkpriest.energyvampire.description;Every turn gives to owner 1 mana for each neighbour\n(element of mana = element of neighbour).;каждый ход приносит по 1 маны за каждого своего соседа (стихия маны = стихии соседа).
+darkpriest.blackmonk.name;Black monk;Черный монах
+darkpriest.blackmonk.description;When receives damage, heals the same amount of life to owner.;при получении урона лечит столько же жизни хозяину.
+darkpriest.betrayer.name;Betrayer;Изменник
+darkpriest.betrayer.description;Can be summoned only on enemy creature which dies. Every turn deals 4 damage to itself, to owner and neighbours.;может быть призван только на вражеское существо, которое умирает. Каждый ход наносит 4 урона себе, хозяину (т.е. противнику) и соседям.
+darkpriest.darkhydra.name;Dark hydra;Темная гидра
+darkpriest.darkhydra.description;When attacks, damages opponent and all his creatures. After attack permanently increases its attack by 1 and heals X life to owner(X = attack power);Атакует всех врагов. При атаке повышает свою атаку на 1 и лечит хозяина на нанесенный урон.
+darkpriest.missionary.name;Missionary;Миссионер
+darkpriest.missionary.description;When enters the game, weakest friendly creature and weakest enemy creature of the same element lose half of current health.\nWhen owner summons elemental creature, turns it into heretic\nWhen owner summons special creature, turns itself into black angel;когда хозяин призывает стихийное существо, превращает его в еретика 6/20 (цена 4, без особенностей). Когда хозяин призывает спецовое существо, миссионер превращается в падшего ангела 8/25 (цена 7, при убийстве существа полностью лечится). Когда миссионер призван, слабейшее существо хозяина и слабейшее существо оппонента той же стихии теряют половину здоровья.
+darkpriest.restless.name;restless soul;мятущаяся душа
+darkpriest.restless.description;If dies, reborns at the end of opponent turn and gives 2 special mana to dark priest.;в начале игры на стороне оппонента появляется одноименное существо 3/11 (если оно убито, то возрождается в конце хода оппонента и приносит темному священнику 2 спецманы).
 
-darkpriest.1.name;Occultist;Оккультист
-darkpriest.1.description;When enters the game, summons shadow of priest in opposite slot.;при входе в игру призывает в противостоящий слот тень священника 3/20, которая каждый ход лечит темному священнику и его существам 1 жизни.
+Antimancer;Antimancer;Антимаг
+Antimancer.MirrorPriest.name;Mirror Priest;Зеркальный жрец
+antimancer.MirrorPriest.description;Each time opponent plays a card gain 1 power of that card's type. If opponent played a special card, gain 1 Revenge.;Когда противник играет карту, приносит 1 ману той же стихии (в т.ч. спецкласса).
+Antimancer.Resistance.name;Resistance;Сопротивление
+Antimancer.Resistance.description;Put a 3/9 Angry Mob into each of your unblocked slots.;Заполняет пустые слоты хозяина Злобной толпой 3/9.
+Antimancer.Retaliator.name;Retaliator;Каратель
+Antimancer.Retaliator.description;Every time retaliator looses life it deals an equivalent amount of damage to all opponent's creatures.;Когда каратель теряет хп, он наносит такой же урон всем вражеским существам.
+Antimancer.Martyr.name;Martyr;Мученик
+Antimancer.Martyr.description;As long as Martyr is in play all your other cards that die or get destroyed by a spell will rebirth.;Пока мученик жив, все ваши погибшие от заклинаний существа возродятся.
+Antimancer.Harvester.name;Harvester;Собиратель
+Antimancer.Harvester.description;Each time any of owner's creatures die Harvester randomly increases its owner's fire, water, air or earth power by 1.;При гибели дружественного существа приносит 1 ману случайной стихии.
+Antimancer.VoodooDoll.name;Voodoo Doll;Кукла вуду
+Antimancer.VoodooDoll.description;At the beginning of its owner's turn Voodoo Doll drains 1 life from each of opponent's cards.;В начале каждого хода высасывает у всех вражеских существ по 1 хп в пользу хозяина.
+Antimancer.Bombardier.name;Bombardier;Бомбардир
+Antimancer.Bombardier.description;When Bombardier deals damage to opponent it deals the same amount of damage to all opponent's cards. When Bombadier dies it deals 28 damage to the card in the opposing slot.;Когда бомбардир наносит урон противнику, наносит такой же урон всем его существам. При гибели наносит противостоящему существу 28 урона
+Antimancer.Bribery.name;Bribery;Подкуп
+Antimancer.Bribery.description;Destroy target opponent's card with power cost 7 or less. That card will reappear in one of owner's random empty slots with maximum life.;Уничтожает указанное существо противника и призывает его в случайном слоте с полным хп и под контролем заклинателя.

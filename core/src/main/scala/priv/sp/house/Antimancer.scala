@@ -10,43 +10,34 @@ object Antimancer {
 
   val angryMob = new Creature("Angry Mob", Attack(3), 9)
 
-  val retaliator = new Creature("Retaliator", Attack(5), 10,
-    "Every time retaliator looses life it deals an equivalent amount of damage to all opponent's creatures.",
+  val retaliator = new Creature("Antimancer.Retaliator.name", Attack(5), 10, I18n("Antimancer.Retaliator.description"),
     reaction = new RetaliatorReaction)
 
-  val bombardier = new Creature("Bombardier", Attack(5), 34,
-    "When Bombadier deals damage to opponent it deals the same amount of damage to all opponent's cards.\n" +
-      "When Bombadier dies it deals 28 damage to the card in the opposing slot.",
+  val bombardier = new Creature("Antimancer.Bombardier.name", Attack(5), 34, I18n("Antimancer.Bombardier.description"),
     reaction = new BombardierReaction)
 
   val Antimancer: House = House("Antimancer", List(
 
-    new Creature("Mirror Priest", Attack(2), 12,
-      "Each time opponent plays a card gain 1 power of that card's type. If opponent played a special card, gain 1 Revenge.",
+    new Creature("Antimancer.MirrorPriest.name", Attack(2), 12, I18n("Antimancer.MirrorPriest.description"),
       reaction = new MirrorPriestReaction),
 
-    Spell("Resistance", "Put a 3/9 card into each of your unblocked slots.",
+    Spell("Antimancer.Resistance.name", I18n("Antimancer.Resistance.description"),
       effects = effects(Direct -> resist)),
 
     retaliator,
 
-    new Creature("Martyr", Attack(4), 17,
-      "As long as Martyr is in play all your other cards that die or get destroyed by a spell will rebirth.",
+    new Creature("Antimancer.Martyr.name", Attack(4), 17, I18n("Antimancer.Martyr.description"),
       reaction = new MartyrReaction),
 
-    new Creature("Harvester", Attack(7), 37,
-      "Each time any of owner's creatures die Harvester randomly increases its owner's fire, water, air or earth power by 1.",
+    new Creature("Antimancer.Harvester.name", Attack(7), 37, I18n("Antimancer.Harvester.description"),
       reaction = new HarvesterReaction),
 
-    new Creature("Voodoo Doll", Attack(8), 39,
-      "At the beginning of its owner's turn Voodoo Doll drains 1 life from each of opponent's cards.\n"
-      +"Drain life means each opponent card looses 1 life and player gains life equal to the amount drained.",
+    new Creature("Antimancer.VoodooDoll.name", Attack(8), 39, I18n("Antimancer.VoodooDoll.description"),
       effects = effects(OnTurn -> voodoo)),
 
     bombardier,
 
-    Spell("Bribery", "Destroy target opponent's card with power cost 7 or less.\n" +
-      "That card will reappear in one of owner's random empty slots with maximum life.",
+    Spell("Antimancer.Bribery.name",  I18n("Antimancer.Bribery.description"),
       inputSpec = Some(SelectTarget(cost7OrInf)),
       effects = effects(Direct -> bribe))
   ),

@@ -107,15 +107,19 @@ class HouseDescription (house : House, gameState : => GameState, playerId : Play
   var n = 0
   house.allCards foreach { card =>
     val path = CardActors.getPath(card, house)
-    val image = new Image(resources.atlas createSprite path)
-    val descriptionPanel = new DescriptionPanel(resources, descWidth = 300)
+    try {
+      val image = new Image(resources.atlas createSprite path)
+      val descriptionPanel = new DescriptionPanel(resources, descWidth = 300)
 
-    descriptionPanel update Some(Description.cardToDesc(gameState, playerId, card))
-    table.add(image).height(image.getHeight).center()
-    table.add(descriptionPanel.panel).growY().top().left().pad(10)
-    n += 1
-    if (n % 2 == 0) {
-      table.row()
+      descriptionPanel update Some(Description.cardToDesc(gameState, playerId, card))
+      table.add(image).height(image.getHeight).center()
+      table.add(descriptionPanel.panel).growY().top().left().pad(10)
+      n += 1
+      if (n % 2 == 0) {
+        table.row()
+      }
+    } catch {
+      case e : Exception => throw new Exception("Failed loading " + path, e)
     }
   }
 

@@ -3,8 +3,8 @@ fire;Fire;Огонь
 water;Water;Вода
 
 air;Air;Воздух
-air.0.name;Faerie novice
-air.0.description;Increase spell damage by 1
+air.fairy.name;Faerie novice
+air.fairy.description;Increase spell damage by 1
 
 
 earth;Earth;Земля
@@ -115,3 +115,24 @@ mountainking.Berserker.name;Berserker;Берсеркер
 mountainking.Berserker.description;When owner receives more than 5 damage attacks out-of-turn opposite slot. Hird: +3  attack and damage dealt to berserker.;Когда хозяин получает больше 5 урона, проводит внеочередную атаку по противостоящему слоту. Хирд: +3 к атаке и +3 к урону ото всех атак.
 mountainking.MountainKingCard.name;Mountain king;Гномий король
 mountainking.MountainKingCard.description;When allied dwarf enters the game, heals himself by 6 and permanently increases his attack by 2. When enters the game stuns strongest opponent creature. Hird: reduces cost of dwarven cards by 1.;При входе в игру оглушает сильнейшее существо оппонента. Когда в игру призывается гном, лечится на 6 и перманентно повышает свою атаку на 2. Хирд: снижает стоимость всех гномьих карт на 1.
+
+seasons;Seasons;Сезоны
+seasons.description;Passing of Seasons: Each of the Warden’s special cards grants him a small Passive Effect that remains active from the beginning of the game until the card is played. Exhaustion: The Warden’s special cards may only be used once apiece during the match.;Особенности. Цикл времен года: пока карта не сыграна, она дает определенный пассивный эффект. Истощение: карты можно сыграть только 1 раз. 
+seasons.Nectarbloom.name;Nectarbloom;Медоносница
+seasons.Nectarbloom.description;Nectarbloom regenerates 2 life each turn.;Восстанавливает 2 хп каждый ход.
+seasons.AiluvBees.name;Ailuv Bees;Айлувские пчелы
+seasons.AiluvBees.description;When Ailuv Bees is summoned, two 2/10 Nectarblooms are summoned into random empty caster’s slots. Passive: Regrowth: Your mana growth is increased by 1 in each House with fewer than 2 mana.;При входе в игру призывают две медоносицы 2/10 (восстанавливает 2 хп в ход) в случайные слоты. Пассивка: +1 к приросту маны во всех стихиях с запасами маны ниже 2.
+seasons.SpiritofEquinox.name;Spirit of Equinox;Дух равноденствия
+seasons.SpiritofEquinox.description;When summoned, deals 4 damage to opponent and each opponent’s creature, and heals 4 life to caster and each caster’s creature. Passive: Regrowth: Your mana growth is increased by 1 in each House with fewer than 2 mana.;При призыве лечит 4 хп хозяину и всем его существам и наносит 4 урона всем врагам. Пассивка: +1 к приросту маны во всех стихиях с запасами маны ниже 2.
+seasons.SolarWave.name;Solar Wave;Солнечная волна
+seasons.SolarWave.description;Opponent takes 2 damage for each of their empty creature slots.  Opponent’s creatures take triple damage this turn. Passive: Midnight Sun: When you take 4 or more damage, that damage is reduced by 1.;Наносит противнику по 2 урона за каждый его пустой слот. Вражеские существа получают в этот ход утроенный урон. Пассивка: когда хозяин получает более 3 урона, урон снижается на 1.
+seasons.EternalSummer.name;Eternal Summer;Вечное лето
+seasons.EternalSummer.description;You may immediately play one creature and one spell from your hand, in either order.  Both have -2 cost. Passive: Midnight Sun: When you take 4 or more damage, that damage is reduced by 1.;Можно немедленно сыграть (в любом порядке) еще 1 заклинание и 1 существо с -2 к цене. Пассивка: когда хозяин получает более 3 урона, урон снижается на 1.
+seasons.Cornucopia.name;Cornucopia;Рог изобилия
+seasons.Cornucopia.description;When summoned, heals all other allied creatures for 9 life.  All other allied creatures receive +1 attack and take -1 damage while Cornucopia is on the board. Passive: Plentitude: The cost of your most expensive Fire, Water, Air, and Earth cards is reduced by 1.;При входе в игру лечит всех дружественных существ на 9. Пока жив, дружественные существа получают +1 к атаке и получаемый ими урон сокращается на 1. Пассивка: стоимость самых дорогих карт в 4 стихиях снижается на 1.
+seasons.GaeasAvatar.name;Avatar of Gaea;Аватар Геи
+seasons.GaeasAvatar.description;Attack is equal to number of creatures on the board.  Gaea's Avatar is unaffected by all spells but takes 1 damage each turn for each empty slot on the board. Passive: Plentitude: The cost of your most expensive Fire, Water, Air, and Earth cards is reduced by 1.;Атака равна кол-ву существ на поле. Иммунен к заклинаниям. Каждый ход получает 1 урона за каждый пустой слот на поле. Пассивка: стоимость самых дорогих карт в 4 стихиях снижается на 1
+seasons.BehemothofFrozenTime.name;Behemoth of Frozen Time;Чудище застывшего времени
+seasons.BehemothofFrozenTime.description;When summoned, opponent’s blocked creatures are stunned for a turn.  Opponent’s mana in each House cannot grow higher than 9 while Behemoth of Frozen Time is in play. Passive: Wintry Chill: Opponent’s unblocked creatures take 1 damage each turn.;При входе в игру оглушает вражеских заблокированных существ. Пока жив, маны противника не могут вырасти выше 9. Пассивка: незаблокированные вражеские существа каждый ход получают 1 урона.
+seasons.TheGreatAurora.name;The Great Aurora;Утренняя заря
+seasons.TheGreatAurora.description;Caster’s creatures are healed for 16 health and each grant 3 mana of their own type to their caster. Passive: Wintry Chill: Opponent’s unblocked creatures take 1 damage each turn.;Лечит по 16 хп всем дружественным существам и приносит по 3 маны их стихий. Пассивка: незаблокированные вражеские существа каждый ход получают 1 урона.
